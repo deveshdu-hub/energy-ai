@@ -1,29 +1,37 @@
-want preview <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>CarryMe Store | Smart. Stylish. Always With You.</title>
+  <title>FutureHQ | India's Energy Future Platform</title>
 
   <meta
     name="description"
-    content="CarryMe Store - India’s futuristic AI-powered ecommerce shopping experience."
+    content="FutureHQ - India's AI-powered energy platform. Daily insights on EV infrastructure, renewable energy, and clean technology."
   />
 
   <meta name="theme-color" content="#050816" />
-
-  <!-- SEO -->
   <meta name="robots" content="index, follow" />
   <meta
     name="keywords"
-    content="CarryMe Store, AI Ecommerce India, futuristic shopping, Indian fashion, smart accessories"
+    content="India energy future, EV infrastructure, renewable energy, clean technology, sustainable energy, India energy transition"
   />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="CarryMe Store" />
-  <meta property="og:description" content="Smart. Stylish. Always With You." />
+  <meta property="og:title" content="FutureHQ - India's Energy Future" />
+  <meta property="og:description" content="Daily insights on EV infrastructure, renewable energy, and clean technology." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.futurehq.in" />
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -48,8 +56,8 @@ want preview <!DOCTYPE html>
 
     .hero-bg{
       background:
-      radial-gradient(circle at top left,#00e5ff33,transparent 30%),
-      radial-gradient(circle at bottom right,#ff00ff33,transparent 30%),
+      radial-gradient(circle at top left,#FF9F0033,transparent 30%),
+      radial-gradient(circle at bottom right,#00ffc833,transparent 30%),
       #050816;
     }
 
@@ -60,13 +68,13 @@ want preview <!DOCTYPE html>
     }
 
     .neon-text{
-      background:linear-gradient(90deg,#00F5FF,#FF00D4);
+      background:linear-gradient(90deg,#FF9F00,#ffc000);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
     }
 
     .glow{
-      box-shadow:0 0 30px rgba(0,255,255,0.25);
+      box-shadow:0 0 30px rgba(255,159,0,0.25);
     }
 
     .product-card:hover{
@@ -83,6 +91,10 @@ want preview <!DOCTYPE html>
       50%{transform:translateY(-10px);}
       100%{transform:translateY(0px);}
     }
+
+    .energy-gradient {
+      background: linear-gradient(135deg, #FF9F00, #ffc000);
+    }
   </style>
 </head>
 
@@ -92,17 +104,18 @@ want preview <!DOCTYPE html>
   <nav class="fixed top-0 w-full z-50 glass px-6 py-4 flex items-center justify-between">
 
     <h1 class="text-2xl font-bold neon-text">
-      CarryMe Store
+      🚀 FutureHQ
     </h1>
 
-    <div class="hidden md:flex gap-6 items-center">
-      <a href="#products">Products</a>
-      <a href="#ai">AI Assistant</a>
+    <div class="hidden md:flex gap-6 items-center text-gray-300">
+      <a href="#insights" class="hover:text-yellow-400 transition">Insights</a>
+      <a href="#features" class="hover:text-yellow-400 transition">Features</a>
+      <a href="/contact.html" class="hover:text-yellow-400 transition">Contact</a>
 
       <a
-        href="https://www.instagram.com/carryme_stores?igsh=bnhnaGNranllbjJk"
+        href="https://www.instagram.com/indiaenergyfuture_hq"
         target="_blank"
-        class="text-pink-400"
+        class="text-yellow-400 font-semibold"
       >
         Instagram
       </a>
@@ -117,35 +130,35 @@ want preview <!DOCTYPE html>
 
       <div>
 
-        <p class="uppercase tracking-widest text-cyan-400 mb-4">
-          AI Powered Ecommerce
+        <p class="uppercase tracking-widest text-yellow-400 mb-4 font-semibold">
+          🌍 India's Energy Future
         </p>
 
         <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
-          Smart.<br>
-          Stylish.<br>
-          <span class="neon-text">Always With You.</span>
+          EV Infrastructure.<br>
+          Renewable Energy.<br>
+          <span class="neon-text">Clean Technology.</span>
         </h1>
 
         <p class="text-gray-300 text-lg mb-8">
-          India’s futuristic AI-powered shopping experience built for mobile users, Instagram shoppers, and next-generation commerce.
+          Daily AI-powered insights on India's energy transition, EV infrastructure, renewable energy capacity, and clean tech innovations transforming the nation.
         </p>
 
         <div class="flex flex-wrap gap-4">
 
           <a
-            href="#products"
-            class="bg-cyan-400 text-black px-7 py-4 rounded-full font-semibold glow"
+            href="/contact.html"
+            class="bg-yellow-400 text-black px-7 py-4 rounded-full font-semibold glow hover:bg-yellow-300 transition"
           >
-            Explore Products
+            Get Started
           </a>
 
           <a
-            href="https://www.instagram.com/carryme_stores?igsh=bnhnaGNranllbjJk"
+            href="https://www.instagram.com/indiaenergyfuture_hq"
             target="_blank"
-            class="glass px-7 py-4 rounded-full"
+            class="glass px-7 py-4 rounded-full hover:bg-white/20 transition"
           >
-            Instagram
+            Follow on Instagram
           </a>
 
         </div>
@@ -157,7 +170,8 @@ want preview <!DOCTYPE html>
         <div class="glass rounded-3xl p-5 glow">
 
           <img
-            src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1509391366360-2e938aa1ef14?q=80&w=1200&auto=format&fit=crop"
+            alt="Solar panels representing renewable energy"
             class="rounded-2xl w-full object-cover"
           >
 
@@ -169,49 +183,50 @@ want preview <!DOCTYPE html>
 
   </section>
 
-  <!-- PRODUCTS -->
-  <section id="products" class="py-24 px-6">
+  <!-- INSIGHTS SECTION -->
+  <section id="insights" class="py-24 px-6">
 
     <div class="max-w-7xl mx-auto">
 
       <div class="flex justify-between items-center mb-10">
         <h2 class="text-4xl font-bold">
-          Trending Products
+          Latest Energy Insights
         </h2>
 
         <p class="text-gray-400">
-          AI Curated Collection
+          AI Curated Daily
         </p>
       </div>
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-        <!-- CARD -->
-        <div class="glass rounded-3xl overflow-hidden product-card">
+        <!-- CARD 1 -->
+        <div class="glass rounded-3xl overflow-hidden product-card cursor-pointer">
 
           <img
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1559056199-641a0ac8b3f4?q=80&w=1200&auto=format&fit=crop"
+            alt="EV Charging Station"
             class="w-full h-72 object-cover"
           >
 
           <div class="p-6">
 
             <h3 class="text-2xl font-semibold mb-2">
-              Smart Sneakers
+              🚗 EV Infrastructure
             </h3>
 
             <p class="text-gray-400 mb-4">
-              Urban futuristic comfort wear.
+              India's charging network expansion and battery manufacturing hubs growing rapidly across the nation.
             </p>
 
             <div class="flex justify-between items-center">
 
-              <span class="text-cyan-400 text-xl font-bold">
-                ₹1,999
+              <span class="text-yellow-400 text-lg font-bold">
+                180+ GW
               </span>
 
-              <button class="bg-cyan-400 text-black px-5 py-2 rounded-full font-semibold">
-                Buy Now
+              <button class="bg-yellow-400 text-black px-5 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">
+                Read More
               </button>
 
             </div>
@@ -220,32 +235,33 @@ want preview <!DOCTYPE html>
 
         </div>
 
-        <!-- CARD -->
-        <div class="glass rounded-3xl overflow-hidden product-card">
+        <!-- CARD 2 -->
+        <div class="glass rounded-3xl overflow-hidden product-card cursor-pointer">
 
           <img
-            src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1497440990599-56da2e75f580?q=80&w=1200&auto=format&fit=crop"
+            alt="Solar Farm"
             class="w-full h-72 object-cover"
           >
 
           <div class="p-6">
 
             <h3 class="text-2xl font-semibold mb-2">
-              Premium Headphones
+              ☀️ Renewable Energy
             </h3>
 
             <p class="text-gray-400 mb-4">
-              Immersive AI audio experience.
+              Solar and wind capacity growth driving India towards 500 GW renewable energy target by 2030.
             </p>
 
             <div class="flex justify-between items-center">
 
-              <span class="text-cyan-400 text-xl font-bold">
-                ₹2,499
+              <span class="text-yellow-400 text-lg font-bold">
+                30% Growth
               </span>
 
-              <button class="bg-cyan-400 text-black px-5 py-2 rounded-full font-semibold">
-                Buy Now
+              <button class="bg-yellow-400 text-black px-5 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">
+                Read More
               </button>
 
             </div>
@@ -254,32 +270,33 @@ want preview <!DOCTYPE html>
 
         </div>
 
-        <!-- CARD -->
-        <div class="glass rounded-3xl overflow-hidden product-card">
+        <!-- CARD 3 -->
+        <div class="glass rounded-3xl overflow-hidden product-card cursor-pointer">
 
           <img
-            src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1200&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=1200&auto=format&fit=crop"
+            alt="Battery Technology"
             class="w-full h-72 object-cover"
           >
 
           <div class="p-6">
 
             <h3 class="text-2xl font-semibold mb-2">
-              AI Smart Watch
+              🔋 Clean Technology
             </h3>
 
             <p class="text-gray-400 mb-4">
-              Intelligent wearable ecosystem.
+              Advanced battery storage, hydrogen fuel cells, and green hydrogen innovations reshaping India's energy sector.
             </p>
 
             <div class="flex justify-between items-center">
 
-              <span class="text-cyan-400 text-xl font-bold">
-                ₹3,999
+              <span class="text-yellow-400 text-lg font-bold">
+                5x Innovation
               </span>
 
-              <button class="bg-cyan-400 text-black px-5 py-2 rounded-full font-semibold">
-                Buy Now
+              <button class="bg-yellow-400 text-black px-5 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">
+                Read More
               </button>
 
             </div>
@@ -294,47 +311,46 @@ want preview <!DOCTYPE html>
 
   </section>
 
-  <!-- AI SECTION -->
-  <section id="ai" class="py-24 px-6">
+  <!-- FEATURES SECTION -->
+  <section id="features" class="py-24 px-6">
 
     <div class="max-w-6xl mx-auto">
 
       <div class="glass rounded-3xl p-10 relative overflow-hidden">
 
-        <div class="absolute top-0 right-0 w-72 h-72 bg-cyan-500/20 blur-3xl"></div>
+        <div class="absolute top-0 right-0 w-72 h-72 bg-yellow-500/20 blur-3xl"></div>
 
         <div class="grid md:grid-cols-2 gap-12 items-center relative z-10">
 
           <div>
 
-            <p class="uppercase tracking-widest text-cyan-400 mb-3">
-              AI SHOPPING ASSISTANT
+            <p class="uppercase tracking-widest text-yellow-400 mb-3 font-semibold">
+              📊 AI-POWERED INSIGHTS
             </p>
 
             <h2 class="text-5xl font-bold mb-6">
-              Your Personal AI Shopping Guide
+              Real-Time Energy Data & Analytics
             </h2>
 
             <p class="text-gray-300 text-lg mb-8">
-              Discover products, get recommendations and shop smarter with futuristic AI shopping experiences.
+              Get daily insights on India's energy transition with AI-curated content about EV infrastructure, renewable energy capacity, policy changes, and clean technology innovations.
             </p>
 
             <div class="flex flex-wrap gap-4">
 
               <a
-                href="https://business-portfolio--deveshdu.replit.app"
-                target="_blank"
-                class="bg-cyan-400 text-black px-6 py-3 rounded-full font-semibold glow"
+                href="/contact.html"
+                class="bg-yellow-400 text-black px-6 py-3 rounded-full font-semibold glow hover:bg-yellow-300 transition"
               >
-                Open AI App
+                Get Insights
               </a>
 
               <a
-                href="https://wa.me/"
+                href="https://www.instagram.com/indiaenergyfuture_hq"
                 target="_blank"
-                class="glass px-6 py-3 rounded-full"
+                class="glass px-6 py-3 rounded-full hover:bg-white/20 transition"
               >
-                WhatsApp
+                Follow Updates
               </a>
 
             </div>
@@ -345,16 +361,20 @@ want preview <!DOCTYPE html>
 
             <div class="space-y-4">
 
-              <div class="bg-cyan-400 text-black p-4 rounded-2xl w-fit">
-                Suggest futuristic products under ₹2000
+              <div class="bg-yellow-400 text-black p-4 rounded-2xl w-fit">
+                📈 India's EV growth statistics
               </div>
 
               <div class="bg-white/10 p-4 rounded-2xl w-fit ml-auto">
-                Here are AI-curated trending products ✨
+                Latest data: 40% YoY EV adoption increasing ✨
               </div>
 
-              <div class="bg-cyan-400 text-black p-4 rounded-2xl w-fit">
-                Show me premium gadgets
+              <div class="bg-yellow-400 text-black p-4 rounded-2xl w-fit">
+                ☀️ Renewable energy capacity updates
+              </div>
+
+              <div class="bg-white/10 p-4 rounded-2xl w-fit ml-auto">
+                180+ GW solar & wind operational now 🚀
               </div>
 
             </div>
@@ -369,39 +389,90 @@ want preview <!DOCTYPE html>
 
   </section>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-white/10 py-12 px-6">
+  <!-- CTA SECTION -->
+  <section class="py-24 px-6 bg-gradient-to-r from-yellow-900/20 to-orange-900/20">
 
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-6">
+    <div class="max-w-4xl mx-auto text-center">
 
-      <div>
+      <h2 class="text-5xl font-bold mb-6">
+        Join India's Energy Revolution
+      </h2>
 
-        <h2 class="text-2xl font-bold neon-text">
-          CarryMe Store
-        </h2>
+      <p class="text-gray-300 text-lg mb-8">
+        Stay updated with daily insights on EVs, renewable energy, and clean technology transforming India's future.
+      </p>
 
-        <p class="text-gray-400 mt-2">
-          Smart. Stylish. Always With You.
-        </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+
+        <a
+          href="/contact.html"
+          class="bg-yellow-400 text-black px-8 py-4 rounded-full font-semibold text-lg glow hover:bg-yellow-300 transition"
+        >
+          Get Started Now
+        </a>
+
+        <a
+          href="https://www.instagram.com/indiaenergyfuture_hq"
+          target="_blank"
+          class="glass px-8 py-4 rounded-full text-lg hover:bg-white/20 transition"
+        >
+          Follow @indiaenergyfuture_hq
+        </a>
 
       </div>
 
-      <div class="flex gap-6 text-gray-400">
+    </div>
 
-        <a
-          href="https://www.instagram.com/carryme_stores?igsh=bnhnaGNranllbjJk"
-          target="_blank"
-        >
-          Instagram
-        </a>
+  </section>
 
-        <a
-          href="https://wa.me/"
-          target="_blank"
-        >
-          WhatsApp
-        </a>
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-12 px-6">
 
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+
+        <div>
+          <h2 class="text-2xl font-bold neon-text mb-3">
+            🚀 FutureHQ
+          </h2>
+          <p class="text-gray-400">
+            India's Energy Future Platform
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-yellow-400 mb-3">Quick Links</h3>
+          <div class="space-y-2 text-gray-400">
+            <a href="/" class="hover:text-yellow-400 transition">Home</a>
+            <a href="/contact.html" class="hover:text-yellow-400 transition">Contact</a>
+            <a href="#insights" class="hover:text-yellow-400 transition">Insights</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-yellow-400 mb-3">Follow Us</h3>
+          <div class="space-y-2 text-gray-400">
+            <a
+              href="https://www.instagram.com/indiaenergyfuture_hq"
+              target="_blank"
+              class="hover:text-yellow-400 transition"
+            >
+              Instagram
+            </a>
+            <a
+              href="/contact.html"
+              class="hover:text-yellow-400 transition"
+            >
+              WhatsApp
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-white/10 pt-8 text-center text-gray-400">
+        <p>&copy; 2026 FutureHQ. India's Energy Future Platform. All rights reserved.</p>
       </div>
 
     </div>
@@ -410,12 +481,42 @@ want preview <!DOCTYPE html>
 
   <!-- FLOATING WHATSAPP -->
   <a
-    href="https://wa.me/"
+    href="/contact.html"
     target="_blank"
-    class="fixed bottom-24 right-6 bg-green-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-2xl z-50"
+    class="fixed bottom-24 right-6 bg-yellow-400 w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-2xl z-50 hover:bg-yellow-300 transition transform hover:scale-110"
+    title="Contact Us"
   >
     💬
   </a>
+
+  <!-- FLOATING INSTAGRAM -->
+  <a
+    href="https://www.instagram.com/indiaenergyfuture_hq"
+    target="_blank"
+    class="fixed bottom-40 right-6 bg-pink-500 w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-2xl z-50 hover:bg-pink-400 transition transform hover:scale-110"
+    title="Follow on Instagram"
+  >
+    📱
+  </a>
+
+  <!-- Analytics Tracking -->
+  <script>
+    // Track page views
+    gtag('event', 'page_view', {
+      'page_title': document.title,
+      'page_location': window.location.href
+    });
+
+    // Track button clicks
+    document.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        gtag('event', 'link_click', {
+          'link_url': this.href,
+          'link_text': this.textContent
+        });
+      });
+    });
+  </script>
 
 </body>
 </html>
