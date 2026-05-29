@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FutureHQ Login | Secure Access</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:#050816;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .glass{
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(255,255,255,0.08);
+    }
+
+    .neon-text{
+      background:linear-gradient(90deg,#FF9F00,#ffc000);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .glow{
+      box-shadow:0 0 30px rgba(255,159,0,0.25);
+    }
+
+    .input-field {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,159,0,0.3);
+    }
+
+    .input-field:focus {
+      background: rgba(255,159,0,0.1);
+      border-color: #FF9F00;
+      outline: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-yellow-900/10 to-orange-900/10">
+
+  <div class="max-w-md w-full px-6">
+
+    <!-- HEADER -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold neon-text mb-2">🚀 FutureHQ</h1>
+      <p class="text-gray-400">India's Energy Future Platform</p>
+    </div>
+
+    <!-- LOGIN CARD -->
+    <div class="glass rounded-3xl p-8">
+
+      <h2 class="text-2xl font-bold mb-6 text-center">Secure Access</h2>
+
+      <form id="loginForm" class="space-y-6">
+
+        <!-- NAME FIELD -->
+        <div>
+          <label class="block text-sm font-semibold text-yellow-400 mb-2">
+            Full Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter your name"
+            class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 transition"
+            required
+          />
+          <p id="nameError" class="text-red-400 text-sm mt-1 hidden">Please enter your name</p>
+        </div>
+
+        <!-- PINCODE FIELD -->
+        <div>
+          <label class="block text-sm font-semibold text-yellow-400 mb-2">
+            Pincode (6 digits)
+          </label>
+          <input
+            type="text"
+            id="pincode"
+            placeholder="Enter your 6-digit pincode"
+            maxlength="6"
+            class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 transition"
+            required
+          />
+          <p id="pincodeError" class="text-red-400 text-sm mt-1 hidden">Please enter a valid 6-digit pincode</p>
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <button
+          type="submit"
+          class="w-full bg-yellow-400 text-black py-3 rounded-lg font-semibold glow hover:bg-yellow-300 transition transform hover:scale-105"
+        >
+          🔓 Access Dashboard
+        </button>
+
+      </form>
+
+      <!-- DIVIDER -->
+      <div class="my-6 flex items-center">
+        <div class="flex-1 border-t border-white/20"></div>
+        <div class="px-3 text-gray-400 text-sm">OR</div>
+        <div class="flex-1 border-t border-white/20"></div>
+      </div>
+
+      <!-- CONTACT EMAIL -->
+      <div class="text-center">
+        <p class="text-gray-400 mb-3">Have questions?</p>
+        <a
+          href="mailto:iefuture108@gmail.com"
+          class="text-yellow-400 font-semibold hover:text-yellow-300 transition"
+        >
+          📧 Contact: iefuture108@gmail.com
+        </a>
+      </div>
+
+      <!-- SOCIAL LINKS -->
+      <div class="mt-6 pt-6 border-t border-white/20 text-center space-y-3">
+        <p class="text-sm text-gray-400">Follow for daily updates</p>
+        <a
+          href="https://www.instagram.com/india_energy_future__ev_ai/"
+          target="_blank"
+          class="inline-block bg-pink-500/20 hover:bg-pink-500/40 px-6 py-2 rounded-full text-pink-400 font-semibold transition"
+        >
+          📱 @india_energy_future__ev_ai
+        </a>
+      </div>
+
+    </div>
+
+    <!-- BACK LINK -->
+    <div class="mt-6 text-center">
+      <a href="/" class="text-gray-400 hover:text-yellow-400 transition">
+        ← Back to Home
+      </a>
+    </div>
+
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    const form = document.getElementById('loginForm');
+    const nameInput = document.getElementById('name');
+    const pincodeInput = document.getElementById('pincode');
+    const nameError = document.getElementById('nameError');
+    const pincodeError = document.getElementById('pincodeError');
+
+    // Validate name
+    nameInput.addEventListener('blur', function() {
+      if (this.value.trim().length < 2) {
+        nameError.classList.remove('hidden');
+      } else {
+        nameError.classList.add('hidden');
+      }
+    });
+
+    // Validate pincode (only numbers)
+    pincodeInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    pincodeInput.addEventListener('blur', function() {
+      if (this.value.length !== 6) {
+        pincodeError.classList.remove('hidden');
+      } else {
+        pincodeError.classList.add('hidden');
+      }
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = nameInput.value.trim();
+      const pincode = pincodeInput.value;
+
+      let isValid = true;
+
+      // Validate
+      if (name.length < 2) {
+        nameError.classList.remove('hidden');
+        isValid = false;
+      } else {
+        nameError.classList.add('hidden');
+      }
+
+      if (pincode.length !== 6) {
+        pincodeError.classList.remove('hidden');
+        isValid = false;
+      } else {
+        pincodeError.classList.add('hidden');
+      }
+
+      if (isValid) {
+        // Success - store data and redirect
+        localStorage.setItem('userLogin', JSON.stringify({
+          name: name,
+          pincode: pincode,
+          loginTime: new Date().toISOString()
+        }));
+
+        // Show success message
+        alert(`✅ Welcome ${name}!\n\nYou're now logged in to FutureHQ.\n\nFor support, contact: iefuture108@gmail.com`);
+
+        // Redirect to contact page or dashboard
+        window.location.href = '/contact.html';
+      }
+    });
+
+    // Check if already logged in
+    window.addEventListener('load', function() {
+      const loggedIn = localStorage.getItem('userLogin');
+      if (loggedIn) {
+        const user = JSON.parse(loggedIn);
+        console.log('User already logged in:', user.name);
+      }
+    });
+  </script>
+
+</body>
+</html>
