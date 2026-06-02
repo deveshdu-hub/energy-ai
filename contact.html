@@ -423,7 +423,7 @@
         <p style="margin-top: 20px; font-size: 12px;">Follow us: <a href="https://instagram.com/indiaenergyfuture_hq" target="_blank">@indiaenergyfuture_hq</a></p>
     </footer>
     
-    <!-- Form Handler Script -->
+    <!-- Form Handler Script - STATIC/NO BACKEND -->
     <script>
         const form = document.getElementById('contactForm');
         const statusDiv = document.getElementById('status');
@@ -444,27 +444,33 @@
             btnText.textContent = 'Sending...';
             
             try {
-                // Validate form
+                // Get form values
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const phone = document.getElementById('phone').value.trim();
                 const interest = document.getElementById('interest').value;
                 const message = document.getElementById('message').value.trim();
                 
+                // Validate
                 if (!name || !email || !phone || !interest) {
                     throw new Error('Please fill in all required fields');
                 }
                 
-                // Prepare data
-                const formData = {
-                    name,
-                    email,
-                    phone,
-                    interest,
-                    message,
-                    timestamp: new Date().toISOString(),
-                    source: 'futurehq_website_form'
-                };
+                // Format WhatsApp number
+                let whatsappPhone = phone.replace(/[^0-9+]/g, '');
+                if (!whatsappPhone.startsWith('+')) {
+                    whatsappPhone = '+91' + whatsappPhone.slice(-10);
+                }
+                
+                // Create WhatsApp message
+                const whatsappMessage = encodeURIComponent(
+                    `🚀 Hi FutureHQ!\n\n` +
+                    `My name is: ${name}\n` +
+                    `Email: ${email}\n` +
+                    `Interest: ${interest}\n\n` +
+                    (message ? `Message: ${message}\n\n` : '') +
+                    `Please help me with more information about this opportunity!`
+                );
                 
                 // Track in analytics
                 gtag('event', 'contact_form_submit', {
@@ -472,48 +478,43 @@
                     'has_message': message.length > 0
                 });
                 
-                // Send to backend
-                const response = await fetch('https://energy-nexus-insight--deveshdu.replit.dev/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || `Server error: ${response.status}`);
-                }
-                
-                // Success
+                // Show success message
                 statusDiv.className = 'status success';
                 statusDiv.innerHTML = `
-                    <strong>✅ Message Sent Successfully!</strong><br>
-                    Check your WhatsApp for our response. We typically reply within minutes.<br>
-                    Thank you for reaching out to FutureHQ!
+                    <strong>✅ Ready to Send!</strong><br>
+                    Click the WhatsApp button below or copy this link:<br>
+                    <strong>https://wa.me/${whatsappPhone.replace('+', '')}?text=${whatsappMessage}</strong><br><br>
+                    <a href="https://wa.me/${whatsappPhone.replace('+', '')}?text=${whatsappMessage}" 
+                       target="_blank" 
+                       style="display: inline-block; background: #25D366; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; margin-top: 10px; font-weight: bold;">
+                       📱 Open WhatsApp Chat
+                    </a>
                 `;
                 statusDiv.style.display = 'block';
                 
                 // Track success
                 gtag('event', 'contact_form_success');
                 
-                // Reset form
-                form.reset();
-                
                 // Scroll to status
                 statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Also save to localStorage for reference
+                localStorage.setItem('lastContact', JSON.stringify({
+                    name,
+                    email,
+                    phone: whatsappPhone,
+                    interest,
+                    timestamp: new Date().toISOString()
+                }));
                 
             } catch (error) {
                 console.error('Error:', error);
                 
                 statusDiv.className = 'status error';
                 statusDiv.innerHTML = `
-                    <strong>❌ Oops! Something went wrong</strong><br>
+                    <strong>❌ Error</strong><br>
                     ${error.message}<br>
-                    Please try again or reach out via Instagram @indiaenergyfuture_hq
+                    Please reach out via Instagram @indiaenergyfuture_hq or email iefuture108@gmail.com
                 `;
                 statusDiv.style.display = 'block';
                 
