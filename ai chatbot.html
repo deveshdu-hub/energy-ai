@@ -1,0 +1,190 @@
+<!-- AI Chatbot Widget - Add to index.html before closing </body> -->
+
+<div id="aiChatbot" class="fixed bottom-0 right-0 w-96 h-screen md:h-auto md:max-h-96 bg-black rounded-t-3xl md:rounded-3xl shadow-2xl z-40 transform transition-all duration-300 ease-out" style="max-width: 100%; right: 0; bottom: 0;">
+
+  <!-- Chatbot Header -->
+  <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black p-6 rounded-t-3xl md:rounded-t-3xl flex justify-between items-center">
+    <div>
+      <h3 class="text-xl font-bold">🤖 AI Energy Guide</h3>
+      <p class="text-sm opacity-80">Ask about investments & opportunities</p>
+    </div>
+    <button onclick="toggleChatbot()" class="text-2xl">×</button>
+  </div>
+
+  <!-- Chat Messages -->
+  <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 h-56 md:h-64 bg-gray-900">
+    <div class="flex gap-3">
+      <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center flex-shrink-0">🤖</div>
+      <div class="bg-gray-800 text-white p-3 rounded-lg">
+        <p>Hi! 👋 I'm FutureHQ AI. Ask me about:</p>
+        <p class="text-sm text-yellow-400 mt-2">• EV investments & opportunities</p>
+        <p class="text-sm text-yellow-400">• Solar & renewable energy</p>
+        <p class="text-sm text-yellow-400">• Battery tech & green startups</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="border-t border-gray-700 p-4 bg-gray-800">
+    <div class="flex gap-2">
+      <input 
+        type="text"
+        id="chatInput"
+        placeholder="Ask about investments..."
+        class="flex-1 bg-gray-700 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        onkeypress="if(event.key==='Enter') sendMessage()"
+      />
+      <button onclick="sendMessage()" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-yellow-300 transition">
+        Send
+      </button>
+    </div>
+
+    <!-- Quick Suggestions -->
+    <div class="mt-3 grid grid-cols-2 gap-2">
+      <button onclick="askQuestion('What\'s the ROI for solar?')" class="text-xs bg-gray-700 hover:bg-gray-600 text-white p-2 rounded transition">
+        💰 Solar ROI?
+      </button>
+      <button onclick="askQuestion('Show EV opportunities')" class="text-xs bg-gray-700 hover:bg-gray-600 text-white p-2 rounded transition">
+        ⚡ EV Opportunities?
+      </button>
+      <button onclick="askQuestion('How to start')" class="text-xs bg-gray-700 hover:bg-gray-600 text-white p-2 rounded transition">
+        🚀 Start a Business?
+      </button>
+      <button onclick="askQuestion('Subsidies available')" class="text-xs bg-gray-700 hover:bg-gray-600 text-white p-2 rounded transition">
+        🎁 Subsidies?
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating Chat Button -->
+<button 
+  onclick="toggleChatbot()"
+  id="chatbotBtn"
+  class="fixed bottom-8 right-8 bg-yellow-400 w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:bg-yellow-300 transition transform hover:scale-110 z-30"
+  title="Open AI Chat"
+>
+  🤖
+</button>
+
+<script>
+let chatbotOpen = false;
+
+function toggleChatbot() {
+  const chatbot = document.getElementById('aiChatbot');
+  const btn = document.getElementById('chatbotBtn');
+  
+  if (chatbotOpen) {
+    chatbot.style.display = 'none';
+    btn.style.display = 'block';
+    chatbotOpen = false;
+  } else {
+    chatbot.style.display = 'block';
+    btn.style.display = 'none';
+    chatbotOpen = true;
+  }
+}
+
+function askQuestion(question) {
+  const input = document.getElementById('chatInput');
+  input.value = question;
+  sendMessage();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  
+  if (!message) return;
+  
+  // Add user message to chat
+  const messagesDiv = document.getElementById('chatMessages');
+  const userMsg = document.createElement('div');
+  userMsg.className = 'flex gap-3 justify-end';
+  userMsg.innerHTML = `
+    <div class="bg-yellow-400 text-black p-3 rounded-lg max-w-xs">
+      <p>${message}</p>
+    </div>
+  `;
+  messagesDiv.appendChild(userMsg);
+  input.value = '';
+  
+  // Scroll to bottom
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  
+  try {
+    // Send to AI API
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, context: 'energy_guidance' })
+    });
+    
+    const data = await response.json();
+    
+    // Add AI response
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'flex gap-3';
+    aiMsg.innerHTML = `
+      <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center flex-shrink-0 text-black">🤖</div>
+      <div class="bg-gray-700 text-white p-3 rounded-lg max-w-xs">
+        <p>${data.response}</p>
+      </div>
+    `;
+    messagesDiv.appendChild(aiMsg);
+    
+    // Show suggestions
+    if (data.suggestions) {
+      const suggDiv = document.createElement('div');
+      suggDiv.className = 'text-xs text-gray-400 text-center mt-2';
+      suggDiv.innerHTML = `<p>Suggestions: ${data.suggestions.join(' | ')}</p>`;
+      messagesDiv.appendChild(suggDiv);
+    }
+    
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+  } catch (error) {
+    console.error('Chat error:', error);
+    const errMsg = document.createElement('div');
+    errMsg.className = 'flex gap-3';
+    errMsg.innerHTML = `
+      <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center flex-shrink-0">🤖</div>
+      <div class="bg-red-700 text-white p-3 rounded-lg">
+        <p>Sorry, unable to respond. Email: iefuture108@gmail.com</p>
+      </div>
+    `;
+    messagesDiv.appendChild(errMsg);
+  }
+}
+
+// Initialize chatbot closed
+window.addEventListener('load', () => {
+  document.getElementById('aiChatbot').style.display = 'none';
+});
+</script>
+
+<style>
+#aiChatbot {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  #aiChatbot {
+    width: 100% !important;
+    height: 70vh !important;
+    max-height: none !important;
+    right: 0 !important;
+    bottom: 0 !important;
+  }
+}
+</style>
