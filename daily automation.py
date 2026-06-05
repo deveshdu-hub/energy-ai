@@ -1,114 +1,126 @@
+# Create file
+cat > scripts/daily-automation.py << 'EOF'
+#!/usr/bin/env python3
+"""
+FutureHQ Daily Automation
+- Generate daily Instagram content
+- Collect market data
+- Generate reports
+"""
+
 import os
 import json
-import requests
 from datetime import datetime
 from anthropic import Anthropic
 
 client = Anthropic()
 
-def generate_energy_content():
-    """Generate daily energy market insights"""
+def generate_daily_content():
+    """Generate daily Instagram content"""
     
-    prompt = """Generate a captivating Instagram post (120-150 chars) about India's energy market today.
-    Include: One energy trend + emoji + call-to-action.
-    Today's topics: EV growth 40% YoY, Solar boom, Battery tech innovations, Government schemes.
-    Make it trending-friendly and action-oriented."""
+    print("📱 Generating daily content...")
     
-    message = client.messages.create(
-        model="claude-opus-4-20250805",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    prompt = """Generate an Instagram post (120-150 chars) about India's energy market.
+    Include: statistic + emoji + call-to-action.
+    Topics: EV 40% YoY, Solar 30% YoY, Battery 50% YoY, Subsidies"""
     
-    caption = message.content[0].text
-    
-    # Save content
-    os.makedirs("content/daily-posts", exist_ok=True)
-    today = datetime.now().strftime("%Y-%m-%d")
-    
-    with open(f"content/daily-posts/{today}.json", "w") as f:
-        json.dump({
-            "date": today,
-            "caption": caption,
-            "content_type": "energy_insight",
-            "platform": "instagram",
-            "status": "ready"
-        }, f, indent=2)
-    
-    print(f"✅ Daily content generated: {today}")
-    return caption
+    try:
+        message = client.messages.create(
+            model="claude-opus-4-20250805",
+            max_tokens=500,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        caption = message.content[0].text
+        
+        os.makedirs("content/daily-posts", exist_ok=True)
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        with open(f"content/daily-posts/{today}.json", "w") as f:
+            json.dump({
+                "date": today,
+                "caption": caption,
+                "status": "ready"
+            }, f, indent=2)
+        
+        print(f"✅ Content generated: {today}")
+        print(f"📱 Caption:\n{caption}\n")
+        
+        return caption
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return None
 
 def collect_market_data():
-    """Collect India's energy market data"""
+    """Collect market data"""
+    
+    print("📊 Collecting market data...")
     
     market_data = {
         "date": datetime.now().isoformat(),
-        "india_energy": {
-            "ev": {"growth": "40% YoY", "2024_sales": "1.4M+ units", "target_2030": "30% vehicles"},
-            "solar": {"growth": "30% YoY", "capacity": "70+ GW", "target_2030": "500 GW"},
-            "renewables": {"growth": "35% YoY", "total": "180+ GW", "jobs": "500K+ new"},
-            "battery": {"growth": "50% YoY", "market": "5x by 2030", "investment": "₹5T+"}
-        },
-        "opportunities": {
-            "ev_charging": {"roi": "15-25%", "investment": "₹50K-5L"},
-            "solar": {"roi": "12-20%", "investment": "₹2-5L"},
-            "ev_dealership": {"roi": "18-30%", "investment": "₹10-50L"},
-            "battery": {"roi": "20-35%", "investment": "₹20L-1Cr"}
-        }
+        "ev": {"growth": "40% YoY", "sales_2024": "1.4M+ units"},
+        "solar": {"growth": "30% YoY", "capacity": "70+ GW"},
+        "renewables": {"growth": "35% YoY", "total": "180+ GW"},
+        "battery": {"growth": "50% YoY", "market": "5x by 2030"}
     }
     
-    # Save data
     os.makedirs("metrics/daily-data", exist_ok=True)
     today = datetime.now().strftime("%Y-%m-%d")
     
     with open(f"metrics/daily-data/{today}.json", "w") as f:
         json.dump(market_data, f, indent=2)
     
-    print(f"✅ Market data collected: {today}")
+    print(f"✅ Data collected: {today}")
     return market_data
 
-def generate_daily_report():
+def generate_report():
     """Generate daily report"""
     
-    today = datetime.now().strftime("%Y-%m-%d %H:%M")
+    print("📋 Generating report...")
     
     report = {
-        "date": today,
-        "summary": "Daily Energy Market Report",
+        "date": datetime.now().isoformat(),
         "highlights": [
-            "EV segment growing 40% YoY",
-            "Solar capacity expanding rapidly",
-            "Battery tech seeing 50% growth",
-            "Government support increasing"
+            "🚗 EV: 40% YoY growth",
+            "☀️ Solar: 30% YoY growth",
+            "🔋 Battery: 50% YoY growth",
+            "🎁 Government support increasing"
         ],
-        "top_opportunity": "EV Charging Infrastructure (ROI: 15-25%)",
-        "action_items": [
-            "Check daily content posted",
-            "Monitor lead submissions",
-            "Review customer inquiries",
-            "Update market data"
-        ]
+        "top_opportunity": "EV Charging: ROI 15-25%"
     }
     
-    print(f"✅ Daily report generated: {today}")
+    os.makedirs("reports/daily", exist_ok=True)
+    today = datetime.now().strftime("%Y-%m-%d")
+    
+    with open(f"reports/daily/{today}-report.json", "w") as f:
+        json.dump(report, f, indent=2)
+    
+    print(f"✅ Report generated: {today}")
     return report
 
 if __name__ == "__main__":
-    print("🤖 Daily Automation Tasks Started...")
-    print("")
+    print("\n" + "="*70)
+    print("🤖 FutureHQ DAILY AUTOMATION STARTED")
+    print("="*70 + "\n")
     
-    # Generate content
-    content = generate_energy_content()
-    print(f"📱 Caption ready for Instagram:\n{content}\n")
-    
-    # Collect data
-    data = collect_market_data()
-    
-    # Generate report
-    report = generate_daily_report()
-    
-    print("")
-    print("✅ All daily automation tasks completed!")
-    print("📊 Content ready for posting")
-    print("📈 Data collected and stored")
+    try:
+        content = generate_daily_content()
+        data = collect_market_data()
+        report = generate_report()
+        
+        print("\n" + "="*70)
+        print("✅ ALL TASKS COMPLETED!")
+        print("="*70)
+        print("\nGenerated files:")
+        print("- content/daily-posts/")
+        print("- metrics/daily-data/")
+        print("- reports/daily/\n")
+        
+    except Exception as e:
+        print(f"\n❌ ERROR: {e}\n")
+EOF
 
+chmod +x scripts/daily-automation.py
+
+echo "✅ daily-automation.py created"
