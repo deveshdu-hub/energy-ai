@@ -188,14 +188,32 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 # TAB 1: AI CHATBOT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-with tab1:
-    st.subheader("🤖 Ask Anything About Energy")
-    
-    # Chat history
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-    
+try:
+                    system_context = """You are FutureHQ, an AI expert on India's energy sector.
+                        
+                    You provide guidance on:
+                    - EV Infrastructure (growing 40% YoY)
+                    - Solar Energy (growing 30% YoY)  
+                    - Battery Technology (growing 50% YoY)
+                    - Government subsidies and schemes
+                    - Investment ROI calculations
+                    - Clean energy opportunities
+
+                    Be conversational, authentic, and helpful. Use Indian context and numbers.
+                    Provide specific data when possible. Keep responses under 200 words."""
+
+                    # Initializing directly through genai core to bypass endpoint path issues
+                    response = genai.generate_text(
+                        model="models/gemini-1.5-flash",
+                        prompt=f"{system_context}\n\nUser Question: {user_input}"
+                    )
+                    
+                    assistant_message = response.text
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": assistant_message
+                    })
+                    st.markdown(assistant_message)
     # User input
     user_input = st.chat_input("Ask about EV, Solar, Battery, or subsidies...")
     
