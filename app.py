@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🚀 FUTUREHQ.IN - STREAMLIT APP (FULLY FIXED FORMATTING)
+# 🚀 FUTUREHQ.IN - STREAMLIT APP (FULLY FIXED UNIVERSAL API VERSION)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # Configure Streamlit (MUST BE FIRST STREAMLIT CALL)
@@ -185,7 +185,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 1: AI CHATBOT (CLEAN & PERFECTLY INDENTED)
+# TAB 1: AI CHATBOT (FIXED WITH UNIVERSAL SDK SYNTAX)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 with tab1:
@@ -214,15 +214,17 @@ with tab1:
         with st.chat_message("assistant"):
             with st.spinner("🤖 Thinking..."):
                 try:
-                    system_context = """You are FutureHQ, an AI expert on India's energy sector. Use Indian context and numbers. Keep responses under 200 words."""
+                    system_context = "You are FutureHQ, an AI expert on India's energy sector. Use Indian context and numbers. Keep responses under 200 words."
                     
-                    # Core generator method to ensure cross-version compatibility
-                    response = genai.generate_text(
-                        model="models/gemini-1.5-flash",
-                        prompt=f"{system_context}\n\nUser Question: {user_input}"
+                    # Modern class initiation structure to handle all library versions cleanly
+                    model = genai.GenerativeModel(
+                        model_name="gemini-1.5-flash",
+                        system_instruction=system_context
                     )
                     
+                    response = model.generate_content(user_input)
                     assistant_message = response.text
+                    
                     st.session_state.messages.append({
                         "role": "assistant",
                         "content": assistant_message
