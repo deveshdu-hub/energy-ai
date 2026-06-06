@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🚀 FUTUREHQ.IN - STREAMLIT APP (GEMINI READY)
+# 🚀 FUTUREHQ.IN - STREAMLIT APP (FULLY FIXED FORMATTING)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # Configure Streamlit (MUST BE FIRST STREAMLIT CALL)
@@ -185,35 +185,17 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 1: AI CHATBOT
+# TAB 1: AI CHATBOT (CLEAN & PERFECTLY INDENTED)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-try:
-                    system_context = """You are FutureHQ, an AI expert on India's energy sector.
-                        
-                    You provide guidance on:
-                    - EV Infrastructure (growing 40% YoY)
-                    - Solar Energy (growing 30% YoY)  
-                    - Battery Technology (growing 50% YoY)
-                    - Government subsidies and schemes
-                    - Investment ROI calculations
-                    - Clean energy opportunities
-
-                    Be conversational, authentic, and helpful. Use Indian context and numbers.
-                    Provide specific data when possible. Keep responses under 200 words."""
-
-                    # Initializing directly through genai core to bypass endpoint path issues
-                    response = genai.generate_text(
-                        model="models/gemini-1.5-flash",
-                        prompt=f"{system_context}\n\nUser Question: {user_input}"
-                    )
-                    
-                    assistant_message = response.text
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": assistant_message
-                    })
-                    st.markdown(assistant_message)
+with tab1:
+    st.subheader("🤖 Ask Anything About Energy")
+    
+    # Chat history
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
     # User input
     user_input = st.chat_input("Ask about EV, Solar, Battery, or subsidies...")
     
@@ -232,31 +214,13 @@ try:
         with st.chat_message("assistant"):
             with st.spinner("🤖 Thinking..."):
                 try:
-                    system_context = """You are FutureHQ, an AI expert on India's energy sector.
-                        
-                    You provide guidance on:
-                    - EV Infrastructure (growing 40% YoY)
-                    - Solar Energy (growing 30% YoY)  
-                    - Battery Technology (growing 50% YoY)
-                    - Government subsidies and schemes
-                    - Investment ROI calculations
-                    - Clean energy opportunities
-
-                    Be conversational, authentic, and helpful. Use Indian context and numbers.
-                    Provide specific data when possible. Keep responses under 200 words."""
-
-                    model = genai.GenerativeModel(
-                        model_name="gemini-1.5-flash",
-                        system_instruction=system_context
+                    system_context = """You are FutureHQ, an AI expert on India's energy sector. Use Indian context and numbers. Keep responses under 200 words."""
+                    
+                    # Core generator method to ensure cross-version compatibility
+                    response = genai.generate_text(
+                        model="models/gemini-1.5-flash",
+                        prompt=f"{system_context}\n\nUser Question: {user_input}"
                     )
-                    
-                    gemini_history = []
-                    for msg in st.session_state.messages[:-1]:
-                        g_role = "user" if msg["role"] == "user" else "model"
-                        gemini_history.append({"role": g_role, "parts": [msg["content"]]})
-                    
-                    chat = model.start_chat(history=gemini_history)
-                    response = chat.send_message(user_input)
                     
                     assistant_message = response.text
                     st.session_state.messages.append({
@@ -368,7 +332,7 @@ with tab2:
     
     col1, col2, col3 = st.columns(3)
     col1.metric("Initial Investment", f"₹{amount:,.0f}")
-    col2.metric("After {0} Years".format(years), f"₹{final_amount:,.0f}")
+    col2.metric(f"After {years} Years", f"₹{final_amount:,.0f}")
     col3.metric("Total Profit", f"₹{profit:,.0f}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
