@@ -1,11 +1,11 @@
 import streamlit as st
-from anthropic import Anthropic
+import google.generativeai as genai
 import json
 from datetime import datetime
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🚀 FUTUREHQ.IN - STREAMLIT APP
+# 🚀 FUTUREHQ.IN - STREAMLIT APP (GEMINI 100% FREE TIER READY)
 # Deployment ready for share.streamlit.io
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -130,13 +130,15 @@ st.markdown("""
         font-family: monospace;
     }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# Initialize Anthropic client
-@st.cache_resource
-def get_anthropic_client():
-    api_key = st.secrets.get("ANTHROPIC_API_KEY", os.getenv("ANTHROPIC_API_KEY"))
-    return Anthropic(api_key=api_key)
+# Securely configure the free Gemini API using Streamlit Secrets
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+elif os.getenv("GEMINI_API_KEY"):
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+else:
+    st.error("Missing API Key. Please add GEMINI_API_KEY to your Streamlit Cloud Secrets.")
 
 # Initialize session state
 if "messages" not in st.session_state:
@@ -184,13 +186,11 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 1: AI CHATBOT
+# TAB 1: AI CHATBOT (POWERED BY GEMINI FREE TIER)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 with tab1:
     st.subheader("🤖 Ask Anything About Energy")
-    
-    client = get_anthropic_client()
     
     # Chat history
     for message in st.session_state.messages:
@@ -215,25 +215,38 @@ with tab1:
         with st.chat_message("assistant"):
             with st.spinner("🤖 Thinking..."):
                 try:
-                    response = client.messages.create(
-                        model="claude-opus-4-20250805",
-                        max_tokens=1024,
-                        system="""You are FutureHQ, an AI expert on India's energy sector.
+                    # Construct system prompt context
+                    system_context = """You are FutureHQ, an AI expert on India's energy sector.
                         
-You provide guidance on:
-- EV Infrastructure (growing 40% YoY)
-- Solar Energy (growing 30% YoY)  
-- Battery Technology (growing 50% YoY)
-- Government subsidies and schemes
-- Investment ROI calculations
-- Clean energy opportunities
+                    You provide guidance on:
+                    - EV Infrastructure (growing 40% YoY)
+                    - Solar Energy (growing 30% YoY)  
+                    - Battery Technology (growing 50% YoY)
+                    - Government subsidies and schemes
+                    - Investment ROI calculations
+                    - Clean energy opportunities
 
-Be conversational, authentic, and helpful. Use Indian context and numbers.
-Provide specific data when possible. Keep responses under 200 words.""",
-                        messages=st.session_state.messages
+                    Be conversational, authentic, and helpful. Use Indian context and numbers.
+                    Provide specific data when possible. Keep responses under 200 words."""
+
+                    # Initialize model with system instruction
+                    model = genai.GenerativeModel(
+                        model_name="gemini-1.5-flash",
+                        system_instruction=system_context
                     )
                     
-                    assistant_message = response.content[0].text
+                    # Convert internal message format to Gemini's expected role structure
+                    gemini_history = []
+                    for msg in st.session_state.messages[:-1]:
+                        # Map roles cleanly ('user' remains 'user', 'assistant' becomes 'model')
+                        g_role = "user" if msg["role"] == "user" else "model"
+                        gemini_history.append({"role": g_role, "parts": [msg["content"]]})
+                    
+                    # Start chat session with built history framework
+                    chat = model.start_chat(history=gemini_history)
+                    response = chat.send_message(user_input)
+                    
+                    assistant_message = response.text
                     st.session_state.messages.append({
                         "role": "assistant",
                         "content": assistant_message
@@ -279,7 +292,7 @@ with tab2:
         **Growth:** 30% YoY
         
         **Why:**
-        - ₹5L+ subsidies available
+        - Subsidies available
         - 25-year lifespan
         - Govt schemes
         
@@ -362,20 +375,20 @@ with tab3:
         
         **EV Segment:**
         - Growth: 40% YoY
-        - 2024 Sales: 1.4M+ units
-        - 2030 Target: 30% of vehicles
+        - Sales: 1.4M+ units
+        - Target: 30% of vehicles by 2030
         - Market Size: ₹2+ Trillion
         
         **Solar Energy:**
         - Growth: 30% YoY
         - Current: 70+ GW operational
-        - 2030 Target: 500 GW
-        - Subsidy: Up to ₹5L per roof
+        - Target: 500 GW by 2030
+        - Subsidy: Substantial support available per roof
         
         **Renewable Energy:**
         - Growth: 35% YoY
         - Current: 180+ GW
-        - 2030 Goal: 500 GW
+        - Goal: 500 GW by 2030
         - Investment: $500B+ expected
         """)
     
@@ -399,9 +412,8 @@ with tab3:
         - Target: 5M vehicles
         
         **Solar Subsidies**
-        - Residential: ₹2-5L per installation
-        - Rooftop: ₹3.5L average
-        - Process: Online portal
+        - Residential: Significant financial implementation aid
+        - Process: Accessible via National Online portal
         """)
     
     # Growth chart
@@ -461,172 +473,4 @@ with tab4:
         roof_type = st.selectbox(
             "Roof Type:",
             ["Concrete", "Metal", "Asbestos", "Tile", "Other"]
-        )
-        
-        annual_bill = st.number_input(
-            "Annual Electricity Bill (₹):",
-            min_value=5000,
-            max_value=500000,
-            value=50000,
-            step=5000
-        )
-    
-    st.markdown("---")
-    
-    # Calculate subsidy
-    if st.button("Calculate My Subsidy", key="subsidy_button"):
-        # Simplified calculation
-        kwh_per_sqm = 1.2
-        capacity = roof_area * kwh_per_sqm
-        
-        # Subsidy rates (₹/W)
-        subsidy_rates = {
-            "Delhi": 30,
-            "Mumbai": 25,
-            "Bangalore": 28,
-            "Hyderabad": 27,
-            "Kolkata": 32,
-            "Chennai": 26,
-            "Pune": 29,
-            "Ahmedabad": 28,
-            "Jaipur": 31,
-            "Other": 25
-        }
-        
-        rate = subsidy_rates.get(state, 25)
-        subsidy = capacity * 1000 * rate
-        
-        st.markdown(f"""
-        <div class="success-box">
-        
-        ### ✅ You May Be Eligible!
-        
-        **Estimated Details:**
-        - Capacity: <span class="data-highlight">{capacity:.2f} kW</span>
-        - Subsidy Rate: <span class="data-highlight">₹{rate}/W</span>
-        - **Estimated Subsidy: ₹{subsidy:,.0f}**
-        
-        **Next Steps:**
-        1. Visit: https://solarrooftop.gov.in/
-        2. Login with Aadhar
-        3. Fill application
-        4. Upload roof images
-        5. Get approved in 15-30 days
-        
-        **Time Sensitive:**
-        ⏰ Application window closes: 60 days
-        
-        </div>
-        """, unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TAB 5: CONTACT & LEAD CAPTURE
-# ═══════════════════════════════════════════════════════════════════════════════
-
-with tab5:
-    st.subheader("📱 Get Personalized Guidance")
-    
-    st.markdown("""
-    Fill out your details below. Our team will reach out within 24 hours 
-    with personalized recommendations for your energy solution.
-    """)
-    
-    with st.form("contact_form"):
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            name = st.text_input("Full Name *", placeholder="Your name")
-            email = st.text_input("Email Address *", placeholder="your@email.com")
-            phone = st.text_input("Phone Number *", placeholder="+91 9876543210")
-        
-        with col2:
-            city = st.text_input("City *", placeholder="Bangalore")
-            interested_in = st.multiselect(
-                "Interested In *",
-                ["EV Charging", "Solar", "Battery Storage", "All Options"]
-            )
-            budget = st.select_slider(
-                "Budget Range *",
-                options=["₹50K-5L", "₹5L-20L", "₹20L-50L", "₹50L+"]
-            )
-        
-        message = st.text_area(
-            "Any Questions? (Optional)",
-            placeholder="Tell us about your energy needs...",
-            height=100
-        )
-        
-        submit = st.form_submit_button("📨 Get Guidance", use_container_width=True)
-        
-        if submit:
-            if not (name and email and phone and city and interested_in):
-                st.error("❌ Please fill all required fields (*)")
-            else:
-                # Save data
-                user_data = {
-                    "timestamp": datetime.now().isoformat(),
-                    "name": name,
-                    "email": email,
-                    "phone": phone,
-                    "city": city,
-                    "interested_in": interested_in,
-                    "budget": budget,
-                    "message": message
-                }
-                
-                # Display success
-                st.markdown(f"""
-                <div class="success-box">
-                
-                ### ✅ Got It!
-                
-                Thanks <span class="data-highlight">{name}</span>!
-                
-                **What happens next:**
-                1. ✓ Your details saved securely
-                2. ✓ We'll analyze your needs
-                3. ✓ AI generates personalized guide
-                4. ✓ Team contacts you within 24 hours
-                5. ✓ You get specific energy recommendations
-                
-                **Check your email:** <span class="data-highlight">{email}</span>
-                
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Save to session
-                st.session_state.user_data = user_data
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# FOOTER
-# ═══════════════════════════════════════════════════════════════════════════════
-
-st.markdown("---")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown("""
-    ### 🌍 FutureHQ
-    India's Energy Future AI
-    """)
-
-with col2:
-    st.markdown("""
-    ### 📞 Contact
-    📧 iefuture108@gmail.com  
-    🌐 [@india_energy_future__ev_ai](https://instagram.com/india_energy_future__ev_ai)
-    """)
-
-with col3:
-    st.markdown("""
-    ### ⚡ Powered By
-    🤖 Claude AI  
-    🚀 Streamlit  
-    🔋 Clean Energy Data
-    """)
-
-st.markdown("---")
-st.caption("FutureHQ © 2026 | Making Energy Decisions Smart for India")
-
-
+        ) FB cc c 
