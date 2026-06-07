@@ -374,5 +374,8 @@ with tab_connect:
 # ═══════════════════════════════════════════════════════════════════════════════
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════════════════════
+# HUD FOOTER REEL CONTROL TERMINAL
+# ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.1.0 (2026 Open Public Build Profile)")d
+st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.1.0 (2026 Open Public Build Profile)")
