@@ -157,36 +157,62 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 📥 CITIZEN REGISTRATION ENTRY GATEWAY
+# 📥 CITIZEN REGISTRATION ENTRY GATEWAY (REDESIGNED TERMINAL WRAPPER)
 # ═══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.user_registered:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    left_co, cent_co, last_co = st.columns([1, 1.8, 1])
+    left_co, cent_co, last_co = st.columns([1, 2.2, 1])
     
     with cent_co:
-        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<h2 class='neon-title' style='text-align:center; font-size:1.7rem; margin-bottom:5px;'>NATIONAL GREEN TRANSITION OS</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color: #64748b; font-size:0.85rem; font-family:Orbitron; margin-bottom:25px;'>FREE OPEN ACCESS PLATFORM</p>", unsafe_allow_html=True)
+        # Immersive Terminal Border Wrapper
+        st.markdown("""
+            <div style="
+                background: linear-gradient(135deg, rgba(13, 22, 54, 0.9), rgba(4, 8, 23, 0.98));
+                backdrop-filter: blur(25px);
+                border: 2px solid rgba(0, 240, 255, 0.25);
+                box-shadow: 0 20px 50px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05);
+                border-radius: 20px;
+                padding: 45px;
+                position: relative;
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #00F0FF;"></span>
+                        <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #00F0FF; letter-spacing: 2px;">SECURE NODE // AUTH_GATE</span>
+                    </div>
+                    <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #64748b;">v6.1.0</span>
+                </div>
+                
+                <h2 class="neon-title" style="text-align:center; font-size:1.9rem; margin-bottom:5px; letter-spacing:3px;">NATIONAL GREEN TRANSITION OS</h2>
+                <p style="text-align:center; color: #94a3b8; font-size:0.85rem; font-family:'Orbitron'; margin-bottom:35px; letter-spacing:1px;">DIGITAL PUBLIC GOODS LAYER • INDIA</p>
+        """, unsafe_allow_html=True)
         
-        st.markdown("<p style='font-size:0.85rem; color:#94a3b8; margin-bottom:2px;'>Mobile Number / मोबाइल नंबर:</p>", unsafe_allow_html=True)
-        mobile_in = st.text_input("Mobile", placeholder="Enter 10-digit mobile number", max_chars=10, label_visibility="collapsed")
+        # Clean, Side-by-Side Horizontal Dual Inputs
+        in_c1, in_c2 = st.columns(2)
         
-        st.markdown("<p style='font-size:0.85rem; color:#94a3b8; margin-bottom:2px; margin-top:12px;'>Regional Pin Code / पिन कोड:</p>", unsafe_allow_html=True)
-        pincode_in = st.text_input("Pincode", placeholder="Enter 6-digit area pin code", max_chars=6, label_visibility="collapsed")
+        with in_c1:
+            st.markdown("<p style='font-family:\"Orbitron\", sans-serif; font-size:0.75rem; color:#00F0FF; letter-spacing:1px; margin-bottom:8px;'>📱 MOBILE NUMBER / मोबाइल</p>", unsafe_allow_html=True)
+            mobile_in = st.text_input("Mobile", placeholder="10-Digit Mobile", max_chars=10, label_visibility="collapsed")
+            
+        with in_c2:
+            st.markdown("<p style='font-family:\"Orbitron\", sans-serif; font-size:0.75rem; color:#00F0FF; letter-spacing:1px; margin-bottom:8px;'>📍 AREA PIN CODE / पिन कोड</p>", unsafe_allow_html=True)
+            pincode_in = st.text_input("Pincode", placeholder="6-Digit Pin Code", max_chars=6, label_visibility="collapsed")
+            
+        st.markdown("<br><br>", unsafe_allow_html=True)
         
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("INITIALIZE TRANSITION DASHBOARD"):
+        # Premium High-Glow Access Action Trigger
+        if st.button("INITIALIZE SECURE TRANSITION MATRIX"):
             if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
                 st.session_state.user_registered = True
                 st.session_state.user_mobile = mobile_in
                 st.session_state.user_pincode = pincode_in
-                st.toast("Initialization complete. Welcome to NGT-OS Node.", icon="🇮🇳")
+                st.toast("Authorization handshake successful.", icon="🇮🇳")
                 st.rerun()
             else:
-                st.error("⚠️ Validation Error: Please enter a valid 10-digit mobile number and 6-digit pin code.")
+                st.error("⚠️ Security Validation Failed: Ensure mobile is 10 digits and pin code is 6 digits.")
+                
         st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🏛️ POST-REGISTRATION MAIN SYSTEM LANDING PAGE
 # ═══════════════════════════════════════════════════════════════════════════════
