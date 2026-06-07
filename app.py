@@ -10,7 +10,7 @@ import os
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="PM Green Transition Portal 🇮🇳",
+    page_title="Bharat Green Transition Portal 🇮🇳",
     page_icon="🇮🇳",
     layout="wide",
     initial_sidebar_state="collapsed"
