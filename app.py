@@ -14,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# API Configuration Handshake
+# Secure API Handshake - Reading directly from Streamlit Secrets
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 elif os.getenv("GEMINI_API_KEY"):
@@ -138,20 +138,17 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab1:
     st.markdown("### 🤖 FutureHQ Analytics Terminal")
     
-    # Persistent conversational frame state
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
             {"role": "bot", "content": "👋 Welcome to FutureHQ. Ask me anything about local EV infrastructure, solar plant payback horizons, or central capital subsidies!"}
         ]
         
-    # Render Chat Log using the new responsive layout architecture
     for dialogue in st.session_state.chat_history:
         if dialogue["role"] == "user":
             st.markdown(f'<div class="chat-bubble-user">{dialogue["content"]}</div>', unsafe_allow_html=True)
         else:
             st.markdown(f'<div class="chat-bubble-bot">{dialogue["content"]}</div>', unsafe_allow_html=True)
 
-    # Contextual suggestion row variables
     suggestion = None
     sc1, sc2, sc3, sc4 = st.columns(4)
     if sc1.button("📈 Check Sector ROIs"): suggestion = "What are the investment ROIs for solar and EV?"
@@ -159,17 +156,15 @@ with tab1:
     if sc3.button("☀️ Subsidy Match"): suggestion = "What are the main government solar subsidies?"
     if sc4.button("🔋 Battery Trends"): suggestion = "Is battery manufacturing expanding?"
 
-    # Chat Input Capture
     user_query = st.chat_input("Enter your energy or project query...")
     query_to_process = user_query if user_query else suggestion
 
     if query_to_process:
-        # Display user submission immediately
         st.markdown(f'<div class="chat-bubble-user">{query_to_process}</div>', unsafe_allow_html=True)
         st.session_state.chat_history.append({"role": "user", "content": query_to_process})
         
         try:
-            # Connect using the correct production configuration layout
+            # Replaced legacy call syntax with unified standard structural definitions
             model = genai.GenerativeModel(model_name="gemini-1.5-flash")
             
             structured_prompt = (
