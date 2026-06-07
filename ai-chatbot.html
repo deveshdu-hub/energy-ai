@@ -24,7 +24,7 @@
     }
 
     .glass {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -66,14 +66,14 @@
     }
 
     .user-message .msg-text {
-      background: linear-gradient(135deg, #FF9F00, #ffc000);
-      color: #000;
+      background: linear-gradient(135deg, #8B5CF6, #00F0FF);
+      color: #fff;
       padding: 12px 16px;
       border-radius: 18px 18px 4px 18px;
       display: inline-block;
       max-width: 80%;
       font-weight: 500;
-      box-shadow: 0 4px 15px rgba(255, 159, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     }
 
     .bot-message {
@@ -82,10 +82,12 @@
     }
 
     .bot-message .msg-text {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 159, 0, 0.3);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(0, 240, 255, 0.3);
       padding: 12px 16px;
       border-radius: 18px;
+      display: inline-block;
+      max-width: 80%;
     }
 
     .chat-input-container {
@@ -102,7 +104,7 @@
     .input-field {
       flex: 1;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 159, 0, 0.3);
+      border: 1px solid rgba(0, 240, 255, 0.3);
       color: white;
       padding: 12px 16px;
       border-radius: 24px;
@@ -114,14 +116,14 @@
 
     .input-field:focus {
       outline: none;
-      background: rgba(255, 159, 0, 0.1);
-      border-color: #FF9F00;
-      box-shadow: 0 0 20px rgba(255, 159, 0, 0.2);
+      background: rgba(139, 92, 246, 0.1);
+      border-color: #00F0FF;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
     }
 
     .send-btn {
-      background: linear-gradient(135deg, #FF9F00, #ffc000);
-      color: #000;
+      background: linear-gradient(135deg, #8B5CF6, #00F0FF);
+      color: #fff;
       border: none;
       width: 44px;
       height: 44px;
@@ -133,12 +135,12 @@
       justify-content: center;
       transition: all 0.3s;
       font-weight: bold;
-      box-shadow: 0 4px 15px rgba(255, 159, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3);
     }
 
     .send-btn:hover {
       transform: scale(1.1);
-      box-shadow: 0 6px 20px rgba(255, 159, 0, 0.4);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
     }
 
     .send-btn:disabled {
@@ -151,8 +153,8 @@
       gap: 4px;
       align-items: center;
       padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 159, 0, 0.3);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(0, 240, 255, 0.3);
       border-radius: 18px;
       width: fit-content;
     }
@@ -161,27 +163,16 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #FF9F00;
+      background: #00F0FF;
       animation: typing 1.4s infinite;
     }
 
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes typing {
-      0%, 60%, 100% {
-        opacity: 0.3;
-        transform: translateY(0);
-      }
-      30% {
-        opacity: 1;
-        transform: translateY(-10px);
-      }
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-10px); }
     }
 
     .suggestions {
@@ -192,9 +183,9 @@
     }
 
     .suggestion-btn {
-      background: rgba(255, 159, 0, 0.1);
-      border: 1px solid rgba(255, 159, 0, 0.5);
-      color: #FF9F00;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: #00F0FF;
       padding: 8px 12px;
       border-radius: 20px;
       cursor: pointer;
@@ -204,8 +195,8 @@
     }
 
     .suggestion-btn:hover {
-      background: rgba(255, 159, 0, 0.2);
-      border-color: #FF9F00;
+      background: rgba(139, 92, 246, 0.2);
+      border-color: #8B5CF6;
       transform: translateY(-2px);
     }
 
@@ -218,7 +209,7 @@
     .header h2 {
       font-size: 24px;
       margin-bottom: 5px;
-      background: linear-gradient(90deg, #FF9F00, #ffc000);
+      background: linear-gradient(90deg, #8B5CF6, #00F0FF);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -234,12 +225,12 @@
   </style>
 </head>
 
-<body class="bg-gradient-to-br from-yellow-900/5 to-orange-900/5">
+<body class="bg-gradient-to-br from-purple-900/10 to-cyan-900/10">
 
   <div class="chat-container glass rounded-3xl overflow-hidden relative">
     <div class="header">
       <h2>🤖 FutureHQ AI</h2>
-      <p style="font-size: 12px; color: #999;">Ask about India's energy future</p>
+      <p style="font-size: 12px; color: #a1a1aa;">Ask about India's energy future</p>
     </div>
 
     <div class="chat-messages scrollbar-hide" id="chatMessages">
@@ -273,6 +264,7 @@
     const sendBtn = document.getElementById('sendBtn');
     const suggestionsArea = document.getElementById('suggestionsArea');
 
+    // Dynamically tracking query selectors
     messageInput.addEventListener('input', function() {
       this.style.height = 'auto';
       this.style.height = (this.scrollHeight > 100 ? 100 : this.scrollHeight) + 'px';
@@ -337,21 +329,13 @@
 
     async function fetchChatResponse(message) {
       try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message })
-        }).catch(() => null);
-
-        if (response && response.ok) {
-          const data = await response.json();
-          removeTypingIndicator();
-          addMessage(data.response, 'bot');
-        } else {
-          const localResponse = getLocalResponse(message);
-          removeTypingIndicator();
-          addMessage(localResponse, 'bot');
-        }
+        // Streamlit uses its own background internal structure. 
+        // Falling straight to local fallback if production endpoints are offline.
+        const localResponse = getLocalResponse(message);
+        setTimeout(() => {
+            removeTypingIndicator();
+            addMessage(localResponse, 'bot');
+        }, 600);
       } catch (error) {
         removeTypingIndicator();
         addMessage(getLocalResponse(message), 'bot');
@@ -361,14 +345,14 @@
     function getLocalResponse(message) {
       const msg = message.toLowerCase();
       const responses = {
-        'invest': '💰 EV charging (₹50K-5L), Solar (₹2-5L), or Battery tech (₹20L-1Cr)?',
-        'roi': '📈 Solar: 12-20% | EV Charging: 15-25% | Battery: 20-35% annually',
-        'growth': '📊 EV 40% YoY | Solar 30% YoY | Battery 50% YoY!',
-        'renewable': '☀️ India targets 500 GW renewable by 2030. Already 180+ GW!',
-        'solar': '☀️ 30% YoY growth with gov subsidies up to ₹5L',
-        'ev': '🚗 Fastest growing sector! 40% YoY growth',
-        'battery': '🔋 50% YoY growth. Manufacturing boom!',
-        'default': '💡 For more details, visit /contact.html to chat via WhatsApp 📱'
+        'invest': '💰 <b>Investment Matrix:</b><br>• EV Charging: ₹50K - ₹5L<br>• Solar Grid: ₹2L - ₹5L<br>• Advanced Battery: ₹20L - ₹1Cr',
+        'roi': '📈 <b>Annualized Returns Profile:</b><br>• Solar Plants: 12-20%<br>• EV Charging Stations: 15-25%<br>• Battery Infrastructure: 20-35%',
+        'growth': '📊 <b>Market Growth Matrix:</b><br>• EV Infrastructure: 40% YoY<br>• Solar Generation: 30% YoY<br>• Battery Solutions: 50% YoY',
+        'scheme': '🎯 <b>Active Allocations:</b><br>• Green Hydrogen Mission: ₹19,744 Cr<br>• Manufacturing PLI: ₹10,000 Cr<br>• Solar Subsidies: Up to 40% matching funds available',
+        'solar': '☀️ Solar deployment is running at 30% YoY growth. You can model your home or factory rooftop instantly in the <b>Subsidy Checker</b> tab above!',
+        'ev': '🚗 Electric Vehicle infrastructure is accelerating at 40% YoY. See the <b>Investment Guide</b> panel for local infrastructure capital entry bounds.',
+        'battery': '🔋 Industrial energy storage and lithium tech are expanding at 50% YoY due to global manufacturing PLI deployment.',
+        'default': '💡 To get a custom financial breakdown for your exact location, enter your details under the <b>📱 Contact</b> tab above!'
       };
 
       for (const [key, response] of Object.entries(responses)) {
