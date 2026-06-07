@@ -16,11 +16,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Securely configure the free Gemini API using Streamlit Secrets
+# Securely configure the modern GenAI Client using Streamlit Secrets or Environment Variables
+client = None
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 elif os.getenv("GEMINI_API_KEY"):
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 else:
     st.error("Missing API Key. Please add GEMINI_API_KEY to your Streamlit Cloud Secrets.")
 
@@ -185,7 +186,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TAB 1: AI CHATBOT (FIXED ENDPOINT ROUTING EXPLICITLY)
+# TAB 1: AI CHATBOT (MODERN SDK CONTEXT ROUTING)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 with tab1:
@@ -213,26 +214,30 @@ with tab1:
         # Get AI response
         with st.chat_message("assistant"):
             with st.spinner("🤖 Thinking..."):
-                try:
-                    system_context = "You are FutureHQ, an AI expert on India's energy sector. Use Indian context and numbers. Keep responses under 200 words."
-                    
-                    # Passing exact baseline model text handles stable environment routing flawlessly
-                    model = genai.GenerativeModel(
-                        model_name="gemini-1.5-flash",
-                        system_instruction=system_context
-                    )
-                    
-                    response = model.generate_content(user_input)
-                    assistant_message = response.text
-                    
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": assistant_message
-                    })
-                    st.markdown(assistant_message)
-                    
-                except Exception as e:
-                    st.error(f"❌ Error: {str(e)}")
+                if client is None:
+                    st.error("❌ Cannot process your request: API Client is uninitialized.")
+                else:
+                    try:
+                        system_context = "You are FutureHQ, an AI expert on India's energy sector. Use Indian context and numbers. Keep responses under 200 words."
+                        
+                        # Generate content using the modern stable SDK production path
+                        response = client.models.generate_content(
+                            model='gemini-1.5-flash',
+                            contents=user_input,
+                            config=genai.types.GenerateContentConfig(
+                                system_instruction=system_context
+                            )
+                        )
+                        assistant_message = response.text
+                        
+                        st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": assistant_message
+                        })
+                        st.markdown(assistant_message)
+                        
+                    except Exception as e:
+                        st.error(f"❌ Error: {str(e)}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TAB 2: INVESTMENT GUIDE
@@ -465,12 +470,12 @@ with tab4:
         kwh_per_sqm = 1.2
         capacity = roof_area * kwh_per_sqm
         
-        subsidy_rates = {
+        size_rates = {
             "Delhi": 30, "Mumbai": 25, "Bangalore": 28, "Hyderabad": 27, "Kolkata": 32,
             "Chennai": 26, "Pune": 29, "Ahmedabad": 28, "Jaipur": 31, "Other": 25
         }
         
-        rate = subsidy_rates.get(state, 25)
+        rate = size_rates.get(state, 25)
         subsidy = capacity * 1000 * rate
         
         st.markdown(f"""
