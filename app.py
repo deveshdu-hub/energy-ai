@@ -6,7 +6,7 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION RUNTIME PROFILE
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // OPEN UTILITY DEPLOYMENT
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
@@ -22,11 +22,13 @@ if "GEMINI_API_KEY" in st.secrets:
 elif os.getenv("GEMINI_API_KEY"):
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Initialize Session Security State
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-if "user_role" not in st.session_state:
-    st.session_state.user_role = None
+# Initialize Session Registry for Public Users
+if "user_registered" not in st.session_state:
+    st.session_state.user_registered = False
+if "user_mobile" not in st.session_state:
+    st.session_state.user_mobile = ""
+if "user_pincode" not in st.session_state:
+    st.session_state.user_pincode = ""
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🌌 GOVERNMENT MISSON CONTROL INTERFACE LAYER (CSS)
@@ -155,158 +157,93 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🔐 GATEKEEPER INTERFACE LAYER (AUTHENTICATION WINDOW)
+# 📥 CITIZEN REGISTRATION ENTRY GATEWAY
 # ═══════════════════════════════════════════════════════════════════════════════
-if not st.session_state.authenticated:
+if not st.session_state.user_registered:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    left_co, cent_co, last_co = st.columns([1, 2, 1])
+    left_co, cent_co, last_co = st.columns([1, 1.8, 1])
     
     with cent_co:
-        st.markdown("<div class='cyber-card' style='text-align: center;'>", unsafe_allow_html=True)
-        st.markdown("<h2 class='neon-title' style='font-size:1.8rem; margin-bottom:5px;'>NATIONAL GREEN TRANSITION OS</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='color: #64748b; font-size:0.85rem; font-family:Orbitron; margin-bottom:25px;'>SECURE GATEWAY ACCESS TERMINAL</p>", unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+        st.markdown("<h2 class='neon-title' style='text-align:center; font-size:1.7rem; margin-bottom:5px;'>NATIONAL GREEN TRANSITION OS</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color: #64748b; font-size:0.85rem; font-family:Orbitron; margin-bottom:25px;'>FREE OPEN ACCESS PLATFORM</p>", unsafe_allow_html=True)
         
-        login_type = st.tabs(["🏛️ Ministry / Officer Sign-In", "👥 Public Citizen Access"])
+        st.markdown("<p style='font-size:0.85rem; color:#94a3b8; margin-bottom:2px;'>Mobile Number / मोबाइल नंबर:</p>", unsafe_allow_html=True)
+        mobile_in = st.text_input("Mobile", placeholder="Enter 10-digit mobile number", max_chars=10, label_visibility="collapsed")
         
-        with login_type[0]:
-            st.markdown("<p style='text-align:left; font-size:0.85rem; color:#94a3b8; margin-bottom:2px;'>Officer Passcode / Passkey:</p>", unsafe_allow_html=True)
-            officer_key = st.text_input("", type="password", key="off_pass", help="Enter official department credential key", label_visibility="collapsed")
-            st.markdown("<p style='font-size:11px; color:#475569; text-align:left; margin-top:5px;'>💡 Pitch Demo Key: admin123</p>", unsafe_allow_html=True)
-            
-            if st.button("VERIFY SECURE OFFICER DEPLOYMENT"):
-                if officer_key == "admin123":
-                    st.session_state.authenticated = True
-                    st.session_state.user_role = "Officer"
-                    st.toast("Credentials Authorized. Launching NGT-OS Core.", icon="🛰️")
-                    st.rerun()
-                else:
-                    st.error("Access Denied: Invalid Security Key Blueprint.")
-                    
-        with login_type[1]:
-            st.markdown("<p style='color:#94a3b8; font-size:0.88rem; margin-bottom:15px;'>Access the state energy calculation network instantly as an open-source visitor asset.</p>", unsafe_allow_html=True)
-            if st.button("INITIALIZE FREE PUBLIC CITIZEN ACCESS"):
-                st.session_state.authenticated = True
-                st.session_state.user_role = "Citizen"
-                st.toast("Connected as Citizen Node.", icon="👥")
+        st.markdown("<p style='font-size:0.85rem; color:#94a3b8; margin-bottom:2px; margin-top:12px;'>Regional Pin Code / पिन कोड:</p>", unsafe_allow_html=True)
+        pincode_in = st.text_input("Pincode", placeholder="Enter 6-digit area pin code", max_chars=6, label_visibility="collapsed")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("INITIALIZE TRANSITION DASHBOARD"):
+            if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
+                st.session_state.user_registered = True
+                st.session_state.user_mobile = mobile_in
+                st.session_state.user_pincode = pincode_in
+                st.toast("Initialization complete. Welcome to NGT-OS Node.", icon="🇮🇳")
                 st.rerun()
-                
+            else:
+                st.error("⚠️ Validation Error: Please enter a valid 10-digit mobile number and 6-digit pin code.")
         st.markdown("</div>", unsafe_allow_html=True)
-    st.stop()  # Halt code execution here until login criteria clears successfully
+    st.stop()
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HUD DASHBOARD REGISTRY (ACCESSED POST-AUTHENTICATION)
+# 🏛️ POST-REGISTRATION MAIN SYSTEM LANDING PAGE
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("<h1 class='neon-title' style='text-align: center; margin-top: 5px;'>NATIONAL GREEN TRANSITION OS</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; font-size: 0.8rem; font-family:Orbitron; color: #129E59; margin-top:-10px;'>ACTIVE SECTOR NODE // PIN CODE: {st.session_state.user_pincode} // USER ID: +91 ******{st.session_state.user_mobile[-4:]}</p>", unsafe_allow_html=True)
 
-# User session badge indicator top layout
-role_color = "#FF9933" if st.session_state.user_role == "Officer" else "#00F0FF"
-st.markdown(f"<p style='text-align: center; font-size: 0.8rem; font-family:Orbitron; color: {role_color}; margin-top:-10px;'>CONNECTED DOMAIN PROFILE: SECURE {st.session_state.user_role.upper()} HUB</p>", unsafe_allow_html=True)
-
-# Logout option handle sidebar
-if st.sidebar.button("🔒 TERMINATE SECURE SESSION"):
-    st.session_state.authenticated = False
-    st.session_state.user_role = None
-    st.rerun()
-
-lang_toggle = st.sidebar.selectbox("🌐 LANGUAGE PROTOCOL / भाषा चयन", ["English (Default)", "हिन्दी (Bilingual Core)"])
-
-if lang_toggle == "English (Default)":
-    m1_lbl, m2_lbl, m3_lbl, m4_lbl = "☀️ PM Surya Ghar Base", "🚗 FAME III Support Allocation", "🔋 Grid Energy Storage", "🍃 Renewable Energy Share"
-    tab_1, tab_2, tab_3, tab_4, tab_5 = "🤖 POLICY AI ASSISTANT", "📊 VALUE CALCULATORS", "🎯 SUBSIDY COMPLIANCE AUDITOR", "📡 NATIONAL ENERGY RADAR", "🏛️ PUBLIC DISPATCH BRIDGE"
-else:
-    m1_lbl, m2_lbl, m3_lbl, m4_lbl = "☀️ पीएम सूर्य घर आधार", "🚗 फेम III आवंटन पूल", "🔋 ग्रिड बैटरी क्षमता", "🍃 गैर-जीवाश्म ग्रिड मिश्रण"
-    tab_1, tab_2, tab_3, tab_4, tab_5 = "🤖 नीति एआई सहायक", "📊 मूल्य कैलकुलेटर", "🎯 सब्सिडी अनुपालन लेखा परीक्षक", "📡 राष्ट्रीय ऊर्जा रडार", "🏛️ सार्वजनिक प्रेषण पुल"
-
-# 2026 Macro Telemetry Parameters
+# Main Telemetry Stats Banner
 m1, m2, m3, m4 = st.columns(4)
-m1.metric(label=m1_lbl, value="4.1M+ Homes", delta="Target: 7.5M Sites")
-m2.metric(label=m2_lbl, value="₹10,000 Cr", delta="Active Transition Lifecycle")
-m3.metric(label=m3_lbl, value="150 GW+", delta="ACC PLI Manufacturing Link")
-m4.metric(label=m4_lbl, value="45% Total", delta="Path to 500GW 2030")
+m1.metric(label="☀️ PM Surya Ghar Base", value="4.1M+ Homes", delta="Target: 7.5M Sites")
+m2.metric(label="🚗 FAME III Support Allocation", value="₹10,000 Cr", delta="Active Budget Lifecycle")
+m3.metric(label="🔋 Grid Energy Storage", value="150 GW+", delta="ACC PLI Connected")
+m4.metric(label="🍃 Renewable Energy Share", value="45% Total", delta="Path to 500GW 2030")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-sec_chat, sec_calc, sec_subsidy, sec_news, sec_connect = st.tabs([tab_1, tab_2, tab_3, tab_4, tab_5])
+# Reordered App Tabs: Savings Calculator Is Now Front And Center
+tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
+    "📊 PETROL VS EV SAVINGS CALCULATOR",
+    "🤖 POLICY AI ASSISTANT",
+    "🎯 SUBSIDY COMPLIANCE AUDITOR",
+    "📡 NATIONAL ENERGY RADAR",
+    "🏛️ PUBLIC DISPATCH BRIDGE"
+])
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ SECTION 1: POLICY AI ASSISTANT TERMINAL
-# ═══════════════════════════════════════════════════════════════════════════════
-with sec_chat:
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>⚡ STABLE ENDPOINT: ACTIVE // SECURE GOVERNMENT DATA KERNEL</p>", unsafe_allow_html=True)
-    
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = [
-            {"role": "bot", "content": "Welcome to the NGT-OS Intelligence Node. I can provide analytical briefs on solar deployments, EV infrastructure financial models, or carbon-offset policy regulations."}
-        ]
-        
-    for text_block in st.session_state.chat_history:
-        if text_block["role"] == "user":
-            st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{text_block["content"]}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{text_block["content"]}</div>', unsafe_allow_html=True)
-
-    st.markdown("<p style='font-size:0.8rem; color:#64748b; font-family:Orbitron;'>STRATEGIC POLICY TARGET SHORTCUTS:</p>", unsafe_allow_html=True)
-    b1, b2, b3 = st.columns(3)
-    quick_input = None
-    if b1.button("🇮🇳 National Green Hydrogen Targets"): quick_input = "Provide an objective policy briefing regarding India's National Green Hydrogen Mission targets by 2030 and grid transmission incentives."
-    if b2.button("☀️ PM Surya Ghar Distribution Rules"): quick_input = "What are the current capacity tier limits and cash credit structural rules for consumers registering under the PM Surya Ghar framework?"
-    if b3.button("🚗 FAME III EV Hub Infrastructure ROI"): quick_input = "What are the commercial parameters, power demands, and standard payback periods for running high-speed DC charging points in tier-1 municipal grids?"
-
-    user_raw = st.chat_input("Enter inter-ministerial policy or technical query...")
-    executable_query = user_raw if user_raw else quick_input
-
-    if executable_query:
-        st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{executable_query}</div>', unsafe_allow_html=True)
-        st.session_state.chat_history.append({"role": "user", "content": executable_query})
-        
-        try:
-            model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = (
-                "You are the National Green Transition OS Core Intelligence. You are an expert authority on India's energy grid, "
-                "ministerial regulations, and economic feasibility. Respond with clean headers and professional terminology. "
-                "Present monetary statistics in Lakhs or Crores. Maintain an authoritative, objective, public-sector appropriate tone. "
-                "Limit the output response to 150 words maximum."
-            )
-            response_container = model.generate_content(f"{system_injection}\n\nUser Question: {executable_query}")
-            bot_reply = response_container.text
-            
-            st.markdown(f'<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{bot_reply}</div>', unsafe_allow_html=True)
-            st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
-            st.rerun()
-        except Exception as e:
-            st.error("🔒 Security Key Connection Interrupted. Ensure Streamlit configurations match requirements.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ SECTION 2: MACRO ENERGY ECONOMIC CALCULATORS
-# ═══════════════════════════════════════════════════════════════════════════════
-with sec_calc:
+# 🛠️ TAB 1: PETROL VS EV SAVINGS CALCULATOR (HOMEPAGE PRIORITY)
+with tab_calc:
     st.markdown("### 📊 Dual-Vector Economic Feasibility Systems")
     sub_ev, sub_solar = st.tabs(["🚗 Commercial Electric Fleet Matrix", "☀️ Photovoltaic Power Plant Matrix"])
     
     with sub_ev:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label'>⚙️ VARIABLE INPUT: ELECTRIC VEHICLE MOBILITY MODEL</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='cyber-label'>⚙️ VARIABLE INPUT: ELECTRIC VEHILITY MODEL (REGIONAL PROFILE: {st.session_state.user_pincode})</p>", unsafe_allow_html=True)
         
         c1, c2 = st.columns(2)
         with c1:
-            daily_km = st.slider("Average Fleet Run Distance per Unit (KM / Day):", min_value=10, max_value=400, value=120, key="ev_slider")
-            fuel_price = st.number_input("Conventional Fuel Resource Baseline Rate (₹ / Liter):", min_value=80.0, value=104.0, key="ev_fuel")
+            daily_km = st.slider("Average Daily Running Distance (KM / Day):", min_value=10, max_value=400, value=120, key="ev_slider")
+            fuel_price = st.number_input("Conventional Petrol / Diesel Resource Rate (₹ / Liter):", min_value=80.0, value=104.0, key="ev_fuel")
         with c2:
-            ev_efficiency = st.number_input("Target Vehicle Energy Index (KM / kWh):", min_value=1.0, value=6.5, key="ev_eff")
-            grid_tariff = st.number_input("Commercial/Industrial Discom Tariff Rate (₹ / Price per Unit):", min_value=3.0, value=8.5, key="ev_tariff")
+            ev_efficiency = st.number_input("Target EV Vehicle Efficiency Index (KM / kWh):", min_value=1.0, value=6.5, key="ev_eff")
+            grid_tariff = st.number_input("Regional Discom Tariff Rate (₹ / Price per Unit):", min_value=3.0, value=8.5, key="ev_tariff")
         
-        f_cost_day = (daily_km / 12) * fuel_price
+        # Mathematical Vector Run Calculations
+        f_cost_day = (daily_km / 12) * fuel_price  # Assuming average fuel mileage baseline of 12km/L
         e_cost_day = (daily_km / ev_efficiency) * grid_tariff
+        
+        petrol_per_km = fuel_price / 12
+        ev_per_km = grid_tariff / ev_efficiency
+        
         saved_monthly = (f_cost_day - e_cost_day) * 30
         saved_annual = saved_monthly * 12
         
-        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 FINANCIAL FEASIBILITY METRICS OUTFLOW</p>", unsafe_allow_html=True)
-        v1, v2, v3 = st.columns(3)
-        v1.metric("📉 Estimated Monthly Savings", f"₹{saved_monthly:,.2f}")
-        v2.metric("✨ Estimated Annual Net Savings", f"₹{saved_annual:,.2f}")
-        v3.metric("⏱️ Capital Asset Payback Horizon", "11.4 Months" if saved_annual > 150000 else "19.8 Months")
+        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 DIRECT RUNNING COST METRICS BREAKDOWN</p>", unsafe_allow_html=True)
+        rc1, rc2, rc3, rc4 = st.columns(4)
+        rc1.metric("⛽ Petrol Running Cost", f"₹{petrol_per_km:.2f} / KM")
+        rc2.metric("⚡ EV Running Cost", f"₹{ev_per_km:.2f} / KM")
+        rc3.metric("📉 Estimated Monthly Savings", f"₹{saved_monthly:,.2f}")
+        rc4.metric("✨ Estimated Annual Net Savings", f"₹{saved_annual:,.2f}")
         st.markdown("</div>", unsafe_allow_html=True)
         
     with sub_solar:
@@ -330,130 +267,85 @@ with sec_calc:
         v6.metric("🍃 Annual Carbon Savings Value", f"{carbon_offset:.2f} MT CO2e")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ SECTION 3: SUBSIDY COMPLIANCE AUDITOR (ROLE-GUARDED)
-# ═══════════════════════════════════════════════════════════════════════════════
-with sec_subsidy:
+# 🛠 ... KEEPING ALL SUBSEQUENT INTERACTIVE MODULES RUNNING AS COMPLETELY OPEN-ACCESS PIPELINES ...
+with tab_chat:
+    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>⚡ STABLE ENDPOINT: ACTIVE // SECURE GOVERNMENT DATA KERNEL</p>", unsafe_allow_html=True)
+    
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = [
+            {"role": "bot", "content": "Welcome to the NGT-OS Intelligence Node. I can provide analytical briefs on solar deployments, EV infrastructure financial models, or carbon-offset policy regulations."}
+        ]
+        
+    for text_block in st.session_state.chat_history:
+        if text_block["role"] == "user":
+            st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{text_block["content"]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{text_block["content"]}</div>', unsafe_allow_html=True)
+
+    user_raw = st.chat_input("Enter inter-ministerial policy or technical query...")
+    if user_raw:
+        st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{user_raw}</div>', unsafe_allow_html=True)
+        st.session_state.chat_history.append({"role": "user", "content": user_raw})
+        try:
+            model = genai.GenerativeModel(model_name="gemini-2.5-flash")
+            system_injection = "You are the National Green Transition OS Core Intelligence. Give structured, objective, public-sector ready answers limited to 150 words."
+            response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
+            bot_reply = response_container.text
+            st.markdown(f'<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{bot_reply}</div>', unsafe_allow_html=True)
+            st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
+            st.rerun()
+        except Exception as e:
+            st.error("🔒 Security Key Connection Interrupted. Ensure Streamlit configurations match requirements.")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with tab_subsidy:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
     st.markdown("<p class='cyber-label'>🎯 OFFICIAL DISCOM REGULATORY COMPLIANCE MONITOR</p>", unsafe_allow_html=True)
     
-    if st.session_state.user_role != "Officer":
-        st.warning("🔒 Access Restricted: Report generation protocols require verified Ministry / Officer authorization credentials.")
-    else:
-        state_domain = st.selectbox("Select Target Regional State Jurisdiction Node:", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-        class_profile = st.radio("Asset Installation Infrastructure Target Profile:", ["Residential Rooftop Array", "Commercial Plant System", "Public Fast Charging Hub Venture"], key="sub_profile")
+    state_domain = st.selectbox("Select Target Regional State Jurisdiction Node:", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
+    class_profile = st.radio("Asset Installation Infrastructure Target Profile:", ["Residential Rooftop Array", "Commercial Plant System", "Public Fast Charging Hub Venture"], key="sub_profile")
+    
+    if st.button("RUN NATIONAL COMPLIANCE AUDIT & GENERATE REPORT"):
+        timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        hash_input = f"{state_domain}-{class_profile}-{timestamp_str}"
+        verification_hash = hashlib.sha256(hash_input.encode()).hexdigest()[:12].upper()
         
-        if st.button("RUN NATIONAL COMPLIANCE AUDIT & GENERATE REPORT"):
-            st.toast("Verifying policy parameters against central registry...", icon="⚙️")
-            
-            timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            hash_input = f"{state_domain}-{class_profile}-{timestamp_str}"
-            verification_hash = hashlib.sha256(hash_input.encode()).hexdigest()[:12].upper()
-            
-            st.markdown(f"""
-            <div class="gov-report">
-                <h3 style="color:#0f172a; margin-top:0; text-transform:uppercase; font-family:'Orbitron'; letter-spacing:1px;">
-                    🇮🇳 NATIONAL GREEN TRANSITION VERIFICATION REPORT
-                </h3>
-                <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;">
-                    <b>Generated:</b> {timestamp_str} IST // <b>System Reference Hash:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; border-radius:4px; color:#0f172a;">NGT-{verification_hash}</span>
-                </p>
-                <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
-                <table style="width:100%; border-collapse: collapse; font-size:0.9rem;">
-                    <tr style="background-color: #f1f5f9;">
-                        <td style="padding:10px; border:1px solid #cbd5e1; font-weight:bold;">Jurisdiction State Node</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1;">{state_domain} Electricity Regulatory Commission</td>
-                    </tr>
-                    <tr>
-                        <td style="padding:10px; border:1px solid #cbd5e1; font-weight:bold;">Project Profile Allocation</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1;">{class_profile}</td>
-                    </tr>
-                    <tr style="background-color: #f1f5f9;">
-                        <td style="padding:10px; border:1px solid #cbd5e1; font-weight:bold;">Central Subsidy Eligibility</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; color:#15803d; font-weight:bold;">VERIFIED APPROVED (PM Surya Ghar / FAME III Framework compliant)</td>
-                    </tr>
-                </table>
-                <br>
-                <h4 style="color:#0f172a; margin-bottom:8px;">Compliance Directives & Legal Requirements:</h4>
-                <ul style="margin-top:0; padding-left:20px; font-size:0.88rem; line-height:1.6;">
-                    <li><b>Hardware Standard Rules:</b> Systems must utilize Domestic Content Requirement (DCR) compliant photovoltaic configurations to clear direct central subsidy accounts.</li>
-                    <li><b>Net-Metering Code:</b> Unified smart-meter processing mandates state-level DISCOM clearance inside 30 operational days of line testing.</li>
-                    <li><b>Fiscal Benefits:</b> Corporate asset setups qualify for 40% accelerated depreciation credits inside the first year audit ledger.</li>
-                </ul>
-                <p style="font-size:0.75rem; color:#64748b; margin-top:25px; text-align:center; font-style:italic;">
-                    This report is electronically initialized via the National Green Transition OS Engine and constitutes valid reference metadata for preliminary infrastructure planning.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="gov-report">
+            <h3 style="color:#0f172a; margin-top:0; text-transform:uppercase; font-family:'Orbitron';">🇮🇳 NATIONAL GREEN TRANSITION VERIFICATION REPORT</h3>
+            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated:</b> {timestamp_str} IST // <b>System Reference Hash:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">NGT-{verification_hash}</span></p>
+            <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
+            <p><b>Jurisdiction State Node:</b> {state_domain} Electricity Regulatory Commission</p>
+            <p><b>Project Profile Allocation:</b> {class_profile}</p>
+            <p style="color:#15803d; font-weight:bold;">🥇 Central Subsidy Eligibility: VERIFIED APPROVED (PM Surya Ghar Framework Compliant)</p>
+        </div>
+        """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ SECTION 4: STRATEGIC INNOVATION RADAR STREAM
-# ═══════════════════════════════════════════════════════════════════════════════
-with sec_news:
+with tab_news:
     st.markdown("### 📡 National Technology Tracks & Policy Horizons")
-    
     n1, n2, n3 = st.columns(3)
     with n1:
-        st.markdown("""
-        <div class='cyber-card'>
-            <span style='color:#FF9933; font-family:Orbitron; font-size:0.75rem; font-weight:bold;'>🔋 ADVANCED BATTERY STORAGE</span>
-            <h4 style='color:#00F0FF; margin:8px 0; font-family:Orbitron;'>ACC PLI Localized Scale</h4>
-            <p style='font-size:0.85rem; color:#94a3b8;'>Localized gigafactory rollouts reduce production reliance parameters on lithium imports by 30% utilizing advanced localized silicon-anode configurations.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>🔋 ACC PLI Localized Scale</h5><p style='font-size:0.85rem; color:#94a3b8;'>Localized gigafactory metrics reducing production reliance on raw lithium imports.</p></div>", unsafe_allow_html=True)
     with n2:
-        st.markdown("""
-        <div class='cyber-card'>
-            <span style='color:#FFFFFF; font-family:Orbitron; font-size:0.75rem; font-weight:bold;'>🚗 VEHICLE-TO-GRID (V2G)</span>
-            <h4 style='color:#00F0FF; margin:8px 0; font-family:Orbitron;'>Smart Grid Synchronization</h4>
-            <p style='font-size:0.85rem; color:#94a3b8;'>Vehicle-to-Grid power interfaces initiate high-volume trial tracking loops inside municipal utility zones across Bengaluru and Mumbai endpoints.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>🚗 V2G Grid Synchronization</h5><p style='font-size:0.85rem; color:#94a3b8;'>Vehicle-to-Grid power infrastructure initiates live high-volume municipal trials.</p></div>", unsafe_allow_html=True)
     with n3:
-        st.markdown("""
-        <div class='cyber-card'>
-            <span style='color:#129E59; font-family:Orbitron; font-size:0.75rem; font-weight:bold;'>☀️ GENERATION SCIENCE</span>
-            <h4 style='color:#00F0FF; margin:8px 0; font-family:Orbitron;'>Perovskite Efficiency Benchmarks</h4>
-            <p style='font-size:0.85rem; color:#94a3b8;'>Indian research institutes scale a high 28% efficiency index index on tandem solar cell panels, readying lines for domestic industrial production.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>☀️ Perovskite Science</h5><p style='font-size:0.85rem; color:#94a3b8;'>Indian research institutes scale stable 28% efficiency cell performance parameters.</p></div>", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ SECTION 5: PUBLIC STRATEGY DISPATCH BRIDGE
-# ═══════════════════════════════════════════════════════════════════════════════
-with sec_connect:
+with tab_connect:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
     st.markdown("<p class='cyber-label'>🏛️ OFFICIAL DISPATCH WEB BRIDGE // DIRECT INTENT REGISTRY</p>", unsafe_allow_html=True)
-    
     with st.form("dispatch_capture_form"):
-        exec_name = st.text_input("Full Official / Corporate Representative Name:")
-        exec_contact = st.text_input("Verified Communications Contact Number (+91 Mobile):")
-        exec_intent = st.selectbox("Strategic Transition Infrastructure Sector Focus:", [
-            "Residential Asset Structural Optimization", 
-            "Commercial Plant Integration Protocol", 
-            "Public Fleet Grid Infrastructure Deployment"
-        ])
-        
+        exec_name = st.text_input("Full Official Representative Name:")
+        exec_contact = st.text_input("Verified Contact Number (+91 Mobile):")
         submit_exec = st.form_submit_button("DISPATCH SYSTEM DISCOVERY REQUEST")
-        if submit_exec:
-            if exec_name and exec_contact:
-                st.markdown(f"""
-                <div style='background:rgba(18, 158, 89, 0.1); border:1px solid #129E59; padding:18px; border-radius:8px; margin-top:15px;'>
-                    <span style='color:#129E59; font-weight:bold; font-family:Orbitron;'>⚡ REGISTRY STATUS: DISPATCH COMPLETED</span><br>
-                    Data verified. Welcome, {exec_name}. Your energy infrastructure transition intent packet has been registered securely in the session cache.
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.error("⚠️ Validation vector missing. Ensure mandatory fields are populated prior to registry transmission.")
+        if submit_exec and exec_name and exec_contact:
+            st.success(f"Success! Request logged for verification from pin code {st.session_state.user_pincode}.")
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HUD FOOTER REEL ARCHITECTURE CONTROL
+# HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-f_left, f_right = st.columns(2)
-with f_left:
-    st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v5.0.0 (2026 Production Profile)")
-with f_right:
-    st.markdown("<p style='text-align: right; font-size: 11px; color: #64748b; font-family:Orbitron;'>HUD RUNTIME STATUS: SYSTEM INTEGRITY MAXIMUM // REGULATORY MATRICES ACTIVE</p>", unsafe_allow_html=True)
+st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.0.0 (2026 Open Public Build Profile)")
