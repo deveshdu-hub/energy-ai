@@ -6,7 +6,7 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION BUILD 6.1.0
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION BUILD 6.2.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
@@ -161,10 +161,10 @@ st.markdown("""
 # ═══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.user_registered:
     st.markdown("<br><br>", unsafe_allow_html=True)
+    
     left_co, cent_co, last_co = st.columns([1, 2.2, 1])
     
     with cent_co:
-        # Immersive Terminal Border Wrapper
         st.markdown("""
             <div style="
                 background: linear-gradient(135deg, rgba(13, 22, 54, 0.9), rgba(4, 8, 23, 0.98));
@@ -180,17 +180,17 @@ if not st.session_state.user_registered:
                         <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #00F0FF;"></span>
                         <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #00F0FF; letter-spacing: 2px;">SECURE NODE // AUTH_GATE</span>
                     </div>
-                    <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #64748b;">v6.1.0</span>
+                    <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #64748b;">v6.2.0</span>
                 </div>
                 
                 <h2 class="neon-title" style="text-align:center; font-size:1.9rem; margin-bottom:5px; letter-spacing:3px;">NATIONAL GREEN TRANSITION OS</h2>
-                <p style="text-align:center; color: #94a3b8; font-size:0.85rem; font-family:'Orbitron'; margin-bottom:35px; letter-spacing:1px;">DIGITAL PUBLIC GOODS LAYER • INDIA</p>
+                <p style="text-align:center; color: #94a3b8; font-size:0.85rem; font-family:'Orbitron'; margin-bottom:15px; letter-spacing:1px;">DIGITAL PUBLIC GOODS LAYER • INDIA</p>
             </div>
         """, unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # Clean, Side-by-Side Horizontal Dual Inputs
+        # Dual inputs
         in_c1, in_c2 = st.columns(2)
         
         with in_c1:
@@ -203,7 +203,10 @@ if not st.session_state.user_registered:
             
         st.markdown("<br>", unsafe_allow_html=True)
         
-        if st.button("INITIALIZE SECURE TRANSITION MATRIX", use_container_width=True):
+        # Action button cleanly aligned under the central column content
+        submit_btn = st.button("INITIALIZE SECURE TRANSITION MATRIX", use_container_width=True)
+        
+        if submit_btn:
             if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
                 st.session_state.user_registered = True
                 st.session_state.user_mobile = mobile_in
@@ -318,7 +321,7 @@ with tab_calc:
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 2: POLICY AI ASSISTANT (FIXED BRACKET STRINGS)
+# 🛠️ TAB 2: POLICY AI ASSISTANT
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -359,7 +362,9 @@ with tab_subsidy:
     state_domain = st.selectbox("Select Target Regional State Jurisdiction Node:", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
     class_profile = st.radio("Asset Installation Infrastructure Target Profile:", ["Residential Rooftop Array", "Commercial Plant System", "Public Fast Charging Hub Venture"], key="sub_profile")
     
-    if st.button("RUN NATIONAL COMPLIANCE AUDIT & GENERATE REPORT"):
+    audit_btn = st.button("RUN NATIONAL COMPLIANCE AUDIT & GENERATE REPORT")
+    
+    if audit_btn:
         timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         hash_input = f"{state_domain}-{class_profile}-{timestamp_str}"
         verification_hash = hashlib.sha256(hash_input.encode()).hexdigest()[:12].upper()
@@ -407,4 +412,4 @@ with tab_connect:
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.1.0 (2026 Open Public Build Profile)")
+st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.2.0 (2026 Open Public Build Profile)")
