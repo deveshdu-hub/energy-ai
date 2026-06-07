@@ -185,7 +185,7 @@ if not st.session_state.user_registered:
                 
                 <h2 class="neon-title" style="text-align:center; font-size:1.9rem; margin-bottom:5px; letter-spacing:3px;">NATIONAL GREEN TRANSITION OS</h2>
                 <p style="text-align:center; color: #94a3b8; font-size:0.85rem; font-family:'Orbitron'; margin-bottom:35px; letter-spacing:1px;">DIGITAL PUBLIC GOODS LAYER • INDIA</p>
-        """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)  # <── FIX IS RIGHT HERE! Added unsafe_allow_html=True
         
         # Clean, Side-by-Side Horizontal Dual Inputs
         in_c1, in_c2 = st.columns(2)
@@ -199,6 +199,20 @@ if not st.session_state.user_registered:
             pincode_in = st.text_input("Pincode", placeholder="6-Digit Pin Code", max_chars=6, label_visibility="collapsed")
             
         st.markdown("<br><br>", unsafe_allow_html=True)
+        
+        # Premium High-Glow Access Action Trigger
+        if st.button("INITIALIZE SECURE TRANSITION MATRIX"):
+            if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
+                st.session_state.user_registered = True
+                st.session_state.user_mobile = mobile_in
+                st.session_state.user_pincode = pincode_in
+                st.toast("Authorization handshake successful.", icon="🇮🇳")
+                st.rerun()
+            else:
+                st.error("⚠️ Security Validation Failed: Ensure mobile is 10 digits and pin code is 6 digits.")
+                
+        st.markdown("</div>", unsafe_allow_html=True)
+    st.stop()
         
         # Premium High-Glow Access Action Trigger
         if st.button("INITIALIZE SECURE TRANSITION MATRIX"):
