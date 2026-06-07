@@ -211,7 +211,7 @@ with sec_chat:
         st.session_state.chat_history.append({"role": "user", "content": executable_query})
         
         try:
-            model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+            model = genai.GenerativeModel(model_name="gemini-2.5-flash")
             system_injection = (
                 "You are India Energy Future HQ AI. You are a world-class strategist, engineering expert, and economic analyst. "
                 "Structure responses precisely using metric frameworks, focus heavily on commercial viability, clean infrastructure growth figures, "
