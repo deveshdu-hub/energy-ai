@@ -157,7 +157,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 📥 CITIZEN REGISTRATION ENTRY GATEWAY (REDESIGNED TERMINAL WRAPPER)
+# 📥 CITIZEN REGISTRATION ENTRY GATEWAY
 # ═══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.user_registered:
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -185,23 +185,26 @@ if not st.session_state.user_registered:
                 
                 <h2 class="neon-title" style="text-align:center; font-size:1.9rem; margin-bottom:5px; letter-spacing:3px;">NATIONAL GREEN TRANSITION OS</h2>
                 <p style="text-align:center; color: #94a3b8; font-size:0.85rem; font-family:'Orbitron'; margin-bottom:35px; letter-spacing:1px;">DIGITAL PUBLIC GOODS LAYER • INDIA</p>
-        """, unsafe_allow_html=True)  # <── FIX IS RIGHT HERE! Added unsafe_allow_html=True
+            </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         
         # Clean, Side-by-Side Horizontal Dual Inputs
         in_c1, in_c2 = st.columns(2)
         
         with in_c1:
             st.markdown("<p style='font-family:\"Orbitron\", sans-serif; font-size:0.75rem; color:#00F0FF; letter-spacing:1px; margin-bottom:8px;'>📱 MOBILE NUMBER / मोबाइल</p>", unsafe_allow_html=True)
-            mobile_in = st.text_input("Mobile", placeholder="10-Digit Mobile", max_chars=10, label_visibility="collapsed")
+            mobile_in = st.text_input("Mobile", placeholder="10-Digit Mobile", max_chars=10, label_visibility="collapsed", key="gate_mobile")
             
         with in_c2:
             st.markdown("<p style='font-family:\"Orbitron\", sans-serif; font-size:0.75rem; color:#00F0FF; letter-spacing:1px; margin-bottom:8px;'>📍 AREA PIN CODE / पिन कोड</p>", unsafe_allow_html=True)
-            pincode_in = st.text_input("Pincode", placeholder="6-Digit Pin Code", max_chars=6, label_visibility="collapsed")
+            pincode_in = st.text_input("Pincode", placeholder="6-Digit Pin Code", max_chars=6, label_visibility="collapsed", key="gate_pincode")
             
-        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         
-        # Premium High-Glow Access Action Trigger
-        if st.button("INITIALIZE SECURE TRANSITION MATRIX"):
+        # Premium High-Glow Access Action Trigger (Unified Single Call)
+        if st.button("INITIALIZE SECURE TRANSITION MATRIX", use_container_width=True):
             if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
                 st.session_state.user_registered = True
                 st.session_state.user_mobile = mobile_in
@@ -211,22 +214,8 @@ if not st.session_state.user_registered:
             else:
                 st.error("⚠️ Security Validation Failed: Ensure mobile is 10 digits and pin code is 6 digits.")
                 
-        st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
-        
-        # Premium High-Glow Access Action Trigger
-        if st.button("INITIALIZE SECURE TRANSITION MATRIX"):
-            if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
-                st.session_state.user_registered = True
-                st.session_state.user_mobile = mobile_in
-                st.session_state.user_pincode = pincode_in
-                st.toast("Authorization handshake successful.", icon="🇮🇳")
-                st.rerun()
-            else:
-                st.error("⚠️ Security Validation Failed: Ensure mobile is 10 digits and pin code is 6 digits.")
-                
-        st.markdown("</div>", unsafe_allow_html=True)
-    st.stop()
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🏛️ POST-REGISTRATION MAIN SYSTEM LANDING PAGE
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -260,7 +249,7 @@ with tab_calc:
     
     with sub_ev:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown(f"<p class='cyber-label'>⚙️ VARIABLE INPUT: ELECTRIC VEHILITY MODEL (REGIONAL PROFILE: {st.session_state.user_pincode})</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='cyber-label'>⚙️ VARIABLE INPUT: ELECTRIC VEHICLE MODEL (REGIONAL PROFILE: {st.session_state.user_pincode})</p>", unsafe_allow_html=True)
         
         # New Feature: Vehicle Form Factor Dropdown
         vehicle_type = st.selectbox(
@@ -333,7 +322,7 @@ with tab_calc:
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ OPEN PIPELINE MODULES CONTINUED
+# 🛠️ TAB 2: POLICY AI ASSISTANT
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -346,76 +335,4 @@ with tab_chat:
         
     for text_block in st.session_state.chat_history:
         if text_block["role"] == "user":
-            st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{text_block["content"]}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{text_block["content"]}</div>', unsafe_allow_html=True)
-
-    user_raw = st.chat_input("Enter inter-ministerial policy or technical query...")
-    if user_raw:
-        st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{user_raw}</div>', unsafe_allow_html=True)
-        st.session_state.chat_history.append({"role": "user", "content": user_raw})
-        try:
-            model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = "You are the National Green Transition OS Core Intelligence. Give structured, objective, public-sector ready answers limited to 150 words."
-            response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
-            bot_reply = response_container.text
-            st.markdown(f'<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{bot_reply}</div>', unsafe_allow_html=True)
-            st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
-            st.rerun()
-        except Exception as e:
-            st.error("🔒 Security Key Connection Interrupted. Ensure Streamlit configurations match requirements.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-with tab_subsidy:
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🎯 OFFICIAL DISCOM REGULATORY COMPLIANCE MONITOR</p>", unsafe_allow_html=True)
-    
-    state_domain = st.selectbox("Select Target Regional State Jurisdiction Node:", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-    class_profile = st.radio("Asset Installation Infrastructure Target Profile:", ["Residential Rooftop Array", "Commercial Plant System", "Public Fast Charging Hub Venture"], key="sub_profile")
-    
-    if st.button("RUN NATIONAL COMPLIANCE AUDIT & GENERATE REPORT"):
-        timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        hash_input = f"{state_domain}-{class_profile}-{timestamp_str}"
-        verification_hash = hashlib.sha256(hash_input.encode()).hexdigest()[:12].upper()
-        
-        st.markdown(f"""
-        <div class="gov-report">
-            <h3 style="color:#0f172a; margin-top:0; text-transform:uppercase; font-family:'Orbitron';">🇮🇳 NATIONAL GREEN TRANSITION VERIFICATION REPORT</h3>
-            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated:</b> {timestamp_str} IST // <b>System Reference Hash:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">NGT-{verification_hash}</span></p>
-            <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
-            <p><b>Jurisdiction State Node:</b> {state_domain} Electricity Regulatory Commission</p>
-            <p><b>Project Profile Allocation:</b> {class_profile}</p>
-            <p style="color:#15803d; font-weight:bold;">🥇 Central Subsidy Eligibility: VERIFIED APPROVED (PM Surya Ghar Framework Compliant)</p>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
-
-with tab_news:
-    st.markdown("### 📡 National Technology Tracks & Policy Horizons")
-    n1, n2, n3 = st.columns(3)
-    with n1:
-        st.markdown("<div class='cyber-card'><h5>🔋 ACC PLI Localized Scale</h5><p style='font-size:0.85rem; color:#94a3b8;'>Localized gigafactory metrics reducing production reliance on raw lithium imports.</p></div>", unsafe_allow_html=True)
-    with n2:
-        st.markdown("<div class='cyber-card'><h5>🚗 V2G Grid Synchronization</h5><p style='font-size:0.85rem; color:#94a3b8;'>Vehicle-to-Grid power infrastructure initiates live high-volume municipal trials.</p></div>", unsafe_allow_html=True)
-    with n3:
-        st.markdown("<div class='cyber-card'><h5>☀️ Perovskite Science</h5><p style='font-size:0.85rem; color:#94a3b8;'>Indian research institutes scale stable 28% efficiency cell performance parameters.</p></div>", unsafe_allow_html=True)
-
-with tab_connect:
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🏛️ OFFICIAL DISPATCH WEB BRIDGE // DIRECT INTENT REGISTRY</p>", unsafe_allow_html=True)
-    with st.form("dispatch_capture_form"):
-        exec_name = st.text_input("Full Official Representative Name:")
-        exec_contact = st.text_input("Verified Contact Number (+91 Mobile):")
-        submit_exec = st.form_submit_button("DISPATCH SYSTEM DISCOVERY REQUEST")
-        if submit_exec and exec_name and exec_contact:
-            st.success(f"Success! Request logged for verification from pin code {st.session_state.user_pincode}.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# HUD FOOTER REEL CONTROL TERMINAL
-# ═══════════════════════════════════════════════════════════════════════════════
-# ═══════════════════════════════════════════════════════════════════════════════
-# HUD FOOTER REEL CONTROL TERMINAL
-# ═══════════════════════════════════════════════════════════════════════════════
-st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.1.0 (2026 Open Public Build Profile)")
+            st.markdown(f'<div class="bubble-user"><b>Query User:</b><br>{text_block["content"]}</div>', unsafe_allow
