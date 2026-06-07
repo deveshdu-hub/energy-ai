@@ -6,11 +6,11 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION STABLE PROFILE
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // TRIPLE-FUEL PRODUCTION BUILD v6.4.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="Bharat Green Transition Portal 🇮🇳",
+    page_title="PM Green Transition Portal 🇮🇳",
     page_icon="🇮🇳",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -31,7 +31,7 @@ if "user_pincode" not in st.session_state:
     st.session_state.user_pincode = ""
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🌌 GOVERNMENT MISSON CONTROL INTERFACE LAYER (CSS)
+# 🌌 GOVERNMENT MISSION CONTROL INTERFACE LAYER (CSS)
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
     <style>
@@ -76,8 +76,8 @@ st.markdown("""
     }
 
     .rec-card {
-        background: linear-gradient(135deg, rgba(18, 158, 89, 0.1), rgba(3, 7, 18, 0.95));
-        border: 1px solid rgba(12, 158, 89, 0.3);
+        background: linear-gradient(135deg, rgba(14, 116, 144, 0.15), rgba(3, 7, 18, 0.95));
+        border: 1px solid rgba(14, 116, 144, 0.3);
         border-radius: 10px;
         padding: 20px;
         margin-top: 15px;
@@ -121,7 +121,7 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
         color: #ffffff !important;
         font-weight: 700 !important;
-        font-size: 1.65rem !important;
+        font-size: 1.55rem !important;
     }
 
     div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea, select {
@@ -147,7 +147,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 📥 CITIZEN REGISTRATION ENTRY GATEWAY (FIXED FLASH ERROR BUILD)
+# 📥 CITIZEN REGISTRATION ENTRY GATEWAY
 # ═══════════════════════════════════════════════════════════════════════════════
 if not st.session_state.user_registered:
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -155,7 +155,6 @@ if not st.session_state.user_registered:
     left_co, cent_co, last_co = st.columns([1, 2.2, 1])
     
     with cent_co:
-        # Combined inside a solid rendering container block to eliminate visual flash defects
         st.markdown("""
             <div style="
                 background: linear-gradient(135deg, rgba(13, 22, 54, 0.9), rgba(4, 8, 23, 0.98));
@@ -171,7 +170,7 @@ if not st.session_state.user_registered:
                         <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block;"></span>
                         <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">🇮🇳 CITIZEN LOGIN / नागरिक लॉगिन</span>
                     </div>
-                    <span style="font-size: 0.75rem; color: #64748b;">v6.3.2</span>
+                    <span style="font-size: 0.75rem; color: #64748b;">v6.4.0</span>
                 </div>
                 <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px; background: linear-gradient(135deg, #FF9933, #FFFFFF, #129E59); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PM GREEN TRANSITION PORTAL</h2>
                 <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">हरित क्रांति डिजिटल सेवा - भारत सरकार</p>
@@ -218,7 +217,7 @@ m4.metric(label="🍃 Renewable Energy Share", value="45% Green Power", delta="G
 st.markdown("<br>", unsafe_allow_html=True)
 
 tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
-    "💰 MY SAVINGS CALCULATOR (बचत कैलकुलेटर)",
+    "💰 MULTI-FUEL SAVINGS CALCULATOR (बचत कैलकुलेटर)",
     "🤖 GREEN SAHAYIK (योजना हेल्प AI)",
     "🎯 GOVT SUBSIDY CHECKER (सरकारी सब्सिडी)",
     "📡 REGIONAL ENERGY NEWS (समाचार)",
@@ -226,85 +225,102 @@ tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 1: PETROL VS EV SAVINGS CALCULATOR (WITH CAR RECOM ENGINE)
+# 🛠️ TAB 1: TRIPLE FUEL SYSTEM EXPENSES & COMPARISON MATRIX
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_calc:
     st.markdown("### 📊 Check Your Expenses & Green Savings Value")
-    sub_ev, sub_solar = st.tabs(["🚗 Petrol vs Electric Vehicle Savings", "☀️ Rooftop Solar Benefit Estimator"])
+    sub_ev, sub_solar = st.tabs(["🚗 Petrol vs CNG vs Electric Vehicle Dynamics", "☀️ Rooftop Solar Benefit Estimator"])
     
     with sub_ev:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown(f"<p class='cyber-label'>⚙️ STEP 1: SELECT YOUR VEHICLE TYPE / वाहन का प्रकार चुनें</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>⚙️ STEP 1: CONFIGURING OPERATIONAL METRICS / वाहन मापदंड सेट करें</p>", unsafe_allow_html=True)
         
-        vehicle_type = st.selectbox(
-            "Select Vehicle Category / वाहन प्रकार चुनें:",
-            ["Electric 2-Wheeler (Scooter/Bike)", "Electric 3-Wheeler (E-Rickshaw/Auto)", "Electric 4-Wheeler (Car/Fleet SUV)"]
-        )
-        
-        if "2-Wheeler" in vehicle_type:
-            default_mileage = 45.0
-            default_efficiency = 40.0
-            slider_max = 150
-            slider_val = 40
-        elif "3-Wheeler" in vehicle_type:
-            default_mileage = 25.0
-            default_efficiency = 12.0
-            slider_max = 200
-            slider_val = 80
-        else:
-            default_mileage = 14.0
-            default_efficiency = 6.5
-            slider_max = 400
-            slider_val = 120
-
-        c1, c2 = st.columns(2)
+        c1, c2, c3 = st.columns(3)
         with c1:
-            daily_km = st.slider("Average Daily Running Distance (KM per Day / हर दिन कितना चलते हैं):", min_value=10, max_value=slider_max, value=slider_val, key="ev_slider")
-            fuel_price = st.number_input("Current Petrol / Diesel Rate (₹ per Liter / पेट्रोल की कीमत):", min_value=80.0, value=104.0, key="ev_fuel")
+            daily_km = st.slider("Average Daily Running Distance (KM per Day):", min_value=10, max_value=350, value=80, key="multi_slider")
+            fuel_price = st.number_input("Petrol Price (₹ per Liter):", min_value=80.0, value=104.0, key="p_rate")
+            petrol_mileage = st.number_input("Petrol Car Mileage (KM / Liter):", min_value=5.0, value=15.0, key="p_mil")
         with c2:
-            ev_efficiency = st.number_input("EV Vehicle Mileage (KM per 1 Unit of Charge / 1 यूनिट में कितने KM चलेगी):", min_value=1.0, value=default_efficiency, key="ev_eff")
-            grid_tariff = st.number_input("Your Home Electricity Rate (₹ per Unit / बिजली बिल दर):", min_value=3.0, value=8.5, key="ev_tariff")
+            cng_price = st.number_input("CNG Price (₹ per KG):", min_value=60.0, value=82.5, key="cng_rate")
+            cng_mileage = st.number_input("CNG Car Mileage (KM / KG):", min_value=10.0, value=22.0, key="cng_mil")
+        with c3:
+            grid_tariff = st.number_input("Electricity Rate (₹ per Unit):", min_value=3.0, value=8.5, key="ev_rate")
+            ev_efficiency = st.number_input("EV Car Mileage (KM / 1 Unit Charge):", min_value=1.0, value=6.5, key="ev_mil")
         
-        f_cost_day = (daily_km / default_mileage) * fuel_price
-        e_cost_day = (daily_km / ev_efficiency) * grid_tariff
-        
-        petrol_per_km = fuel_price / default_mileage
+        # Performance Math Matrix Calculations
+        petrol_per_km = fuel_price / petrol_mileage
+        cng_per_km = cng_price / cng_mileage
         ev_per_km = grid_tariff / ev_efficiency
         
-        saved_monthly = (f_cost_day - e_cost_day) * 30
-        saved_annual = saved_monthly * 12
+        cost_petrol_month = petrol_per_km * daily_km * 30
+        cost_cng_month = cng_per_km * daily_km * 30
+        cost_ev_month = ev_per_km * daily_km * 30
         
-        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 REAL SAVINGS ESTIMATE / आपकी कुल अनुमानित बचत</p>", unsafe_allow_html=True)
-        rc1, rc2, rc3, rc4 = st.columns(4)
+        saved_vs_petrol_annual = (cost_petrol_month - cost_ev_month) * 12
+        saved_vs_cng_annual = (cost_cng_month - cost_ev_month) * 12
+        
+        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 COST PER KM COMPARISON / प्रति किलोमीटर खर्चा</p>", unsafe_allow_html=True)
+        rc1, rc2, rc3 = st.columns(3)
         rc1.metric("⛽ Petrol Cost per KM", f"₹{petrol_per_km:.2f} / KM")
-        rc2.metric("⚡ Electric Cost per KM", f"₹{ev_per_km:.2f} / KM")
-        rc3.metric("📉 Monthly Bachat (बचत)", f"₹{saved_monthly:,.2f}")
-        rc4.metric("✨ Yearly Net Bachat (बचत)", f"₹{saved_annual:,.2f}")
+        rc2.metric("🟢 CNG Cost per KM", f"₹{cng_per_km:.2f} / KM")
+        rc3.metric("⚡ Electric Cost per KM", f"₹{ev_per_km:.2f} / KM")
+        
+        st.markdown("<p class='cyber-label' style='margin-top:15px;'>📉 NET ESTIMATED MONTHLY RUNNING BILL / मासिक खर्च</p>", unsafe_allow_html=True)
+        rm1, rm2, rm3 = st.columns(3)
+        rm1.metric("Petrol Monthly Bill", f"₹{cost_petrol_month:,.2f}")
+        rm2.metric("CNG Monthly Bill", f"₹{cost_cng_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_cng_month:,.0f} vs Petrol", delta_color="inverse")
+        rm3.metric("EV Monthly Bill", f"₹{cost_ev_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_ev_month:,.0f} vs Petrol", delta_color="inverse")
         st.markdown("</div>", unsafe_allow_html=True)
 
         # ═══════════════════════════════════════════════════════════════════════
-        # 🚗 BUDGET MATCHING RECOMMENDATION ENGINE CORE
+        # 🚗 EXPANDED VEHICLE RECOMMENDATION MATRIX BY BUDGET & ENGINE TYPE
         # ═══════════════════════════════════════════════════════════════════════
         st.markdown("<div class='rec-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label' style='color: #129E59 !important; border-bottom: 1px solid rgba(12, 158, 89, 0.3);'>🎯 VEHICLE PURCHASE RECOMMENDATION BASED ON YOUR BUDGET</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label' style='color: #0e7490 !important; border-bottom: 1px solid rgba(14, 116, 144, 0.3);'>🎯 SMART VEHICLE CHOICE ENGINE BY TARGET BUDGET</p>", unsafe_allow_html=True)
         
         user_budget = st.selectbox(
-            "What is your target investment budget? (आपका वाहन खरीदने का बजट कितना है?):",
-            ["Under ₹2 Lakh (Budget options)", "₹5 Lakh to ₹10 Lakh (Mid Segment)", "text", "₹10 Lakh to ₹15 Lakh (Family Cars)", "Above ₹15 Lakh (Premium / Long Range)"]
+            "What is your target investment budget? (आपका बजट विकल्प चुनें):",
+            ["Under ₹7 Lakh (Entry Segment)", "₹7 Lakh to ₹12 Lakh (Mid Segment)", "₹12 Lakh to ₹18 Lakh (Family Upgrades)", "Above ₹18 Lakh (Premium / Long Range Range)"]
         )
 
-        st.markdown("<p style='font-size:0.9rem; font-weight:600; margin-bottom:5px;'>Best EV Upgrades For You:</p>", unsafe_allow_html=True)
+        st.markdown("##### 🏎️ Best Options in Your Selected Bracket:")
         
-        if "Under ₹2 Lakh" in user_budget:
-            st.info("🚲 **Top 2-Wheeler Choices:** Ola S1 X, TVS iQube, Bajaj Chetak, Hero Vida V1.\n\n🛺 **Top 3-Wheeler Commercial Options:** Mahindra Treo, Piaggio Ape E-City.")
-        elif "₹5 Lakh to ₹10 Lakh" in user_budget:
-            st.success("🚗 **Recommended Compact Cars:** MG Comet EV, Tata Tiago EV (Best value for city runs, low cost per KM).")
-        elif "₹10 Lakh to ₹15 Lakh" in user_budget:
-            st.success("🚗 **Recommended Family Cars:** Tata Tigor EV, Tata Punch EV, Citroen eC3 (Excellent cabin space and reliable range).")
+        if "Under ₹7 Lakh" in user_budget:
+            col_b1, col_b2, col_b3 = st.columns(3)
+            with col_b1:
+                st.markdown("📦 **PETROL OPTIONS**\n* Maruti Alto K10\n* Maruti WagonR\n* Hyundai Grand i10 Nios")
+            with col_b2:
+                st.markdown("🟢 **CNG OPTIONS**\n* Maruti WagonR CNG\n* Tata Tiago iCNG\n* Maruti Celerio CNG")
+            with col_b3:
+                st.markdown("⚡ **ELECTRIC OPTIONS**\n* MG Comet EV\n* Reva/Used Segment Market Only\n*(Consider CNG for high mileage at this budget)*")
+                
+        elif "₹7 Lakh to ₹12 Lakh" in user_budget:
+            col_b1, col_b2, col_b3 = st.columns(3)
+            with col_b1:
+                st.markdown("📦 **PETROL OPTIONS**\n* Maruti Swift / Baleno\n* Tata Punch / Nexon\n* Hyundai Exter / i20")
+            with col_b2:
+                st.markdown("🟢 **CNG OPTIONS**\n* Tata Punch iCNG\n* Maruti Brezza CNG\n* Hyundai Exter CNG")
+            with col_b3:
+                st.markdown("⚡ **ELECTRIC OPTIONS**\n* Tata Tiago EV\n* Tata Punch EV (Base Range)\n* Citroen eC3 (Live)")
+                
+        elif "₹12 Lakh to ₹18 Lakh" in user_budget:
+            col_b1, col_b2, col_b3 = st.columns(3)
+            with col_b1:
+                st.markdown("📦 **PETROL OPTIONS**\n* Hyundai Creta\n* Kia Seltos\n* Mahindra XUV700 (AX3)")
+            with col_b2:
+                st.markdown("🟢 **CNG OPTIONS**\n* Maruti Grand Vitara CNG\n* Toyota Urban Cruiser Taisor CNG\n* Maruti Ertiga CNG")
+            with col_b3:
+                st.markdown("⚡ **ELECTRIC OPTIONS**\n* Tata Nexon EV\n* Tata Punch EV (Long Range)\n* Mahindra XUV400")
         else:
-            st.success("🚘 **Recommended Premium/Long Range:** Tata Nexon EV, Mahindra XUV400, MG ZS EV, BYD Atto 3 (Top tier range configurations).")
+            col_b1, col_b2, col_b3 = st.columns(3)
+            with col_b1:
+                st.markdown("📦 **PETROL OPTIONS**\n* Mahindra Scorpio-N\n* Toyota Innova Hycross\n* Tata Safari")
+            with col_b2:
+                st.markdown("🟢 **CNG OPTIONS**\n*(CNG segments are highly limited in premium configurations)*")
+            with col_b3:
+                st.markdown("⚡ **ELECTRIC OPTIONS**\n* Tata Curvv EV\n* MG ZS EV\n* BYD Atto 3 / Seal")
             
-        st.markdown(f"💡 *Strategy Note:* Based on your daily usage profile of **{daily_km} KM**, an EV upgrade selected from this list will break even against traditional petrol assets within approximately **{max(1, int(150000/max(1, saved_annual)))} to 2 years**!")
+        st.markdown(f"💡 *Expert Advisory:* Because you drive **{daily_km} KM everyday**, your annual EV cost savings over Petrol is **₹{saved_vs_petrol_annual:,.2f}** and over CNG is **₹{max(0.0, saved_vs_cng_annual):,.2f}**. If you drive more than 50 KM daily, picking an EV or CNG asset will significantly lower your lifetime vehicle expenses.")
         st.markdown("</div>", unsafe_allow_html=True)
         
     with sub_solar:
@@ -337,7 +353,7 @@ with tab_chat:
     
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
-            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about PM Surya Ghar Solar Subsidies, rules, or EV loans in simple words."}
+            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about PM Surya Ghar Solar Subsidies, rules, or EV/CNG car policies in simple words."}
         ]
         
     for text_block in st.session_state.chat_history:
@@ -346,12 +362,12 @@ with tab_chat:
         else:
             st.markdown(f"""<div style="background: rgba(13, 22, 54, 0.95); border-left: 4px solid #129E59; padding: 14px 18px; border-radius: 4px 16px 16px 16px; color: #e2e8f0; margin-bottom: 14px; max-width: 85%;"><b>Sahayik AI Assistant:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
 
-    user_raw = st.chat_input("Ask a question here (जैसे: सोलर सब्सिडी कितनी मिलेगी?)...")
+    user_raw = st.chat_input("Ask a question here (जैसे: CNG कार पर टैक्स छूट है क्या?)...")
     if user_raw:
         st.session_state.chat_history.append({"role": "user", "content": user_raw})
         try:
             model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = "You are Green Sahayik, a helpful public assistant for regular Indian middle class users and farmers. Answer in extremely simple, friendly language. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
+            system_injection = "You are Green Sahayik, a helpful public assistant for regular Indian middle class users. Answer in extremely simple, friendly language. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
             response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
             bot_reply = response_container.text
             st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
@@ -368,7 +384,7 @@ with tab_subsidy:
     st.markdown("<p class='cyber-label'>🎯 CENTRAL GOVERNMENT STATE-WISE SUBSIDY AUDITOR</p>", unsafe_allow_html=True)
     
     state_domain = st.selectbox("Select Your State Jurisdiction (अपना राज्य चुनें):", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Commercial Plant System (दुकान/कारखाने की छत पर)", "Public Fast Charging Venture (सार्वजनिक वाहन चार्जिंग स्टेशन)"], key="sub_profile")
+    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Commercial Plant System (दुकान/कारखाने की छत पर)", "Public Fast Charging Venture (सार्वजनिक वाहन充电站)"], key="sub_profile")
     
     if st.button("CHECK SUBSIDY ELIGIBILITY / पात्रता जांचें 🔍"):
         timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -418,5 +434,4 @@ with tab_connect:
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.3.2 (2026 Open Public Build)")
-
+st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.4.0 (2026 Open Public Build)")
