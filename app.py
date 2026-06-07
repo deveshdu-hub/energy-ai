@@ -6,11 +6,11 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION BUILD 6.2.0
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // SIMPLIFIED CITIZEN BUILD
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="National Green Transition OS 🇮🇳",
+    page_title="PM Green Transition Portal 🇮🇳",
     page_icon="🇮🇳",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -44,21 +44,22 @@ st.markdown("""
     }
     
     .neon-title {
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Poppins', sans-serif;
         background: linear-gradient(135deg, #FF9933 10%, #FFFFFF 50%, #129E59 90%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 900;
-        letter-spacing: 2.5px;
+        font-weight: 800;
+        letter-spacing: 1px;
         text-shadow: 0 0 35px rgba(255, 153, 51, 0.15);
     }
     
     .cyber-label {
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Poppins', sans-serif;
         color: #00F0FF !important;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
-        font-size: 0.85rem;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
         border-bottom: 1px solid rgba(0, 240, 255, 0.2);
         padding-bottom: 6px;
         margin-bottom: 15px;
@@ -95,11 +96,12 @@ st.markdown("""
     }
     .stTabs [data-baseweb="tab"] {
         color: #94a3b8 !important;
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Poppins', sans-serif;
         background-color: transparent !important;
         border-radius: 6px !important;
         padding: 10px 20px !important;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
+        font-weight: 600;
     }
     .stTabs [aria-selected="true"] {
         color: #00F0FF !important;
@@ -127,7 +129,7 @@ st.markdown("""
     }
 
     div[data-testid="stMetricValue"] {
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Poppins', sans-serif;
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 1.65rem !important;
@@ -143,9 +145,9 @@ st.markdown("""
         background: linear-gradient(135deg, #FF9933, #129E59) !important;
         color: #030611 !important;
         border: none !important;
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Poppins', sans-serif;
         font-weight: 700 !important;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         border-radius: 6px !important;
         width: 100%;
     }
@@ -175,16 +177,16 @@ if not st.session_state.user_registered:
                 padding: 45px;
                 position: relative;
             ">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #00F0FF;"></span>
-                        <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #00F0FF; letter-spacing: 2px;">SECURE NODE // AUTH_GATE</span>
+                        <span style="font-family: 'Poppins', sans-serif; font-size: 0.8rem; color: #00F0FF; font-weight: 600;">🇮🇳 CITIZEN LOGIN / नागरिक लॉगिन</span>
                     </div>
-                    <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: #64748b;">v6.2.0</span>
+                    <span style="font-family: 'Poppins', sans-serif; font-size: 0.75rem; color: #64748b;">v6.3.0</span>
                 </div>
                 
-                <h2 class="neon-title" style="text-align:center; font-size:1.9rem; margin-bottom:5px; letter-spacing:3px;">NATIONAL GREEN TRANSITION OS</h2>
-                <p style="text-align:center; color: #94a3b8; font-size:0.85rem; font-family:'Orbitron'; margin-bottom:15px; letter-spacing:1px;">DIGITAL PUBLIC GOODS LAYER • INDIA</p>
+                <h2 class="neon-title" style="text-align:center; font-size:1.8rem; margin-bottom:5px;">PM GREEN TRANSITION PORTAL</h2>
+                <p style="text-align:center; color: #94a3b8; font-size:0.95rem; margin-bottom:15px;">हरित क्रांति डिजिटल सेवा - भारत सरकार</p>
             </div>
         """, unsafe_allow_html=True)
         
@@ -194,64 +196,64 @@ if not st.session_state.user_registered:
         in_c1, in_c2 = st.columns(2)
         
         with in_c1:
-            st.markdown("<p style='font-family:\"Orbitron\", sans-serif; font-size:0.75rem; color:#00F0FF; letter-spacing:1px; margin-bottom:8px;'>📱 MOBILE NUMBER / मोबाइल</p>", unsafe_allow_html=True)
-            mobile_in = st.text_input("Mobile", placeholder="10-Digit Mobile", max_chars=10, label_visibility="collapsed", key="gate_mobile")
+            st.markdown("<p style='font-family:\"Poppins\", sans-serif; font-size:0.8rem; color:#00F0FF; font-weight:600; margin-bottom:8px;'>📱 MOBILE NUMBER / मोबाइल नंबर</p>", unsafe_allow_html=True)
+            mobile_in = st.text_input("Mobile", placeholder="10-Digit Mobile No.", max_chars=10, label_visibility="collapsed", key="gate_mobile")
             
         with in_c2:
-            st.markdown("<p style='font-family:\"Orbitron\", sans-serif; font-size:0.75rem; color:#00F0FF; letter-spacing:1px; margin-bottom:8px;'>📍 AREA PIN CODE / पिन कोड</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-family:\"Poppins\", sans-serif; font-size:0.8rem; color:#00F0FF; font-weight:600; margin-bottom:8px;'>📍 AREA PIN CODE / पिन कोड</p>", unsafe_allow_html=True)
             pincode_in = st.text_input("Pincode", placeholder="6-Digit Pin Code", max_chars=6, label_visibility="collapsed", key="gate_pincode")
             
         st.markdown("<br>", unsafe_allow_html=True)
         
         # Action button cleanly aligned under the central column content
-        submit_btn = st.button("INITIALIZE SECURE TRANSITION MATRIX", use_container_width=True)
+        submit_btn = st.button("OPEN DASHBOARD / आगे बढ़ें ➡️", use_container_width=True)
         
         if submit_btn:
             if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
                 st.session_state.user_registered = True
                 st.session_state.user_mobile = mobile_in
                 st.session_state.user_pincode = pincode_in
-                st.toast("Authorization handshake successful.", icon="🇮🇳")
+                st.toast("Handshake Successful! Welcome.", icon="🇮🇳")
                 st.rerun()
             else:
-                st.error("⚠️ Security Validation Failed: Ensure mobile is 10 digits and pin code is 6 digits.")
+                st.error("⚠️ Error: Please check that your Mobile Number is 10 digits and Pin Code is 6 digits.")
                 
     st.stop()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🏛️ POST-REGISTRATION MAIN SYSTEM LANDING PAGE
 # ═══════════════════════════════════════════════════════════════════════════════
-st.markdown("<h1 class='neon-title' style='text-align: center; margin-top: 5px;'>NATIONAL GREEN TRANSITION OS</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; font-size: 0.8rem; font-family:Orbitron; color: #129E59; margin-top:-10px;'>ACTIVE SECTOR NODE // PIN CODE: {st.session_state.user_pincode} // USER ID: +91 ******{st.session_state.user_mobile[-4:]}</p>", unsafe_allow_html=True)
+st.markdown("<h1 class='neon-title' style='text-align: center; margin-top: 5px;'>PM GREEN TRANSITION PORTAL</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; font-size: 0.9rem; color: #129E59; margin-top:-10px; font-weight:600;'>🟢 ACTIVE NODE // PIN CODE: {st.session_state.user_pincode} // WELCOME USER</p>", unsafe_allow_html=True)
 
-# Main Telemetry Stats Banner
+# Main Telemetry Stats Banner (Simplified to Lakhs and Crores)
 m1, m2, m3, m4 = st.columns(4)
-m1.metric(label="☀️ PM Surya Ghar Base", value="4.1M+ Homes", delta="Target: 7.5M Sites")
-m2.metric(label="🚗 FAME III Support Allocation", value="₹10,000 Cr", delta="Active Budget Lifecycle")
-m3.metric(label="🔋 Grid Energy Storage", value="150 GW+", delta="ACC PLI Connected")
-m4.metric(label="🍃 Renewable Energy Share", value="45% Total", delta="Path to 500GW 2030")
+m1.metric(label="☀️ PM Surya Ghar Base", value="41 Lakh+ Homes", delta="Target: 75 Lakh")
+m2.metric(label="🚗 FAME III Support Scheme", value="₹10,000 Crore", delta="Active Fund Lifecycle")
+m3.metric(label="🔋 Total Grid Storage", value="150 GW Capacity", delta="ACC PLI Factories Active")
+m4.metric(label="🍃 Renewable Energy Share", value="45% Green Power", delta="Goal: 50% by 2030")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # Reordered App Tabs: Savings Calculator Front And Center
 tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
-    "📊 PETROL VS EV SAVINGS CALCULATOR",
-    "🤖 POLICY AI ASSISTANT",
-    "🎯 SUBSIDY COMPLIANCE AUDITOR",
-    "📡 NATIONAL ENERGY RADAR",
-    "🏛️ PUBLIC DISPATCH BRIDGE"
+    "💰 MY SAVINGS CALCULATOR (बचत कैलकुलेटर)",
+    "🤖 GREEN SAHAYIK (योजना हेल्प AI)",
+    "🎯 GOVT SUBSIDY CHECKER (सरकारी सब्सिडी)",
+    "📡 REGIONAL ENERGY NEWS (समाचार)",
+    "🏛️ CONNECT WITH OFFICIALS (अधिकारियों से जुड़ें)"
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🛠️ TAB 1: PETROL VS EV SAVINGS CALCULATOR
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_calc:
-    st.markdown("### 📊 Dual-Vector Economic Feasibility Systems")
-    sub_ev, sub_solar = st.tabs(["🚗 Commercial Electric Fleet Matrix", "☀️ Photovoltaic Power Plant Matrix"])
+    st.markdown("### 📊 Check Your Expenses & Green Savings Value")
+    sub_ev, sub_solar = st.tabs(["🚗 Petrol vs Electric Vehicle Savings", "☀️ Rooftop Solar Benefit Estimator"])
     
     with sub_ev:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown(f"<p class='cyber-label'>⚙️ VARIABLE INPUT: ELECTRIC VEHICLE MODEL (REGIONAL PROFILE: {st.session_state.user_pincode})</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='cyber-label'>⚙️ STEP 1: SELECT YOUR VEHICLE TYPE / वाहन का प्रकार चुनें</p>", unsafe_allow_html=True)
         
         vehicle_type = st.selectbox(
             "Select Vehicle Category / वाहन प्रकार चुनें:",
@@ -276,11 +278,11 @@ with tab_calc:
 
         c1, c2 = st.columns(2)
         with c1:
-            daily_km = st.slider("Average Daily Running Distance (KM / Day):", min_value=10, max_value=slider_max, value=slider_val, key="ev_slider")
-            fuel_price = st.number_input("Conventional Petrol / Diesel Resource Rate (₹ / Liter):", min_value=80.0, value=104.0, key="ev_fuel")
+            daily_km = st.slider("Average Daily Running Distance (KM per Day / हर दिन कितना चलते हैं):", min_value=10, max_value=slider_max, value=slider_val, key="ev_slider")
+            fuel_price = st.number_input("Current Petrol / Diesel Rate (₹ per Liter / पेट्रोल की कीमत):", min_value=80.0, value=104.0, key="ev_fuel")
         with c2:
-            ev_efficiency = st.number_input("Target EV Vehicle Efficiency Index (KM / kWh):", min_value=1.0, value=default_efficiency, key="ev_eff")
-            grid_tariff = st.number_input("Regional Discom Tariff Rate (₹ / Price per Unit):", min_value=3.0, value=8.5, key="ev_tariff")
+            ev_efficiency = st.number_input("EV Vehicle Mileage (KM per 1 Unit of Charge / 1 यूनिट में कितने KM चलेगी):", min_value=1.0, value=default_efficiency, key="ev_eff")
+            grid_tariff = st.number_input("Your Home Electricity Rate (₹ per Unit / बिजली बिल दर):", min_value=3.0, value=8.5, key="ev_tariff")
         
         f_cost_day = (daily_km / default_mileage) * fuel_price
         e_cost_day = (daily_km / ev_efficiency) * grid_tariff
@@ -291,33 +293,33 @@ with tab_calc:
         saved_monthly = (f_cost_day - e_cost_day) * 30
         saved_annual = saved_monthly * 12
         
-        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 DIRECT RUNNING COST METRICS BREAKDOWN</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 REAL SAVINGS ESTIMATE / आपकी कुल अनुमानित बचत</p>", unsafe_allow_html=True)
         rc1, rc2, rc3, rc4 = st.columns(4)
-        rc1.metric("⛽ Petrol Running Cost", f"₹{petrol_per_km:.2f} / KM")
-        rc2.metric("⚡ EV Running Cost", f"₹{ev_per_km:.2f} / KM")
-        rc3.metric("📉 Estimated Monthly Savings", f"₹{saved_monthly:,.2f}")
-        rc4.metric("✨ Estimated Annual Net Savings", f"₹{saved_annual:,.2f}")
+        rc1.metric("⛽ Petrol Cost per KM", f"₹{petrol_per_km:.2f} / KM")
+        rc2.metric("⚡ Electric Cost per KM", f"₹{ev_per_km:.2f} / KM")
+        rc3.metric("📉 Monthly Bachat (बचत)", f"₹{saved_monthly:,.2f}")
+        rc4.metric("✨ Yearly Net Bachat (बचत)", f"₹{saved_annual:,.2f}")
         st.markdown("</div>", unsafe_allow_html=True)
         
     with sub_solar:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label'>⚙️ VARIABLE INPUT: ROOFTOP PHOTOVOLTAIC INFRASTRUCTURE</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>⚙️ STEP 1: ROOFTOP SPACE & LIGHT BILL DETAILS</p>", unsafe_allow_html=True)
         
         c3, c4 = st.columns(2)
         with c3:
-            bill_monthly = st.number_input("Current Monthly Commercial Energy Cost (₹):", min_value=500, value=7500, key="sol_bill")
+            bill_monthly = st.number_input("Average Monthly Light Bill Amount (₹ / हर महीने का बिजली का बिल):", min_value=500, value=7500, key="sol_bill")
         with c4:
-            roof_footprint = st.number_input("Available Unobstructed Roof Footprint Area (Sq Ft):", min_value=100, value=500, key="sol_roof")
+            roof_footprint = st.number_input("Available Open Roof Area (Square Feet / छत पर खाली जगह):", min_value=100, value=500, key="sol_roof")
         
         max_feasible_kw = min((roof_footprint / 100), (bill_monthly / 1300))
         estimated_capex = max_feasible_kw * 62000
         carbon_offset = max_feasible_kw * 1.3  
         
-        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 TECHNICAL ASSESSMENT SPECS GENERATED</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 RECOMMENDED SOLAR PLANT SETUP SPECS</p>", unsafe_allow_html=True)
         v4, v5, v6 = st.columns(3)
-        v4.metric("☀️ Recommended Capacity Size", f"{max_feasible_kw:.1f} kWp")
-        v5.metric("💰 Estimated Project Capex Matrix", f"₹{estimated_capex:,.2f}")
-        v6.metric("🍃 Annual Carbon Savings Value", f"{carbon_offset:.2f} MT CO2e")
+        v4.metric("☀️ Recommended Solar Size", f"{max_feasible_kw:.1f} kW Size")
+        v5.metric("💰 Approx Setup Price (लागत)", f"₹{estimated_capex:,.2f}")
+        v6.metric("🍃 Annual Carbon Saved", f"{carbon_offset:.2f} Tons CO2")
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -325,25 +327,25 @@ with tab_calc:
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>⚡ STABLE ENDPOINT: ACTIVE // SECURE GOVERNMENT DATA KERNEL</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🤖 GREEN SAHAYIK AI HELP DESK // सरकारी योजना हेल्प डेस्क</p>", unsafe_allow_html=True)
     
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
-            {"role": "bot", "content": "Welcome to the NGT-OS Intelligence Node. I can provide analytical briefs on solar deployments, EV infrastructure financial models, or carbon-offset policy regulations."}
+            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about PM Surya Ghar Solar Subsidies, rules, or EV loans in simple words."}
         ]
         
     for text_block in st.session_state.chat_history:
         if text_block["role"] == "user":
-            st.markdown(f"""<div class="bubble-user"><b>Query User:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div class="bubble-user"><b>Your Question:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
         else:
-            st.markdown(f"""<div class="bubble-bot"><b>NGT-OS Core AI:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div class="bubble-bot"><b>Sahayik AI Assistant:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
 
-    user_raw = st.chat_input("Enter inter-ministerial policy or technical query...")
+    user_raw = st.chat_input("Ask a question here (जैसे: सोलर सब्सिडी कितनी मिलेगी?)...")
     if user_raw:
         st.session_state.chat_history.append({"role": "user", "content": user_raw})
         try:
             model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = "You are the National Green Transition OS Core Intelligence. Give structured, objective, public-sector ready answers limited to 150 words."
+            system_injection = "You are Green Sahayik, a helpful public assistant for regular Indian middle class users and farmers. Answer in extremely simple, friendly language. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
             response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
             bot_reply = response_container.text
             st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
@@ -357,26 +359,24 @@ with tab_chat:
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_subsidy:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🎯 OFFICIAL DISCOM REGULATORY COMPLIANCE MONITOR</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🎯 CENTRAL GOVERNMENT STATE-WISE SUBSIDY AUDITOR</p>", unsafe_allow_html=True)
     
-    state_domain = st.selectbox("Select Target Regional State Jurisdiction Node:", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-    class_profile = st.radio("Asset Installation Infrastructure Target Profile:", ["Residential Rooftop Array", "Commercial Plant System", "Public Fast Charging Hub Venture"], key="sub_profile")
+    state_domain = st.selectbox("Select Your State Jurisdiction (अपना राज्य चुनें):", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
+    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Commercial Plant System (दुकान/कारखाने की छत पर)", "Public Fast Charging Venture (सार्वजनिक वाहन चार्जिंग स्टेशन)"], key="sub_profile")
     
-    audit_btn = st.button("RUN NATIONAL COMPLIANCE AUDIT & GENERATE REPORT")
-    
-    if audit_btn:
+    if st.button("CHECK SUBSIDY ELIGIBILITY / पात्रता जांचें 🔍"):
         timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         hash_input = f"{state_domain}-{class_profile}-{timestamp_str}"
         verification_hash = hashlib.sha256(hash_input.encode()).hexdigest()[:12].upper()
         
         st.markdown(f"""
         <div class="gov-report">
-            <h3 style="color:#0f172a; margin-top:0; text-transform:uppercase; font-family:'Orbitron';">🇮🇳 NATIONAL GREEN TRANSITION VERIFICATION REPORT</h3>
-            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated:</b> {timestamp_str} IST // <b>System Reference Hash:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">NGT-{verification_hash}</span></p>
+            <h3 style="color:#0f172a; margin-top:0; font-family:'Poppins'; font-weight:700;">🇮🇳 GOVERNMENT SUBSIDY VERIFICATION SLIP</h3>
+            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated Date:</b> {timestamp_str} IST // <b>Govt System Reference ID:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">NGT-{verification_hash}</span></p>
             <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
-            <p><b>Jurisdiction State Node:</b> {state_domain} Electricity Regulatory Commission</p>
-            <p><b>Project Profile Allocation:</b> {class_profile}</p>
-            <p style="color:#15803d; font-weight:bold;">🥇 Central Subsidy Eligibility: VERIFIED APPROVED (PM Surya Ghar Framework Compliant)</p>
+            <p><b>State Node Allocation:</b> {state_domain} State Electricity Regulatory Commission</p>
+            <p><b>Project Type Category:</b> {class_profile}</p>
+            <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">🥇 STATUS: ELIGIBLE APPROVED / आप केंद्रीय सब्सिडी योजना के पात्र हैं (PM Surya Ghar Framework Verified)</p>
         </div>
         """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
@@ -385,31 +385,31 @@ with tab_subsidy:
 # 🛠️ TAB 4: NATIONAL ENERGY RADAR
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_news:
-    st.markdown("### 📡 National Technology Tracks & Policy Horizons")
+    st.markdown("### 📡 Energy Updates & Village Schemes")
     n1, n2, n3 = st.columns(3)
     with n1:
-        st.markdown("<div class='cyber-card'><h5>🔋 ACC PLI Localized Scale</h5><p style='font-size:0.85rem; color:#94a3b8;'>Localized gigafactory metrics reducing production reliance on raw lithium imports.</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>🔋 Local Battery Making</h5><p style='font-size:0.85rem; color:#94a3b8;'>New Indian gigafactories are opening up, which will reduce the price of electric vehicle batteries soon.</p></div>", unsafe_allow_html=True)
     with n2:
-        st.markdown("<div class='cyber-card'><h5>🚗 V2G Grid Synchronization</h5><p style='font-size:0.85rem; color:#94a3b8;'>Vehicle-to-Grid power infrastructure initiates live high-volume municipal trials.</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>🚗 Sell Power Back to Grid</h5><p style='font-size:0.85rem; color:#94a3b8;'>New vehicle charging trials will soon let you sell extra charge from your car back to the electricity department for cash profit.</p></div>", unsafe_allow_html=True)
     with n3:
-        st.markdown("<div class='cyber-card'><h5>☀️ Perovskite Science</h5><p style='font-size:0.85rem; color:#94a3b8;'>Indian research institutes scale stable 28% efficiency cell performance parameters.</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>☀️ High-Yield Solar Cells</h5><p style='font-size:0.85rem; color:#94a3b8;'>Indian research centers develop new panels that produce 28% more energy even in regular sunlight environments.</p></div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🛠️ TAB 5: PUBLIC DISPATCH BRIDGE
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_connect:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🏛️ OFFICIAL DISPATCH WEB BRIDGE // DIRECT INTENT REGISTRY</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🏛️ LOCAL VENDOR DISPATCH // अधिकारियों और डीलरों से जुड़ें</p>", unsafe_allow_html=True)
     with st.form("dispatch_capture_form"):
-        exec_name = st.text_input("Full Official Representative Name:")
-        exec_contact = st.text_input("Verified Contact Number (+91 Mobile):")
-        submit_exec = st.form_submit_button("DISPATCH SYSTEM DISCOVERY REQUEST")
+        exec_name = st.text_input("Enter Full Name (अपना नाम लिखें):")
+        exec_contact = st.text_input("Enter Verified Mobile Number (अपना चालू मोबाइल नंबर):")
+        submit_exec = st.form_submit_button("SUBMIT CONNECTION REQUEST / जानकारी दर्ज करें 📤")
         if submit_exec and exec_name and exec_contact:
-            st.success(f"Success! Request logged for verification from pin code {st.session_state.user_pincode}.")
+            st.success(f"Success! Your request has been logged. Certified local solar dealers matching pin code {st.session_state.user_pincode} will reach out to you via call shortly.")
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.2.0 (2026 Open Public Build Profile)")
+st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.3.0 (2026 Open Public Build)")
