@@ -1,14 +1,12 @@
 import streamlit as st
 import google.generativeai as genai
 import pandas as pd
-from datetime import datetime
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🚀 FUTUREHQ.IN - STREAMLIT APP (STABLE PRODUCTION VERSION)
+# 🚀 FUTUREHQ.IN - UNIFIED PRODUCTION LAYER
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Configure Streamlit (MUST BE FIRST STREAMLIT CALL)
 st.set_page_config(
     page_title="FutureHQ - India Energy AI",
     page_icon="⚡",
@@ -16,252 +14,240 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Securely configure the Gemini API using Streamlit Secrets or Local Env
+# API Configuration Handshake
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 elif os.getenv("GEMINI_API_KEY"):
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 else:
-    st.error("Missing API Key. Please add GEMINI_API_KEY to your Streamlit Cloud Secrets.")
+    st.error("⚠️ Missing API Key. Please add GEMINI_API_KEY to your Streamlit Cloud Secrets.")
 
-# CSS Styling for Premium Dark UI Layout
+# Custom Luxury Dark Glass Theme Stylesheet
 st.markdown("""
     <style>
-    /* Main Theme */
-    body {
-        background-color: #0a0e27;
-        color: #ffffff;
-    }
-    .main {
-        background-color: #050816;
+    /* Global Base */
+    .stApp {
+        background-color: #050816 !important;
+        color: #ffffff !important;
     }
     
-    /* Header Styling */
+    /* Header Typography */
     h1 {
         background: linear-gradient(135deg, #8B5CF6, #00F0FF);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 48px;
-        font-weight: 800;
-        margin-bottom: 20px;
+        font-weight: 800 !important;
     }
-    h2 {
-        color: #00F0FF;
-        font-size: 32px;
-        font-weight: 700;
-    }
-    h3 {
-        color: #8B5CF6;
-        font-size: 24px;
+    h2, h3 {
+        color: #00F0FF !important;
+        font-weight: 700 !important;
     }
     
-    /* Button Styling */
-    .stButton button {
+    /* Tabs Control Custom Design */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 8px;
+        border-radius: 12px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #a1a1aa !important;
+        background-color: transparent !important;
+        border-radius: 8px !important;
+        padding: 8px 16px !important;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #00F0FF !important;
+        background-color: rgba(0, 240, 255, 0.1) !important;
+        font-weight: bold !important;
+    }
+
+    /* Message UI Formatting */
+    .chat-bubble-user {
         background: linear-gradient(135deg, #8B5CF6, #00F0FF);
+        padding: 14px 18px;
+        border-radius: 18px 18px 4px 18px;
         color: white;
-        border: none;
-        padding: 12px 32px;
-        border-radius: 8px;
-        font-weight: 600;
-        width: 100%;
-        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        max-width: 80%;
+        margin-left: auto;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
     }
-    .stButton button:hover {
-        box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
-        transform: translateY(-2px);
+    .chat-bubble-bot {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        padding: 14px 18px;
+        border-radius: 18px 18px 18px 4px;
+        color: white;
+        margin-bottom: 15px;
+        max-width: 80%;
+    }
+
+    /* Form & Input Fields */
+    div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(0, 240, 255, 0.2) !important;
+        color: white !important;
     }
     
-    /* Input Boxes */
-    .stTextInput input, .stTextArea textarea {
-        background-color: rgba(139, 92, 246, 0.1) !important;
-        border: 1px solid rgba(139, 92, 246, 0.3) !important;
+    /* Action Buttons */
+    .stButton button {
+        background: linear-gradient(135deg, #8B5CF6, #00F0FF) !important;
         color: white !important;
+        border: none !important;
+        font-weight: 600 !important;
         border-radius: 8px !important;
     }
     
-    /* Custom Alerts */
-    .success-box {
-        background-color: rgba(50, 255, 0, 0.1);
-        border: 1px solid #32FF00;
-        border-radius: 8px;
-        padding: 15px;
-        color: #32FF00;
-        margin: 10px 0;
-    }
-    .data-highlight {
-        color: #32FF00;
-        font-weight: 700;
-        font-family: monospace;
+    /* Success Container */
+    .success-card {
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid #00F0FF;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 15px 0;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize session states
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
 # ═══════════════════════════════════════════════════════════════════════════════
-# HERO SECTION
+# HERO DISPLAY FRAMEWORK
 # ═══════════════════════════════════════════════════════════════════════════════
-col1, col2 = st.columns([2, 1])
+st.markdown("<h1>⚡ FutureHQ</h1>", unsafe_allow_html=True)
+st.markdown("### Your ₹20L Energy Decision. In 2 Minutes. Actually Smart.")
 
-with col1:
-    st.markdown("# ⚡ FutureHQ")
-    st.markdown("## Your ₹20L Energy Decision. In 2 Minutes. Actually Smart.")
-    st.markdown("""
-    **Tired of making energy decisions BLIND?**
-    
-    AI-powered guidance for:
-    - 🚗 EV Infrastructure (40% YoY growth)
-    - ☀️ Solar Energy (30% YoY growth)  
-    - 🔋 Battery & Clean Tech (50% YoY growth)
-    """)
-
-with col2:
-    st.metric("EV Growth", "40%", "YoY")
-    st.metric("Solar Growth", "30%", "YoY")
-    st.metric("Battery Growth", "50%", "YoY")
+m1, m2, m3 = st.columns(3)
+m1.metric("🚗 EV Growth", "40%", "YoY Target")
+m2.metric("☀️ Solar Deployment", "30%", "YoY Expansion")
+m3.metric("🔋 Battery Systems", "50% ", "YoY Scale")
 
 st.markdown("---")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NAVIGATION TABS
+# UI CORE NAVIGATION TABS
 # ═══════════════════════════════════════════════════════════════════════════════
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🤖 AI Chat",
-    "💰 Investment Guide",
-    "📊 Market Data",
-    "🎯 Subsidy Checker",
-    "📱 Contact"
+    "🤖 Premium AI Chat", 
+    "💰 Investment Matrix", 
+    "📊 Market Insights", 
+    "🎯 Subsidy Auditor", 
+    "📱 Connect Gateway"
 ])
 
-# 🛠️ TAB 1: AI CHAT WINDOW
+# 🛠️ TAB 1: AI CHAT ENGINE
 with tab1:
-    st.subheader("🤖 Ask Anything About Energy")
+    st.markdown("### 🤖 FutureHQ Analytics Terminal")
     
-    # Render chat history
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-    
-    # User Input Field
-    user_input = st.chat_input("Ask about EV, Solar, Battery, or subsidies...")
-    
-    if user_input:
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.markdown(user_input)
+    # Persistent conversational frame state
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = [
+            {"role": "bot", "content": "👋 Welcome to FutureHQ. Ask me anything about local EV infrastructure, solar plant payback horizons, or central capital subsidies!"}
+        ]
         
-        with st.chat_message("assistant"):
-            with st.spinner("🤖 Processing energy insights..."):
-                try:
-                    system_context = (
-                        "You are FutureHQ, an AI expert on India's energy sector. "
-                        "Always use Indian context and format numbers in Lakhs/Crores. "
-                        "Provide sharp, data-driven answers restricted to under 150 words."
-                    )
-                    
-                    # Correct baseline configuration for stable endpoints
-                    model = genai.GenerativeModel(
-                        model_name="gemini-1.5-flash",
-                        system_instruction=system_context
-                    )
-                    
-                    response = model.generate_content(user_input)
-                    assistant_message = response.text
-                    
-                    st.markdown(assistant_message)
-                    st.session_state.messages.append({"role": "assistant", "content": assistant_message})
-                    
-                except Exception as e:
-                    st.error(f"❌ Connection Error: {str(e)}")
+    # Render Chat Log using the new responsive layout architecture
+    for dialogue in st.session_state.chat_history:
+        if dialogue["role"] == "user":
+            st.markdown(f'<div class="chat-bubble-user">{dialogue["content"]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="chat-bubble-bot">{dialogue["content"]}</div>', unsafe_allow_html=True)
 
-# 🛠️ TAB 2: INVESTMENT GUIDE
+    # Contextual suggestion row variables
+    suggestion = None
+    sc1, sc2, sc3, sc4 = st.columns(4)
+    if sc1.button("📈 Check Sector ROIs"): suggestion = "What are the investment ROIs for solar and EV?"
+    if sc2.button("🚗 EV Infra Growth"): suggestion = "Tell me about EV infrastructure scaling in India."
+    if sc3.button("☀️ Subsidy Match"): suggestion = "What are the main government solar subsidies?"
+    if sc4.button("🔋 Battery Trends"): suggestion = "Is battery manufacturing expanding?"
+
+    # Chat Input Capture
+    user_query = st.chat_input("Enter your energy or project query...")
+    query_to_process = user_query if user_query else suggestion
+
+    if query_to_process:
+        # Display user submission immediately
+        st.markdown(f'<div class="chat-bubble-user">{query_to_process}</div>', unsafe_allow_html=True)
+        st.session_state.chat_history.append({"role": "user", "content": query_to_process})
+        
+        try:
+            # Connect using the correct production configuration layout
+            model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+            
+            structured_prompt = (
+                f"System Prompt Context: You are FutureHQ AI, an expert advisor on Indian renewable infrastructure. "
+                f"Keep answers precise, insight-driven, format numbers clearly in Lakhs/Crores, and limit responses to 120 words.\n\n"
+                f"User Question: {query_to_process}"
+            )
+            
+            raw_response = model.generate_content(structured_prompt)
+            bot_text = raw_response.text
+            
+            st.markdown(f'<div class="chat-bubble-bot">{bot_text}</div>', unsafe_allow_html=True)
+            st.session_state.chat_history.append({"role": "bot", "content": bot_text})
+            st.rerun()
+            
+        except Exception as api_err:
+            st.error(f"⚠️ Live Stream Synchronization Interrupted: {str(api_err)}")
+
+# 🛠️ TAB 2: INVESTMENT MATRIX
 with tab2:
-    st.subheader("💰 Energy Investment Opportunities")
+    st.markdown("### 💰 Capital Allocation & Payback Targets")
     col1, col2, col3 = st.columns(3)
-    
     with col1:
-        st.markdown("### 🚗 EV Charging\n**Investment:** ₹50K - ₹5L\n**ROI:** 15-25% annually\n**Growth:** 40% YoY")
+        st.info("### 🚗 EV Charging\n* **Capex Bound:** ₹50K - ₹5 Lakhs\n* **Target ROI:** 15-25%\n* **Market Curve:** Hyper-Growth")
     with col2:
-        st.markdown("### ☀️ Solar Energy\n**Investment:** ₹2 - ₹5L\n**ROI:** 12-20% annually\n**Growth:** 30% YoY")
+        st.info("### ☀️ Infrastructure Solar\n* **Capex Bound:** ₹2L - ₹5 Lakhs\n* **Target ROI:** 12-20%\n* **Market Curve:** High Stability")
     with col3:
-        st.markdown("### 🔋 Battery Tech\n**Investment:** ₹20L - ₹1Cr\n**ROI:** 20-35% annually\n**Growth:** 50% YoY")
-    
-    st.markdown("---")
-    st.subheader("📈 Quick ROI Estimator")
-    inv_type = st.selectbox("Select Segment:", ["EV Charging", "Solar", "Battery Storage"])
-    amount = st.slider("Investment Amount (₹)", 50000, 5000000, 500000, step=50000)
-    years = st.slider("Horizon (Years)", 1, 15, 5)
-    
-    rates = {"EV Charging": 0.22, "Solar": 0.16, "Battery Storage": 0.28}
-    final_val = amount * ((1 + rates[inv_type]) ** years)
-    st.metric("Projected Value", f"₹{final_val:,.0f}", f"+₹{final_val-amount:,.0f} Net Profit")
+        st.info("### 🔋 Utility Storage\n* **Capex Bound:** ₹20L - ₹1 Crore\n* **Target ROI:** 20-35%\n* **Market Curve:** Emerging Play")
 
-# 🛠️ TAB 3: MARKET DATA
+# 🛠️ TAB 3: MARKET INSIGHTS
 with tab3:
-    st.subheader("📊 India Energy Market Matrix")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("### 🇮🇳 Segment Targets (2030)\n- **EV Target:** 30% of total vehicle share\n- **Solar Target:** 500 GW base integration")
-    with col2:
-        st.markdown("### 🎯 Active Allocations\n- **National Green Hydrogen:** ₹19,744 Cr\n- **Manufacturing PLI:** ₹10,000 Cr")
-        
-    chart_data = pd.DataFrame({
-        'Sector': ['EV', 'Solar', 'Renewables', 'Battery'],
-        'Growth Rate (%)': [40, 30, 35, 50]
+    st.markdown("### 📊 India Macro-Growth Framework (2030 Targets)")
+    graph_data = pd.DataFrame({
+        'Infrastructure Cluster': ['Solar Grid Integration', 'EV Base Fleet Share', 'Advanced Storage PLI'],
+        'Target Scale (CAGR %)': [30, 40, 50]
     })
-    st.bar_chart(chart_data.set_index('Sector'), color='#00F0FF')
+    st.bar_chart(graph_data.set_index('Infrastructure Cluster'), color="#00F0FF")
 
-# 🛠️ TAB 4: SUBSIDY CHECKER
+# 🛠️ TAB 4: SUBSIDY AUDITOR
 with tab4:
-    st.subheader("🎯 Check Your Subsidy Eligibility")
-    col1, col2 = st.columns(2)
-    state = col1.selectbox("Select State:", ["Delhi", "Maharashtra", "Karnataka", "Telangana", "Gujarat", "Other"])
-    roof_area = col2.number_input("Available Roof Area (sq meters):", min_value=10, value=50)
+    st.markdown("### 🎯 Local Rooftop Allocation Matrix")
+    select_state = st.selectbox("Operating State Domain:", ["Delhi", "Maharashtra", "Karnataka", "Gujarat", "Other"])
+    surface_area = st.number_input("Available Unobstructed Area (Sq Meters):", min_value=10, value=60)
     
-    if st.button("Calculate Subsidies"):
-        capacity = roof_area * 1.2
-        est_subsidy = capacity * 1000 * 28
+    if st.button("Run Feasibility Assessment"):
+        calculated_kw = surface_area * 1.2
+        computed_grant = calculated_kw * 28000
+        
         st.markdown(f"""
-        <div class="success-box">
-        <h3>✅ Estimated Allocation Profile</h3>
-        <ul>
-            <li>System Capacity Potential: <span class="data-highlight">{capacity:.1f} kW</span></li>
-            <li>Approximate Government Subsidy Wallet: <span class="data-highlight">₹{est_subsidy:,.0f}</span></li>
-        </ul>
-        <p>Apply via the National Solar Rooftop Portal using your verified electricity consumer number.</p>
+        <div class="success-card">
+            <h4>📊 Preliminary Asset Assessment Profile</h4>
+            <ul>
+                <li>Calculated Generation Capacity Vector: <b>{calculated_kw:.2f} kWp</b></li>
+                <li>Estimated Central Subsidy Grant Pool: <b>₹{computed_grant:,.2f}</b></li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
 
-# 🛠️ TAB 5: LEAD CAPTURE CONTACT FORM
+# 🛠️ TAB 5: CONNECT GATEWAY
 with tab5:
-    st.subheader("📱 Request Professional Execution Plan")
-    with st.form("lead_form"):
-        name = st.text_input("Name")
-        email = st.text_input("Email")
-        phone = st.text_input("Phone Number")
-        interest = st.selectbox("Primary Focus:", ["EV Infrastructure", "Commercial Solar", "Residential Solar", "Storage"])
-        submitted = st.form_submit_button("Submit Application")
+    st.markdown("### 📱 Secure Strategy Deployment Request")
+    with st.form("execution_lead_capture"):
+        c_name = st.text_input("Corporate / Client Executive Name")
+        c_mail = st.text_input("Official Electronic Mail Address")
+        c_phone = st.text_input("Active Phone Connection Signature")
+        c_segment = st.selectbox("Asset Class Intent:", ["Commercial Grid Solar", "EV Hub Deployment", "Industrial Battery System"])
         
-        if submitted:
-            if name and email and phone:
-                st.markdown(f"""
-                <div class="success-box">
-                🎉 Request logged for <b>{name}</b>! An energy specialist will reach out to <b>{email}</b> within 24 business hours.
-                </div>
-                """, unsafe_allow_html=True)
+        form_action = st.form_submit_button("Initialize Engineering Verification")
+        if form_action:
+            if c_name and c_mail and c_phone:
+                st.success(f"⚡ Project Record Registered for {c_name}. FutureHQ assignment protocols dispatched to {c_mail}.")
             else:
-                st.error("Please fill in all mandatory identity fields.")
+                st.error("⚠️ Form validation incomplete. All verification indices must be satisfied.")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# FOOTER
+# GLOBAL FOOTER BLOCK
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-f_col1, f_col2, f_col3 = st.columns(3)
-f_col1.markdown("### 🌍 FutureHQ\nIndia's Premium Energy Decision Platform")
-f_col2.markdown("### 📞 Connect\n📧 iefuture108@gmail.com\n🌐 [@india_energy_future__ev_ai](https://instagram.com/india_energy_future__ev_ai)")
-f_col3.markdown("### ⚡ Architecture\nEngineered with Gemini AI & Streamlit")
-
-st.caption("FutureHQ © 2026 | Smart Energy Strategy Decisions for India")
+f1, f2 = st.columns(2)
+f1.caption("FutureHQ Energy Systems © 2026 | Built for High Performance Deployment")
+f2.markdown("<p style='text-align: right; font-size: 12px; color: #a1a1aa;'>System Status: Connected to Production Model Layer</p>", unsafe_allow_html=True)
