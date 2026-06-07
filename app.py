@@ -6,7 +6,7 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // OPEN UTILITY DEPLOYMENT
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION BUILD 6.1.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
@@ -202,7 +202,7 @@ m4.metric(label="🍃 Renewable Energy Share", value="45% Total", delta="Path to
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Reordered App Tabs: Savings Calculator Is Now Front And Center
+# Reordered App Tabs: Savings Calculator Front And Center
 tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
     "📊 PETROL VS EV SAVINGS CALCULATOR",
     "🤖 POLICY AI ASSISTANT",
@@ -211,7 +211,9 @@ tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
     "🏛️ PUBLIC DISPATCH BRIDGE"
 ])
 
-# 🛠️ TAB 1: PETROL VS EV SAVINGS CALCULATOR (HOMEPAGE PRIORITY)
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🛠️ TAB 1: PETROL VS EV SAVINGS CALCULATOR (WITH MULTI-VEHICLE FORM FACTORS)
+# ═══════════════════════════════════════════════════════════════════════════════
 with tab_calc:
     st.markdown("### 📊 Dual-Vector Economic Feasibility Systems")
     sub_ev, sub_solar = st.tabs(["🚗 Commercial Electric Fleet Matrix", "☀️ Photovoltaic Power Plant Matrix"])
@@ -220,19 +222,42 @@ with tab_calc:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
         st.markdown(f"<p class='cyber-label'>⚙️ VARIABLE INPUT: ELECTRIC VEHILITY MODEL (REGIONAL PROFILE: {st.session_state.user_pincode})</p>", unsafe_allow_html=True)
         
+        # New Feature: Vehicle Form Factor Dropdown
+        vehicle_type = st.selectbox(
+            "Select Vehicle Category / वाहन प्रकार चुनें:",
+            ["Electric 2-Wheeler (Scooter/Bike)", "Electric 3-Wheeler (E-Rickshaw/Auto)", "Electric 4-Wheeler (Car/Fleet SUV)"]
+        )
+        
+        # Dynamic Profile Values Based on Vehicle Type
+        if "2-Wheeler" in vehicle_type:
+            default_mileage = 45.0
+            default_efficiency = 40.0  # KM per kWh
+            slider_max = 150
+            slider_val = 40
+        elif "3-Wheeler" in vehicle_type:
+            default_mileage = 25.0
+            default_efficiency = 12.0  # KM per kWh
+            slider_max = 200
+            slider_val = 80
+        else:  # 4-Wheeler Car
+            default_mileage = 14.0
+            default_efficiency = 6.5   # KM per kWh
+            slider_max = 400
+            slider_val = 120
+
         c1, c2 = st.columns(2)
         with c1:
-            daily_km = st.slider("Average Daily Running Distance (KM / Day):", min_value=10, max_value=400, value=120, key="ev_slider")
+            daily_km = st.slider("Average Daily Running Distance (KM / Day):", min_value=10, max_value=slider_max, value=slider_val, key="ev_slider")
             fuel_price = st.number_input("Conventional Petrol / Diesel Resource Rate (₹ / Liter):", min_value=80.0, value=104.0, key="ev_fuel")
         with c2:
-            ev_efficiency = st.number_input("Target EV Vehicle Efficiency Index (KM / kWh):", min_value=1.0, value=6.5, key="ev_eff")
+            ev_efficiency = st.number_input("Target EV Vehicle Efficiency Index (KM / kWh):", min_value=1.0, value=default_efficiency, key="ev_eff")
             grid_tariff = st.number_input("Regional Discom Tariff Rate (₹ / Price per Unit):", min_value=3.0, value=8.5, key="ev_tariff")
         
-        # Mathematical Vector Run Calculations
-        f_cost_day = (daily_km / 12) * fuel_price  # Assuming average fuel mileage baseline of 12km/L
+        # Exact Dynamic Math Pipeline
+        f_cost_day = (daily_km / default_mileage) * fuel_price
         e_cost_day = (daily_km / ev_efficiency) * grid_tariff
         
-        petrol_per_km = fuel_price / 12
+        petrol_per_km = fuel_price / default_mileage
         ev_per_km = grid_tariff / ev_efficiency
         
         saved_monthly = (f_cost_day - e_cost_day) * 30
@@ -267,7 +292,9 @@ with tab_calc:
         v6.metric("🍃 Annual Carbon Savings Value", f"{carbon_offset:.2f} MT CO2e")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# 🛠 ... KEEPING ALL SUBSEQUENT INTERACTIVE MODULES RUNNING AS COMPLETELY OPEN-ACCESS PIPELINES ...
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🛠️ OPEN PIPELINE MODULES CONTINUED
+# ═══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
     st.markdown("<p class='cyber-label'>⚡ STABLE ENDPOINT: ACTIVE // SECURE GOVERNMENT DATA KERNEL</p>", unsafe_allow_html=True)
@@ -348,4 +375,4 @@ with tab_connect:
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.0.0 (2026 Open Public Build Profile)")
+st.caption("⚡ National Green Transition OS | Digital Public Goods Framework Core v6.1.0 (2026 Open Public Build Profile)")d
