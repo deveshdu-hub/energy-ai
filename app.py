@@ -6,11 +6,11 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // TRIPLE-FUEL PRODUCTION BUILD v6.4.0
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION BUILD v6.5.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="Bharat Green Transition Portal 🇮🇳",
+    page_title="PM Green Transition Portal 🇮🇳",
     page_icon="🇮🇳",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -170,10 +170,10 @@ if not st.session_state.user_registered:
                         <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block;"></span>
                         <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">🇮🇳 CITIZEN LOGIN / नागरिक लॉगिन</span>
                     </div>
-                    <span style="font-size: 0.75rem; color: #64748b;">v6.4.0</span>
+                    <span style="font-size: 0.75rem; color: #64748b;">v6.5.0</span>
                 </div>
                 <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px; background: linear-gradient(135deg, #FF9933, #FFFFFF, #129E59); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PM GREEN TRANSITION PORTAL</h2>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">हरित क्रांति डिजिटल सेवा - भारत सरकार</p>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">हरित क्रांति DIGITAL SEVA - BHARAT SARKAR</p>
             </div>
         """, unsafe_allow_html=True)
         
@@ -270,6 +270,28 @@ with tab_calc:
         rm1.metric("Petrol Monthly Bill", f"₹{cost_petrol_month:,.2f}")
         rm2.metric("CNG Monthly Bill", f"₹{cost_cng_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_cng_month:,.0f} vs Petrol", delta_color="inverse")
         rm3.metric("EV Monthly Bill", f"₹{cost_ev_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_ev_month:,.0f} vs Petrol", delta_color="inverse")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # ═══════════════════════════════════════════════════════════════════════
+        # VISUAL TREND ANALYSIS INTERFACE (OPTION 1 GENERATED BRIDGE)
+        # ═══════════════════════════════════════════════════════════════════════
+        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>📈 3-YEAR CUMULATIVE RUNNING COST PROJECTION (cumulative expense trend)</p>", unsafe_allow_html=True)
+        
+        months_axis = list(range(1, 37))
+        petrol_trend = [int((cost_petrol_month * m)) for m in months_axis]
+        cng_trend = [int((cost_cng_month * m)) for m in months_axis]
+        ev_trend = [int((cost_ev_month * m)) for m in months_axis]
+        
+        chart_data = pd.DataFrame({
+            'Month': months_axis,
+            'Petrol Expenses': petrol_trend,
+            'CNG Expenses': cng_trend,
+            'Electric Expenses': ev_trend
+        }).set_index('Month')
+        
+        st.line_chart(chart_data)
+        st.markdown("<p style='font-size:0.8rem; text-align:center; color:#94a3b8;'>💡 Lower lines represent a wider gap in compounding savings over long periods.</p>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
         # ═══════════════════════════════════════════════════════════════════════
@@ -434,4 +456,4 @@ with tab_connect:
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.4.0 (2026 Open Public Build)")
+st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.5.0 (2026 Open Public Build)")
