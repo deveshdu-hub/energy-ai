@@ -6,7 +6,7 @@ import hashlib
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // PRODUCTION BUILD v6.5.0
+# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // FARMER INCLUSION BUILD v6.6.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
@@ -81,6 +81,14 @@ st.markdown("""
         border-radius: 10px;
         padding: 20px;
         margin-top: 15px;
+    }
+
+    .farmer-card {
+        background: linear-gradient(135deg, rgba(18, 158, 89, 0.15), rgba(3, 7, 18, 0.98));
+        border: 1px solid rgba(18, 158, 89, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
     }
 
     .gov-report {
@@ -170,7 +178,7 @@ if not st.session_state.user_registered:
                         <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block;"></span>
                         <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">🇮🇳 CITIZEN LOGIN / नागरिक लॉगिन</span>
                     </div>
-                    <span style="font-size: 0.75rem; color: #64748b;">v6.5.0</span>
+                    <span style="font-size: 0.75rem; color: #64748b;">v6.6.0</span>
                 </div>
                 <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px; background: linear-gradient(135deg, #FF9933, #FFFFFF, #129E59); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PM GREEN TRANSITION PORTAL</h2>
                 <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">हरित क्रांति DIGITAL SEVA - BHARAT SARKAR</p>
@@ -210,14 +218,14 @@ st.markdown(f"<p style='text-align: center; font-size: 0.9rem; color: #129E59; m
 # Main Telemetry Stats Banner
 m1, m2, m3, m4 = st.columns(4)
 m1.metric(label="☀️ PM Surya Ghar Base", value="41 Lakh+ Homes", delta="Target: 75 Lakh")
-m2.metric(label="🚗 FAME III Support Scheme", value="₹10,000 Crore", delta="Active Fund Lifecycle")
+m2.metric(label="🌾 PM-KUSUM Solar Pumps", value="7.5 Lakh+ Farmers", delta="60% Govt Subsidy Active")
 m3.metric(label="🔋 Total Grid Storage", value="150 GW Capacity", delta="ACC PLI Factories Active")
 m4.metric(label="🍃 Renewable Energy Share", value="45% Green Power", delta="Goal: 50% by 2030")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
-    "💰 MULTI-FUEL SAVINGS CALCULATOR (बचत कैलकुलेटर)",
+    "💰 SAVINGS & FARM CALCULATOR (बचत और किसान कैलकुलेटर)",
     "🤖 GREEN SAHAYIK (योजना हेल्प AI)",
     "🎯 GOVT SUBSIDY CHECKER (सरकारी सब्सिडी)",
     "📡 REGIONAL ENERGY NEWS (समाचार)",
@@ -225,12 +233,16 @@ tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 1: TRIPLE FUEL SYSTEM EXPENSES & COMPARISON MATRIX
+# 🛠️ TAB 1: MULTI-FUEL EXPENSES & KISAN SOLAR HUB
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_calc:
-    st.markdown("### 📊 Check Your Expenses & Green Savings Value")
-    sub_ev, sub_solar = st.tabs(["🚗 Petrol vs CNG vs Electric Vehicle Dynamics", "☀️ Rooftop Solar Benefit Estimator"])
+    sub_ev, sub_solar, sub_farmer = st.tabs([
+        "🚗 Petrol vs CNG vs EV Vehicle Dynamics", 
+        "☀️ Rooftop Solar Benefit Estimator",
+        "🌾 KISAN SOLAR HUB // पीएम कुसुम किसान योजना 🚜"
+    ])
     
+    # --- SUB-TAB 1: EV/CNG CALCULATOR ---
     with sub_ev:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
         st.markdown("<p class='cyber-label'>⚙️ STEP 1: CONFIGURING OPERATIONAL METRICS / वाहन मापदंड सेट करें</p>", unsafe_allow_html=True)
@@ -247,7 +259,6 @@ with tab_calc:
             grid_tariff = st.number_input("Electricity Rate (₹ per Unit):", min_value=3.0, value=8.5, key="ev_rate")
             ev_efficiency = st.number_input("EV Car Mileage (KM / 1 Unit Charge):", min_value=1.0, value=6.5, key="ev_mil")
         
-        # Performance Math Matrix Calculations
         petrol_per_km = fuel_price / petrol_mileage
         cng_per_km = cng_price / cng_mileage
         ev_per_km = grid_tariff / ev_efficiency
@@ -272,89 +283,51 @@ with tab_calc:
         rm3.metric("EV Monthly Bill", f"₹{cost_ev_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_ev_month:,.0f} vs Petrol", delta_color="inverse")
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # ═══════════════════════════════════════════════════════════════════════
-        # VISUAL TREND ANALYSIS INTERFACE (OPTION 1 GENERATED BRIDGE)
-        # ═══════════════════════════════════════════════════════════════════════
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label'>📈 3-YEAR CUMULATIVE RUNNING COST PROJECTION (cumulative expense trend)</p>", unsafe_allow_html=True)
-        
+        st.markdown("<p class='cyber-label'>📈 3-YEAR CUMULATIVE RUNNING COST PROJECTION</p>", unsafe_allow_html=True)
         months_axis = list(range(1, 37))
-        petrol_trend = [int((cost_petrol_month * m)) for m in months_axis]
-        cng_trend = [int((cost_cng_month * m)) for m in months_axis]
-        ev_trend = [int((cost_ev_month * m)) for m in months_axis]
-        
         chart_data = pd.DataFrame({
             'Month': months_axis,
-            'Petrol Expenses': petrol_trend,
-            'CNG Expenses': cng_trend,
-            'Electric Expenses': ev_trend
+            'Petrol Expenses': [int((cost_petrol_month * m)) for m in months_axis],
+            'CNG Expenses': [int((cost_cng_month * m)) for m in months_axis],
+            'Electric Expenses': [int((cost_ev_month * m)) for m in months_axis]
         }).set_index('Month')
-        
         st.line_chart(chart_data)
-        st.markdown("<p style='font-size:0.8rem; text-align:center; color:#94a3b8;'>💡 Lower lines represent a wider gap in compounding savings over long periods.</p>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # ═══════════════════════════════════════════════════════════════════════
-        # 🚗 EXPANDED VEHICLE RECOMMENDATION MATRIX BY BUDGET & ENGINE TYPE
-        # ═══════════════════════════════════════════════════════════════════════
+        # Budget Rec Layout
         st.markdown("<div class='rec-card'>", unsafe_allow_html=True)
         st.markdown("<p class='cyber-label' style='color: #0e7490 !important; border-bottom: 1px solid rgba(14, 116, 144, 0.3);'>🎯 SMART VEHICLE CHOICE ENGINE BY TARGET BUDGET</p>", unsafe_allow_html=True)
-        
-        user_budget = st.selectbox(
-            "What is your target investment budget? (आपका बजट विकल्प चुनें):",
-            ["Under ₹7 Lakh (Entry Segment)", "₹7 Lakh to ₹12 Lakh (Mid Segment)", "₹12 Lakh to ₹18 Lakh (Family Upgrades)", "Above ₹18 Lakh (Premium / Long Range Range)"]
-        )
-
-        st.markdown("##### 🏎️ Best Options in Your Selected Bracket:")
+        user_budget = st.selectbox("What is your target investment budget? (आपका बजट विकल्प चुनें):", ["Under ₹7 Lakh (Entry Segment)", "₹7 Lakh to ₹12 Lakh (Mid Segment)", "₹12 Lakh to ₹18 Lakh (Family Upgrades)", "Above ₹18 Lakh (Premium / Long Range Range)"])
         
         if "Under ₹7 Lakh" in user_budget:
             col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1:
-                st.markdown("📦 **PETROL OPTIONS**\n* Maruti Alto K10\n* Maruti WagonR\n* Hyundai Grand i10 Nios")
-            with col_b2:
-                st.markdown("🟢 **CNG OPTIONS**\n* Maruti WagonR CNG\n* Tata Tiago iCNG\n* Maruti Celerio CNG")
-            with col_b3:
-                st.markdown("⚡ **ELECTRIC OPTIONS**\n* MG Comet EV\n* Reva/Used Segment Market Only\n*(Consider CNG for high mileage at this budget)*")
-                
+            with col_b1: st.markdown("📦 **PETROL**\n* Maruti Alto K10\n* Maruti WagonR")
+            with col_b2: st.markdown("🟢 **CNG**\n* Maruti WagonR CNG\n* Tata Tiago iCNG")
+            with col_b3: st.markdown("⚡ **ELECTRIC**\n* MG Comet EV")
         elif "₹7 Lakh to ₹12 Lakh" in user_budget:
             col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1:
-                st.markdown("📦 **PETROL OPTIONS**\n* Maruti Swift / Baleno\n* Tata Punch / Nexon\n* Hyundai Exter / i20")
-            with col_b2:
-                st.markdown("🟢 **CNG OPTIONS**\n* Tata Punch iCNG\n* Maruti Brezza CNG\n* Hyundai Exter CNG")
-            with col_b3:
-                st.markdown("⚡ **ELECTRIC OPTIONS**\n* Tata Tiago EV\n* Tata Punch EV (Base Range)\n* Citroen eC3 (Live)")
-                
+            with col_b1: st.markdown("📦 **PETROL**\n* Maruti Swift\n* Tata Punch")
+            with col_b2: st.markdown("🟢 **CNG**\n* Tata Punch iCNG\n* Maruti Brezza CNG")
+            with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Tiago EV\n* Tata Punch EV")
         elif "₹12 Lakh to ₹18 Lakh" in user_budget:
             col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1:
-                st.markdown("📦 **PETROL OPTIONS**\n* Hyundai Creta\n* Kia Seltos\n* Mahindra XUV700 (AX3)")
-            with col_b2:
-                st.markdown("🟢 **CNG OPTIONS**\n* Maruti Grand Vitara CNG\n* Toyota Urban Cruiser Taisor CNG\n* Maruti Ertiga CNG")
-            with col_b3:
-                st.markdown("⚡ **ELECTRIC OPTIONS**\n* Tata Nexon EV\n* Tata Punch EV (Long Range)\n* Mahindra XUV400")
+            with col_b1: st.markdown("📦 **PETROL**\n* Hyundai Creta\n* Kia Seltos")
+            with col_b2: st.markdown("🟢 **CNG**\n* Maruti Grand Vitara CNG\n* Maruti Ertiga CNG")
+            with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Nexon EV\n* Mahindra XUV400")
         else:
             col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1:
-                st.markdown("📦 **PETROL OPTIONS**\n* Mahindra Scorpio-N\n* Toyota Innova Hycross\n* Tata Safari")
-            with col_b2:
-                st.markdown("🟢 **CNG OPTIONS**\n*(CNG segments are highly limited in premium configurations)*")
-            with col_b3:
-                st.markdown("⚡ **ELECTRIC OPTIONS**\n* Tata Curvv EV\n* MG ZS EV\n* BYD Atto 3 / Seal")
-            
-        st.markdown(f"💡 *Expert Advisory:* Because you drive **{daily_km} KM everyday**, your annual EV cost savings over Petrol is **₹{saved_vs_petrol_annual:,.2f}** and over CNG is **₹{max(0.0, saved_vs_cng_annual):,.2f}**. If you drive more than 50 KM daily, picking an EV or CNG asset will significantly lower your lifetime vehicle expenses.")
+            with col_b1: st.markdown("📦 **PETROL**\n* Mahindra Scorpio-N\n* Toyota Innova")
+            with col_b2: st.markdown("🟢 **CNG**\n* (Limited Segments)")
+            with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Curvv EV\n* MG ZS EV")
         st.markdown("</div>", unsafe_allow_html=True)
-        
+
+    # --- SUB-TAB 2: ROOFTOP SOLAR ---
     with sub_solar:
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
         st.markdown("<p class='cyber-label'>⚙️ STEP 1: ROOFTOP SPACE & LIGHT BILL DETAILS</p>", unsafe_allow_html=True)
-        
-        c3, c4 = st.columns(2)
-        with c3:
-            bill_monthly = st.number_input("Average Monthly Light Bill Amount (₹ / हर महीने का बिजली का बिल):", min_value=500, value=7500, key="sol_bill")
-        with c4:
-            roof_footprint = st.number_input("Available Open Roof Area (Square Feet / छत पर खाली जगह):", min_value=100, value=500, key="sol_roof")
-        
+        bill_monthly = st.number_input("Average Monthly Light Bill Amount (₹):", min_value=500, value=7500, key="sol_bill")
+        roof_footprint = st.number_input("Available Open Roof Area (Square Feet):", min_value=100, value=500, key="sol_roof")
         max_feasible_kw = min((roof_footprint / 100), (bill_monthly / 1300))
         estimated_capex = max_feasible_kw * 62000
         carbon_offset = max_feasible_kw * 1.3  
@@ -366,6 +339,69 @@ with tab_calc:
         v6.metric("🍃 Annual Carbon Saved", f"{carbon_offset:.2f} Tons CO2")
         st.markdown("</div>", unsafe_allow_html=True)
 
+    # ═══════════════════════════════════════════════════════════════════════
+    # 🚜 NEW FARMER CONFIGURATION SUITE (PM-KUSUM SCHEME HUB)
+    # ═══════════════════════════════════════════════════════════════════════
+    with sub_farmer:
+        st.markdown("<div class='farmer-card'>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label' style='color:#129E59 !important; border-bottom:1px solid rgba(18,158,89,0.3);'>🚜 PM-KUSUM SOLAR PUMP & URJA KHETI CALCULATOR // पीएम कुसुम योजना</p>", unsafe_allow_html=True)
+        
+        fc1, fc2 = st.columns(2)
+        with fc1:
+            pump_hp = st.selectbox("Select Diesel/Electric Pump Horsepower (पंप की क्षमता चुनें):", ["3 HP Pump", "5 HP Pump", "7.5 HP Pump", "10 HP Pump"])
+            diesel_hours_month = st.slider("How many hours do you run your pump per month? (महीने में पंप कितने घंटे चलता है?):", min_value=10, max_value=200, value=60)
+        with fc2:
+            crop_target = st.selectbox("Select Primary Crop for Cost Impact (अपनी मुख्य फसल चुनें):", ["Paddy (धान)", "Wheat (गेहूं)", "Sugarcane (गन्ना)", "Vegetables/Cash Crops (सब्जियां)"])
+            diesel_cost_liter = st.number_input("Local Diesel Price (₹ per Liter / डीजल का दाम):", min_value=85.0, value=92.5)
+
+        # Farmer Core Economics Logic Engine
+        if "3 HP" in pump_hp:
+            diesel_per_hour = 0.8
+            solar_kw_required = 3.0
+            total_setup_cost = 185000
+        elif "5 HP" in pump_hp:
+            diesel_per_hour = 1.2
+            solar_kw_required = 5.0
+            total_setup_cost = 260000
+        elif "7.5 HP" in pump_hp:
+            diesel_per_hour = 1.8
+            solar_kw_required = 7.5
+            total_setup_cost = 390000
+        else:
+            diesel_per_hour = 2.4
+            solar_kw_required = 10.0
+            total_setup_cost = 510000
+
+        # Math Matrix for PM-KUSUM
+        monthly_diesel_used = diesel_hours_month * diesel_per_hour
+        monthly_diesel_expense = monthly_diesel_used * diesel_cost_liter
+        yearly_diesel_expense = monthly_diesel_expense * 12
+
+        # 60% total subsidy split (30% Central + 30% State) under PM-KUSUM framework
+        govt_subsidy_share = total_setup_cost * 0.60
+        farmer_net_payable = total_setup_cost - govt_subsidy_share
+        
+        # Grid Tie Back Income Generation (Urja Kheti revenue model)
+        idle_months = 5 # Months where intense watering is not required
+        daily_excess_units = solar_kw_required * 4 # 4 units generated per kW per day
+        earned_grid_income_annual = idle_months * 30 * daily_excess_units * 4.50 # ₹4.50 per unit state pool purchase rate
+
+        st.markdown("<p class='cyber-label' style='color:#FF9933 !important; border-bottom:1px solid rgba(255,153,51,0.3);; margin-top:20px;'>💰 GOVERNMENT PM-KUSUM SUBSIDY REPORT // आपकी बचत और कमाई</p>", unsafe_allow_html=True)
+        
+        f_metric1, f_metric2, f_metric3 = st.columns(3)
+        f_metric1.metric("Current Diesel Cost (Yearly)", f"₹{yearly_diesel_expense:,.0f}", "Going down to ₹0 with Solar", delta_color="inverse")
+        f_metric2.metric("PM-KUSUM Govt Subsidy (60%)", f"₹{govt_subsidy_share:,.0f}", "Paid by Central & State Govts")
+        f_metric3.metric("Your Net Share (आपकी लागत)", f"₹{farmer_net_payable:,.0f}", f"Recovers in {max(1, round(farmer_net_payable/max(1, yearly_diesel_expense)))} Years!")
+
+        st.markdown(f"""
+        <div style="background-color: rgba(18, 158, 89, 0.08); border-left: 5px solid #129E59; padding: 15px; border-radius: 6px; margin-top: 15px;">
+            <h5 style="color:#ffffff; margin-top:0;">🌾 Crop Profitability Impact Matrix ({crop_target})</h5>
+            <p style="font-size:0.9rem; margin-bottom:5px; color:#e2e8f0;">By eliminating diesel fuel costs, your net production cost for <b>{crop_target}</b> will drop by roughly <b>22% to 35%</b> depending on season length.</p>
+            <p style="font-size:0.9rem; margin-bottom:0; color:#00F0FF;"><b>💰 Side-Income Opportunity (ऊर्जा खेती):</b> When your pump is idle during off-seasons, you can feed extra solar power back to your local grid sub-station and earn up to <b>₹{earned_grid_income_annual:,.0f} per year</b> as extra bank cash.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🛠️ TAB 2: POLICY AI ASSISTANT
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -375,7 +411,7 @@ with tab_chat:
     
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
-            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about PM Surya Ghar Solar Subsidies, rules, or EV/CNG car policies in simple words."}
+            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about PM Surya Ghar Solar Subsidies, PM-KUSUM solar pumps for farmers, or EV/CNG car policies in simple words."}
         ]
         
     for text_block in st.session_state.chat_history:
@@ -384,12 +420,12 @@ with tab_chat:
         else:
             st.markdown(f"""<div style="background: rgba(13, 22, 54, 0.95); border-left: 4px solid #129E59; padding: 14px 18px; border-radius: 4px 16px 16px 16px; color: #e2e8f0; margin-bottom: 14px; max-width: 85%;"><b>Sahayik AI Assistant:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
 
-    user_raw = st.chat_input("Ask a question here (जैसे: CNG कार पर टैक्स छूट है क्या?)...")
+    user_raw = st.chat_input("Ask a question here (जैसे: सोलर पंप पर कितनी सब्सिडी मिलेगी?)...")
     if user_raw:
         st.session_state.chat_history.append({"role": "user", "content": user_raw})
         try:
             model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = "You are Green Sahayik, a helpful public assistant for regular Indian middle class users. Answer in extremely simple, friendly language. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
+            system_injection = "You are Green Sahayik, a helpful public assistant for regular Indian middle class users and farmers. Answer in extremely simple, friendly language. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
             response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
             bot_reply = response_container.text
             st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
@@ -406,7 +442,7 @@ with tab_subsidy:
     st.markdown("<p class='cyber-label'>🎯 CENTRAL GOVERNMENT STATE-WISE SUBSIDY AUDITOR</p>", unsafe_allow_html=True)
     
     state_domain = st.selectbox("Select Your State Jurisdiction (अपना राज्य चुनें):", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Commercial Plant System (दुकान/कारखाने की छत पर)", "Public Fast Charging Venture (सार्वजनिक वाहन充电站)"], key="sub_profile")
+    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Agricultural Solar Pump / KUSUM Array (खेत में सोलर पंप)", "Commercial Plant System (दुकान/कारखाने की छत पर)"], key="sub_profile")
     
     if st.button("CHECK SUBSIDY ELIGIBILITY / पात्रता जांचें 🔍"):
         timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -420,7 +456,7 @@ with tab_subsidy:
             <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
             <p><b>State Node Allocation:</b> {state_domain} State Electricity Regulatory Commission</p>
             <p><b>Project Type Category:</b> {class_profile}</p>
-            <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">🥇 STATUS: ELIGIBLE APPROVED / आप केंद्रीय सब्सिडी योजना के पात्र हैं (PM Surya Ghar Framework Verified)</p>
+            <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">🥇 STATUS: ELIGIBLE APPROVED / आप केंद्रीय सब्सिडी योजना के पात्र हैं (PM Framework Verified)</p>
         </div>
         """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
@@ -434,7 +470,7 @@ with tab_news:
     with n1:
         st.markdown("<div class='cyber-card'><h5>🔋 Local Battery Making</h5><p style='font-size:0.85rem; color:#94a3b8;'>New Indian gigafactories are opening up, which will reduce the price of electric vehicle batteries soon.</p></div>", unsafe_allow_html=True)
     with n2:
-        st.markdown("<div class='cyber-card'><h5>🚗 Sell Power Back to Grid</h5><p style='font-size:0.85rem; color:#94a3b8;'>New vehicle charging trials will soon let you sell extra charge from your car back to the electricity department for cash profit.</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class='cyber-card'><h5>🚜 PM-KUSUM Targets</h5><p style='font-size:0.85rem; color:#94a3b8;'>State departments increase budget allocation to link rural tube-wells directly to dedicated clean feeders this financial quarter.</p></div>", unsafe_allow_html=True)
     with n3:
         st.markdown("<div class='cyber-card'><h5>☀️ High-Yield Solar Cells</h5><p style='font-size:0.85rem; color:#94a3b8;'>Indian research centers develop new panels that produce 28% more energy even in regular sunlight environments.</p></div>", unsafe_allow_html=True)
 
@@ -456,4 +492,4 @@ with tab_connect:
 # HUD FOOTER REEL CONTROL TERMINAL
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.5.0 (2026 Open Public Build)")
+st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.6.0 (2026 Open Public Build)")
