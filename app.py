@@ -3,15 +3,16 @@ import google.generativeai as genai
 import pandas as pd
 import datetime
 import hashlib
+import base64
 import os
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ NATIONAL GREEN TRANSITION OS (NGT-OS) // FARMER INCLUSION BUILD v6.6.0
+# 🛰️ BHARAT HARIT KRANTI PORTAL // COMMUNITY EDITION MAIN CORE v6.6.0
 # ═══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="PM Green Transition Portal 🇮🇳",
-    page_icon="🇮🇳",
+    page_title="Bharat Harit Kranti Portal 🇮🇳",
+    page_icon="🌾",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -31,19 +32,37 @@ if "user_pincode" not in st.session_state:
     st.session_state.user_pincode = ""
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🌌 GOVERNMENT MISSION CONTROL INTERFACE LAYER (CSS)
+# 🖼️ LOCAL SYSTEM ASSET ENCODER (BACKGROUND INJECTION)
 # ═══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+try:
+    bin_str = get_base64_image("IMG_6477.png")
+    bg_style = f"""
+        background-image: linear-gradient(to bottom, rgba(3, 6, 17, 0.88), rgba(4, 10, 31, 0.96)), url("data:image/png;base64,{bin_str}") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+    """
+except FileNotFoundError:
+    bg_style = "background-color: #030611 !important;"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 🌌 DASHBOARD INTERFACE LAYER (CSS)
+# ═══════════════════════════════════════════════════════════════════════════════
+st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
     
-    .stApp {
-        background-color: #030611 !important;
+    .stApp {{
+        {bg_style}
         color: #f1f5f9 !important;
         font-family: 'Poppins', sans-serif;
-    }
+    }}
     
-    .neon-title {
+    .neon-title {{
         font-family: 'Poppins', sans-serif;
         background: linear-gradient(135deg, #FF9933 10%, #FFFFFF 50%, #129E59 90%);
         -webkit-background-clip: text;
@@ -51,9 +70,9 @@ st.markdown("""
         font-weight: 800;
         letter-spacing: 0.5px;
         text-shadow: 0 0 30px rgba(255, 153, 51, 0.1);
-    }
+    }}
     
-    .cyber-label {
+    .cyber-label {{
         font-family: 'Poppins', sans-serif;
         color: #00F0FF !important;
         font-weight: 600;
@@ -63,35 +82,37 @@ st.markdown("""
         border-bottom: 1px solid rgba(0, 240, 255, 0.2);
         padding-bottom: 6px;
         margin-bottom: 15px;
-    }
+    }}
 
-    .cyber-card {
-        background: linear-gradient(135deg, rgba(8, 14, 38, 0.85), rgba(3, 7, 18, 0.98));
-        backdrop-filter: blur(20px);
+    .cyber-card {{
+        background: linear-gradient(135deg, rgba(8, 14, 38, 0.88), rgba(3, 7, 18, 0.98));
+        backdrop-filter: blur(25px);
         border: 1px solid rgba(0, 240, 255, 0.12);
         border-radius: 12px;
         padding: 24px;
         margin-bottom: 20px;
         box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.6);
-    }
+    }}
 
-    .rec-card {
-        background: linear-gradient(135deg, rgba(14, 116, 144, 0.15), rgba(3, 7, 18, 0.95));
+    .rec-card {{
+        background: linear-gradient(135deg, rgba(14, 116, 144, 0.18), rgba(3, 7, 18, 0.95));
+        backdrop-filter: blur(20px);
         border: 1px solid rgba(14, 116, 144, 0.3);
         border-radius: 10px;
         padding: 20px;
         margin-top: 15px;
-    }
+    }}
 
-    .farmer-card {
-        background: linear-gradient(135deg, rgba(18, 158, 89, 0.15), rgba(3, 7, 18, 0.98));
-        border: 1px solid rgba(18, 158, 89, 0.3);
+    .farmer-card {{
+        background: linear-gradient(135deg, rgba(12, 158, 89, 0.18), rgba(3, 7, 18, 0.98));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(12, 158, 89, 0.3);
         border-radius: 12px;
         padding: 24px;
         margin-bottom: 20px;
-    }
+    }}
 
-    .gov-report {
+    .gov-report {{
         background-color: #ffffff !important;
         color: #1e293b !important;
         border-left: 6px solid #FF9933;
@@ -101,16 +122,16 @@ st.markdown("""
         margin-top: 15px;
         font-family: 'Poppins', sans-serif;
         box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
+    }}
 
-    .stTabs [data-baseweb="tab-list"] {
+    .stTabs [data-baseweb="tab-list"] {{
         gap: 8px;
         background-color: rgba(7, 13, 33, 0.95);
         padding: 6px;
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .stTabs [data-baseweb="tab"] {
+    }}
+    .stTabs [data-baseweb="tab"] {{
         color: #94a3b8 !important;
         font-family: 'Poppins', sans-serif;
         background-color: transparent !important;
@@ -118,27 +139,27 @@ st.markdown("""
         padding: 10px 20px !important;
         font-size: 0.85rem;
         font-weight: 600;
-    }
-    .stTabs [aria-selected="true"] {
+    }}
+    .stTabs [aria-selected="true"] {{
         color: #00F0FF !important;
         background: rgba(0, 240, 255, 0.08) !important;
         border: 1px solid rgba(0, 240, 255, 0.25) !important;
-    }
+    }}
 
-    div[data-testid="stMetricValue"] {
+    div[data-testid="stMetricValue"] {{
         font-family: 'Poppins', sans-serif;
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 1.55rem !important;
-    }
+    }}
 
-    div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea, select {
+    div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea, select {{
         background-color: rgba(4, 8, 23, 0.9) !important;
         border: 1px solid rgba(0, 240, 255, 0.2) !important;
         color: #ffffff !important;
-    }
+    }}
 
-    .stButton button {
+    .stButton button {{
         background: linear-gradient(135deg, #FF9933, #129E59) !important;
         color: #030611 !important;
         border: none !important;
@@ -146,11 +167,11 @@ st.markdown("""
         font-weight: 700 !important;
         border-radius: 6px !important;
         width: 100%;
-    }
-    .stButton button:hover {
+    }}
+    .stButton button:hover {{
         box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
         color: #ffffff !important;
-    }
+    }}
     </style>
 """, unsafe_allow_html=True)
 
@@ -165,7 +186,7 @@ if not st.session_state.user_registered:
     with cent_co:
         st.markdown("""
             <div style="
-                background: linear-gradient(135deg, rgba(13, 22, 54, 0.9), rgba(4, 8, 23, 0.98));
+                background: linear-gradient(135deg, rgba(13, 22, 54, 0.92), rgba(4, 8, 23, 0.98));
                 backdrop-filter: blur(25px);
                 border: 2px solid rgba(0, 240, 255, 0.25);
                 box-shadow: 0 20px 50px rgba(0, 240, 255, 0.15);
@@ -176,12 +197,12 @@ if not st.session_state.user_registered:
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block;"></span>
-                        <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">🇮🇳 CITIZEN LOGIN / नागरिक लॉगिन</span>
+                        <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">👋 CITIZEN ACCESS / नागरिक लॉगिन</span>
                     </div>
                     <span style="font-size: 0.75rem; color: #64748b;">v6.6.0</span>
                 </div>
-                <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px; background: linear-gradient(135deg, #FF9933, #FFFFFF, #129E59); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PM GREEN TRANSITION PORTAL</h2>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">हरित क्रांति DIGITAL SEVA - BHARAT SARKAR</p>
+                <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px; background: linear-gradient(135deg, #FF9933, #FFFFFF, #129E59); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BHARAT HARIT KRANTI PORTAL</h2>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">अपना ग्रीन क्रांति डैशबोर्ड - APNA GREEN DASHBOARD</p>
             </div>
         """, unsafe_allow_html=True)
         
@@ -210,36 +231,36 @@ if not st.session_state.user_registered:
     st.stop()
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🏛️ POST-REGISTRATION MAIN SYSTEM LANDING PAGE
+# 🏛️ MAIN DASHBOARD VIEW
 # ═══════════════════════════════════════════════════════════════════════════════
-st.markdown("<h1 class='neon-title' style='text-align: center; margin-top: 5px;'>PM GREEN TRANSITION PORTAL</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; font-size: 0.9rem; color: #129E59; margin-top:-10px; font-weight:600;'>🟢 ACTIVE NODE // PIN CODE: {st.session_state.user_pincode} // WELCOME USER</p>", unsafe_allow_html=True)
+st.markdown("<h1 class='neon-title' style='text-align: center; margin-top: 5px;'>BHARAT HARIT KRANTI PORTAL</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; font-size: 0.9rem; color: #129E59; margin-top:-10px; font-weight:600;'>🟢 ACTIVE NODE // PIN CODE: {st.session_state.user_pincode} // WELCOME CITIZEN</p>", unsafe_allow_html=True)
 
-# Main Telemetry Stats Banner
+# National Estimates Metrics
 m1, m2, m3, m4 = st.columns(4)
-m1.metric(label="☀️ PM Surya Ghar Base", value="41 Lakh+ Homes", delta="Target: 75 Lakh")
-m2.metric(label="🌾 PM-KUSUM Solar Pumps", value="7.5 Lakh+ Farmers", delta="60% Govt Subsidy Active")
-m3.metric(label="🔋 Total Grid Storage", value="150 GW Capacity", delta="ACC PLI Factories Active")
-m4.metric(label="🍃 Renewable Energy Share", value="45% Green Power", delta="Goal: 50% by 2030")
+m1.metric(label="☀️ Rooftop Solar Base", value="41 Lakh+ Homes", delta="Target: 75 Lakh")
+m2.metric(label="🌾 Solar Irrigation Pumps", value="7.5 Lakh+ Farmers", delta="Up to 60% Subsidy Available")
+m3.metric(label="🔋 Total Grid Storage", value="150 GW Capacity", delta="Local Factories Active")
+m4.metric(label="🍃 Renewable Power Share", value="45% Green Energy", delta="Goal: 50% by 2030")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
     "💰 SAVINGS & FARM CALCULATOR (बचत और किसान कैलकुलेटर)",
     "🤖 GREEN SAHAYIK (योजना हेल्प AI)",
-    "🎯 GOVT SUBSIDY CHECKER (सरकारी सब्सिडी)",
+    "🎯 SUBSIDY ELIGIBILITY CHECKER (सब्सिडी जांचें)",
     "📡 REGIONAL ENERGY NEWS (समाचार)",
-    "🏛️ CONNECT WITH OFFICIALS (अधिकारियों से जुड़ें)"
+    "🤝 COMMUNITY CONNECTOR (डीलर नेटवर्क)"
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 1: MULTI-FUEL EXPENSES & KISAN SOLAR HUB
+# 🛠️ TAB 1: SAVINGS & FARM CALCULATOR
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_calc:
     sub_ev, sub_solar, sub_farmer = st.tabs([
         "🚗 Petrol vs CNG vs EV Vehicle Dynamics", 
         "☀️ Rooftop Solar Benefit Estimator",
-        "🌾 KISAN SOLAR HUB // पीएम कुसुम किसान योजना 🚜"
+        "🌾 KISAN SOLAR HUB // सोलर किसान योजना 🚜"
     ])
     
     # --- SUB-TAB 1: EV/CNG CALCULATOR ---
@@ -267,9 +288,6 @@ with tab_calc:
         cost_cng_month = cng_per_km * daily_km * 30
         cost_ev_month = ev_per_km * daily_km * 30
         
-        saved_vs_petrol_annual = (cost_petrol_month - cost_ev_month) * 12
-        saved_vs_cng_annual = (cost_cng_month - cost_ev_month) * 12
-        
         st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 COST PER KM COMPARISON / प्रति किलोमीटर खर्चा</p>", unsafe_allow_html=True)
         rc1, rc2, rc3 = st.columns(3)
         rc1.metric("⛽ Petrol Cost per KM", f"₹{petrol_per_km:.2f} / KM")
@@ -295,10 +313,10 @@ with tab_calc:
         st.line_chart(chart_data)
         st.markdown("</div>", unsafe_allow_html=True)
 
-        # Budget Rec Layout
+        # Budget Recommendations
         st.markdown("<div class='rec-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label' style='color: #0e7490 !important; border-bottom: 1px solid rgba(14, 116, 144, 0.3);'>🎯 SMART VEHICLE CHOICE ENGINE BY TARGET BUDGET</p>", unsafe_allow_html=True)
-        user_budget = st.selectbox("What is your target investment budget? (आपका बजट विकल्प चुनें):", ["Under ₹7 Lakh (Entry Segment)", "₹7 Lakh to ₹12 Lakh (Mid Segment)", "₹12 Lakh to ₹18 Lakh (Family Upgrades)", "Above ₹18 Lakh (Premium / Long Range Range)"])
+        st.markdown("<p class='cyber-label' style='color: #0e7490 !important; border-bottom: 1px solid rgba(14, 116, 144, 0.3);'>🎯 VEHICLE RECOMMENDATION ENGINE BY INVESTMENT BUDGET</p>", unsafe_allow_html=True)
+        user_budget = st.selectbox("What is your target budget? (अपना बजट विकल्प चुनें):", ["Under ₹7 Lakh (Entry Segment)", "₹7 Lakh to ₹12 Lakh (Mid Segment)", "₹12 Lakh to ₹18 Lakh (Family Upgrades)", "Above ₹18 Lakh (Premium / Long Range Range)"])
         
         if "Under ₹7 Lakh" in user_budget:
             col_b1, col_b2, col_b3 = st.columns(3)
@@ -318,7 +336,7 @@ with tab_calc:
         else:
             col_b1, col_b2, col_b3 = st.columns(3)
             with col_b1: st.markdown("📦 **PETROL**\n* Mahindra Scorpio-N\n* Toyota Innova")
-            with col_b2: st.markdown("🟢 **CNG**\n* (Limited Segments)")
+            with col_b2: st.markdown("🟢 **CNG**\n* (Limited Premium Configs)")
             with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Curvv EV\n* MG ZS EV")
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -339,12 +357,10 @@ with tab_calc:
         v6.metric("🍃 Annual Carbon Saved", f"{carbon_offset:.2f} Tons CO2")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ═══════════════════════════════════════════════════════════════════════
-    # 🚜 NEW FARMER CONFIGURATION SUITE (PM-KUSUM SCHEME HUB)
-    # ═══════════════════════════════════════════════════════════════════════
+    # --- SUB-TAB 3: KISAN SOLAR HUB ---
     with sub_farmer:
         st.markdown("<div class='farmer-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label' style='color:#129E59 !important; border-bottom:1px solid rgba(18,158,89,0.3);'>🚜 PM-KUSUM SOLAR PUMP & URJA KHETI CALCULATOR // पीएम कुसुम योजना</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label' style='color:#129E59 !important; border-bottom:1px solid rgba(12,158,89,0.3);'>🚜 SOLAR PUMP & URJA KHETI INCOME ESTIMATOR // किसान सोलर पंप गणना</p>", unsafe_allow_html=True)
         
         fc1, fc2 = st.columns(2)
         with fc1:
@@ -356,48 +372,35 @@ with tab_calc:
 
         # Farmer Core Economics Logic Engine
         if "3 HP" in pump_hp:
-            diesel_per_hour = 0.8
-            solar_kw_required = 3.0
-            total_setup_cost = 185000
+            diesel_per_hour, solar_kw_required, total_setup_cost = 0.8, 3.0, 185000
         elif "5 HP" in pump_hp:
-            diesel_per_hour = 1.2
-            solar_kw_required = 5.0
-            total_setup_cost = 260000
+            diesel_per_hour, solar_kw_required, total_setup_cost = 1.2, 5.0, 260000
         elif "7.5 HP" in pump_hp:
-            diesel_per_hour = 1.8
-            solar_kw_required = 7.5
-            total_setup_cost = 390000
+            diesel_per_hour, solar_kw_required, total_setup_cost = 1.8, 7.5, 390000
         else:
-            diesel_per_hour = 2.4
-            solar_kw_required = 10.0
-            total_setup_cost = 510000
+            diesel_per_hour, solar_kw_required, total_setup_cost = 2.4, 10.0, 510000
 
-        # Math Matrix for PM-KUSUM
-        monthly_diesel_used = diesel_hours_month * diesel_per_hour
-        monthly_diesel_expense = monthly_diesel_used * diesel_cost_liter
+        # Calculations
+        monthly_diesel_expense = diesel_hours_month * diesel_per_hour * diesel_cost_liter
         yearly_diesel_expense = monthly_diesel_expense * 12
-
-        # 60% total subsidy split (30% Central + 30% State) under PM-KUSUM framework
         govt_subsidy_share = total_setup_cost * 0.60
         farmer_net_payable = total_setup_cost - govt_subsidy_share
         
-        # Grid Tie Back Income Generation (Urja Kheti revenue model)
-        idle_months = 5 # Months where intense watering is not required
-        daily_excess_units = solar_kw_required * 4 # 4 units generated per kW per day
-        earned_grid_income_annual = idle_months * 30 * daily_excess_units * 4.50 # ₹4.50 per unit state pool purchase rate
+        # Grid Revenue Matrix
+        earned_grid_income_annual = 5 * 30 * (solar_kw_required * 4) * 4.50
 
-        st.markdown("<p class='cyber-label' style='color:#FF9933 !important; border-bottom:1px solid rgba(255,153,51,0.3);; margin-top:20px;'>💰 GOVERNMENT PM-KUSUM SUBSIDY REPORT // आपकी बचत और कमाई</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label' style='color:#FF9933 !important; border-bottom:1px solid rgba(255,153,51,0.3); margin-top:20px;'>💰 COST SAVINGS & SUBSIDY SUMMARY // आपकी बचत और संभावित कमाई</p>", unsafe_allow_html=True)
         
         f_metric1, f_metric2, f_metric3 = st.columns(3)
-        f_metric1.metric("Current Diesel Cost (Yearly)", f"₹{yearly_diesel_expense:,.0f}", "Going down to ₹0 with Solar", delta_color="inverse")
-        f_metric2.metric("PM-KUSUM Govt Subsidy (60%)", f"₹{govt_subsidy_share:,.0f}", "Paid by Central & State Govts")
-        f_metric3.metric("Your Net Share (आपकी लागत)", f"₹{farmer_net_payable:,.0f}", f"Recovers in {max(1, round(farmer_net_payable/max(1, yearly_diesel_expense)))} Years!")
+        f_metric1.metric("Current Diesel Cost (Yearly)", f"₹{yearly_diesel_expense:,.0f}", "Can drop to ₹0 with Solar", delta_color="inverse")
+        f_metric2.metric("Estimated Subsidy Share (60%)", f"₹{govt_subsidy_share:,.0f}", "Common Welfare Standard")
+        f_metric3.metric("Your Net Share (संभावित लागत)", f"₹{farmer_net_payable:,.0f}", f"Pays back in {max(1, round(farmer_net_payable/max(1, yearly_diesel_expense)))} Years!")
 
         st.markdown(f"""
-        <div style="background-color: rgba(18, 158, 89, 0.08); border-left: 5px solid #129E59; padding: 15px; border-radius: 6px; margin-top: 15px;">
+        <div style="background-color: rgba(12, 158, 89, 0.08); border-left: 5px solid #129E59; padding: 15px; border-radius: 6px; margin-top: 15px;">
             <h5 style="color:#ffffff; margin-top:0;">🌾 Crop Profitability Impact Matrix ({crop_target})</h5>
-            <p style="font-size:0.9rem; margin-bottom:5px; color:#e2e8f0;">By eliminating diesel fuel costs, your net production cost for <b>{crop_target}</b> will drop by roughly <b>22% to 35%</b> depending on season length.</p>
-            <p style="font-size:0.9rem; margin-bottom:0; color:#00F0FF;"><b>💰 Side-Income Opportunity (ऊर्जा खेती):</b> When your pump is idle during off-seasons, you can feed extra solar power back to your local grid sub-station and earn up to <b>₹{earned_grid_income_annual:,.0f} per year</b> as extra bank cash.</p>
+            <p style="font-size:0.9rem; margin-bottom:5px; color:#e2e8f0;">By eliminating diesel fuel costs, your net production cost for <b>{crop_target}</b> will drop by roughly <b>22% to 35%</b>.</p>
+            <p style="font-size:0.9rem; margin-bottom:0; color:#00F0FF;"><b>💰 Side-Income Opportunity (ऊर्जा खेती):</b> Earn up to <b>₹{earned_grid_income_annual:,.0f} per year</b> by selling extra power back during off-seasons.</p>
         </div>
         """, unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
@@ -407,11 +410,11 @@ with tab_calc:
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_chat:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🤖 GREEN SAHAYIK AI HELP DESK // सरकारी योजना हेल्प डेस्क</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🤖 GREEN SAHAYIK AI HELP DESK // योजना हेल्प डेस्क</p>", unsafe_allow_html=True)
     
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = [
-            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about PM Surya Ghar Solar Subsidies, PM-KUSUM solar pumps for farmers, or EV/CNG car policies in simple words."}
+            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about rooftop solar setups, community schemes, or EV/CNG car guidelines."}
         ]
         
     for text_block in st.session_state.chat_history:
@@ -420,43 +423,41 @@ with tab_chat:
         else:
             st.markdown(f"""<div style="background: rgba(13, 22, 54, 0.95); border-left: 4px solid #129E59; padding: 14px 18px; border-radius: 4px 16px 16px 16px; color: #e2e8f0; margin-bottom: 14px; max-width: 85%;"><b>Sahayik AI Assistant:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
 
-    user_raw = st.chat_input("Ask a question here (जैसे: सोलर पंप पर कितनी सब्सिडी मिलेगी?)...")
+    user_raw = st.chat_input("Ask a question here (जैसे: सोलर पंप पर कितनी बचत मिलेगी?)...")
     if user_raw:
         st.session_state.chat_history.append({"role": "user", "content": user_raw})
         try:
             model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = "You are Green Sahayik, a helpful public assistant for regular Indian middle class users and farmers. Answer in extremely simple, friendly language. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
+            system_injection = "You are Green Sahayik, a helpful assistant for middle class families and farmers in India. Answer in simple, friendly terms. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
             response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
-            bot_reply = response_container.text
-            st.session_state.chat_history.append({"role": "bot", "content": bot_reply})
+            st.session_state.chat_history.append({"role": "bot", "content": response_container.text})
             st.rerun()
         except Exception as e:
-            st.error("🔒 Security Key Connection Interrupted. Ensure Streamlit configurations match requirements.")
+            st.error("🔒 Security Key Connection Interrupted. Check backend secrets.")
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 3: SUBSIDY COMPLIANCE AUDITOR
+# 🛠️ TAB 3: SUBSIDY ELIGIBILITY CHECKER
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_subsidy:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🎯 CENTRAL GOVERNMENT STATE-WISE SUBSIDY AUDITOR</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🎯 REGIONAL GREEN SUBSIDY AUDITOR</p>", unsafe_allow_html=True)
     
-    state_domain = st.selectbox("Select Your State Jurisdiction (अपना राज्य चुनें):", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Agricultural Solar Pump / KUSUM Array (खेत में सोलर पंप)", "Commercial Plant System (दुकान/कारखाने की छत पर)"], key="sub_profile")
+    state_domain = st.selectbox("Select State Jurisdiction (अपना राज्य चुनें):", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
+    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Agricultural Solar Pump (खेत में सोलर पंप)", "Commercial Plant System (दुकान/कारखाने की छत पर)"], key="sub_profile")
     
-    if st.button("CHECK SUBSIDY ELIGIBILITY / पात्रता जांचें 🔍"):
+    if st.button("RUN ESTIMATE REPORT / पात्रता जांचें 🔍"):
         timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        hash_input = f"{state_domain}-{class_profile}-{timestamp_str}"
-        verification_hash = hashlib.sha256(hash_input.encode()).hexdigest()[:12].upper()
+        verification_hash = hashlib.sha256(f"{state_domain}-{class_profile}-{timestamp_str}".encode()).hexdigest()[:12].upper()
         
         st.markdown(f"""
         <div class="gov-report">
-            <h3 style="color:#0f172a; margin-top:0; font-family:'Poppins'; font-weight:700;">🇮🇳 GOVERNMENT SUBSIDY VERIFICATION SLIP</h3>
-            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated Date:</b> {timestamp_str} IST // <b>Govt System Reference ID:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">NGT-{verification_hash}</span></p>
+            <h3 style="color:#0f172a; margin-top:0; font-family:'Poppins'; font-weight:700;">📋 REGIONAL ESTIMATE AUDIT SLIP</h3>
+            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated Date:</b> {timestamp_str} IST // <b>System Reference ID:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">HRT-{verification_hash}</span></p>
             <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
-            <p><b>State Node Allocation:</b> {state_domain} State Electricity Regulatory Commission</p>
+            <p><b>State Node Allocation:</b> {state_domain} State Energy Zone</p>
             <p><b>Project Type Category:</b> {class_profile}</p>
-            <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">🥇 STATUS: ELIGIBLE APPROVED / आप केंद्रीय सब्सिडी योजना के पात्र हैं (PM Framework Verified)</p>
+            <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">🥇 STATUS: ELIGIBILITY APPROVED / सामान्य श्रेणी मापदंड अनुसार स्वीकृत</p>
         </div>
         """, unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
@@ -465,31 +466,27 @@ with tab_subsidy:
 # 🛠️ TAB 4: NATIONAL ENERGY RADAR
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_news:
-    st.markdown("### 📡 Energy Updates & Village Schemes")
+    st.markdown("### 📡 Energy Updates & Local Frameworks")
     n1, n2, n3 = st.columns(3)
-    with n1:
-        st.markdown("<div class='cyber-card'><h5>🔋 Local Battery Making</h5><p style='font-size:0.85rem; color:#94a3b8;'>New Indian gigafactories are opening up, which will reduce the price of electric vehicle batteries soon.</p></div>", unsafe_allow_html=True)
-    with n2:
-        st.markdown("<div class='cyber-card'><h5>🚜 PM-KUSUM Targets</h5><p style='font-size:0.85rem; color:#94a3b8;'>State departments increase budget allocation to link rural tube-wells directly to dedicated clean feeders this financial quarter.</p></div>", unsafe_allow_html=True)
-    with n3:
-        st.markdown("<div class='cyber-card'><h5>☀️ High-Yield Solar Cells</h5><p style='font-size:0.85rem; color:#94a3b8;'>Indian research centers develop new panels that produce 28% more energy even in regular sunlight environments.</p></div>", unsafe_allow_html=True)
+    with n1: st.markdown("<div class='cyber-card'><h5>🔋 Local Battery Making</h5><p style='font-size:0.85rem; color:#94a3b8;'>New local cell factories are coming online, which will help reduce electric vehicle costs over time.</p></div>", unsafe_allow_html=True)
+    with n2: st.markdown("<div class='cyber-card'><h5>🚜 Solar Pump Targets</h5><p style='font-size:0.85rem; color:#94a3b8;'>Regional departments expand allocations to connect rural tube-wells directly to dedicated clean feeders this quarter.</p></div>", unsafe_allow_html=True)
+    with n3: st.markdown("<div class='cyber-card'><h5>☀️ High-Yield Panels</h5><p style='font-size:0.85rem; color:#94a3b8;'>New multi-junction commercial panels are delivering better output rates even during heavy overcast conditions.</p></div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 🛠️ TAB 5: PUBLIC DISPATCH BRIDGE
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab_connect:
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🏛️ LOCAL VENDOR DISPATCH // अधिकारियों और डीलरों से जुड़ें</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🤝 VENDOR MATCHING NODE // स्थानीय डीलरों से संपर्क करें</p>", unsafe_allow_html=True)
     with st.form("dispatch_capture_form"):
         exec_name = st.text_input("Enter Full Name (अपना नाम लिखें):")
         exec_contact = st.text_input("Enter Verified Mobile Number (अपना चालू मोबाइल नंबर):")
-        submit_exec = st.form_submit_button("SUBMIT CONNECTION REQUEST / जानकारी दर्ज करें 📤")
-        if submit_exec and exec_name and exec_contact:
-            st.success(f"Success! Your request has been logged. Certified local solar dealers matching pin code {st.session_state.user_pincode} will reach out to you via call shortly.")
+        if st.form_submit_button("SUBMIT CONNECTION REQUEST / जानकारी दर्ज करें 📤") and exec_name and exec_contact:
+            st.success(f"Success! Registered local solution providers matching pin code {st.session_state.user_pincode} will contact you shortly.")
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HUD FOOTER REEL CONTROL TERMINAL
+# HUD FOOTER 
 # ═══════════════════════════════════════════════════════════════════════════════
 st.markdown("---")
-st.caption("⚡ National Green Transition OS | Digital Public Goods Portal Core v6.6.0 (2026 Open Public Build)")
+st.caption("⚡ Bharat Harit Kranti Portal | Digital Public Utilities Core Platform v6.6.0 (2026 Open Build)")
