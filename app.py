@@ -1,184 +1,423 @@
 import streamlit as st
-import google.generativeai as genai
 import pandas as pd
 import datetime
 import hashlib
 import base64
 import os
+import logging
+from typing import Optional, Dict, Any
+from contextlib import contextmanager
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛰️ BHARAT HARIT KRANTI PORTAL // COMMUNITY EDITION MAIN CORE v6.6.0
+# LOGGING CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
-
-st.set_page_config(
-    page_title="Bharat Harit Kranti Portal 🇮🇳",
-    page_icon="🌾",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-
-# Secure Encryption Bridge Key Handshake
-if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-elif os.getenv("GEMINI_API_KEY"):
-    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-# Initialize Session Registry for Public Users
-if "user_registered" not in st.session_state:
-    st.session_state.user_registered = False
-if "user_mobile" not in st.session_state:
-    st.session_state.user_mobile = ""
-if "user_pincode" not in st.session_state:
-    st.session_state.user_pincode = ""
+logger = logging.getLogger(__name__)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🖼️ LOCAL SYSTEM ASSET ENCODER (BACKGROUND INJECTION)
+# CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
-def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
-
-try:
-    bin_str = get_base64_image("IMG_6477.png")
-    bg_style = f"""
-        background-image: linear-gradient(to bottom, rgba(3, 6, 17, 0.88), rgba(4, 10, 31, 0.96)), url("data:image/png;base64,{bin_str}") !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-attachment: fixed !important;
-    """
-except FileNotFoundError:
-    bg_style = "background-color: #030611 !important;"
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🌌 DASHBOARD INTERFACE LAYER (CSS)
-# ═══════════════════════════════════════════════════════════════════════════════
-st.markdown(f"""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+class Config:
+    """Application configuration"""
+    APP_NAME = "Bharat Harit Kranti Portal"
+    APP_VERSION = "7.0.0"
+    COMPANY = "FutureHQ.in"
     
-    .stApp {{
-        {bg_style}
-        color: #f1f5f9 !important;
-        font-family: 'Poppins', sans-serif;
-    }}
+    # API Configuration
+    GEMINI_MODEL = "gemini-2.0-flash-exp"
     
-    .neon-title {{
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #FF9933 10%, #FFFFFF 50%, #129E59 90%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-        text-shadow: 0 0 30px rgba(255, 153, 51, 0.1);
-    }}
+    # Session Keys
+    SESSION_KEYS = {
+        'user_registered': False,
+        'user_mobile': "",
+        'user_pincode': "",
+        'chat_history': []
+    }
     
-    .cyber-label {{
-        font-family: 'Poppins', sans-serif;
-        color: #00F0FF !important;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-size: 0.9rem;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-        padding-bottom: 6px;
-        margin-bottom: 15px;
-    }}
-
-    .cyber-card {{
-        background: linear-gradient(135deg, rgba(8, 14, 38, 0.88), rgba(3, 7, 18, 0.98));
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(0, 240, 255, 0.12);
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.6);
-    }}
-
-    .rec-card {{
-        background: linear-gradient(135deg, rgba(14, 116, 144, 0.18), rgba(3, 7, 18, 0.95));
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(14, 116, 144, 0.3);
-        border-radius: 10px;
-        padding: 20px;
-        margin-top: 15px;
-    }}
-
-    .farmer-card {{
-        background: linear-gradient(135deg, rgba(12, 158, 89, 0.18), rgba(3, 7, 18, 0.98));
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(12, 158, 89, 0.3);
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 20px;
-    }}
-
-    .gov-report {{
-        background-color: #ffffff !important;
-        color: #1e293b !important;
-        border-left: 6px solid #FF9933;
-        border-right: 6px solid #129E59;
-        border-radius: 6px;
-        padding: 30px;
-        margin-top: 15px;
-        font-family: 'Poppins', sans-serif;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }}
-
-    .stTabs [data-baseweb="tab-list"] {{
-        gap: 8px;
-        background-color: rgba(7, 13, 33, 0.95);
-        padding: 6px;
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }}
-    .stTabs [data-baseweb="tab"] {{
-        color: #94a3b8 !important;
-        font-family: 'Poppins', sans-serif;
-        background-color: transparent !important;
-        border-radius: 6px !important;
-        padding: 10px 20px !important;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }}
-    .stTabs [aria-selected="true"] {{
-        color: #00F0FF !important;
-        background: rgba(0, 240, 255, 0.08) !important;
-        border: 1px solid rgba(0, 240, 255, 0.25) !important;
-    }}
-
-    div[data-testid="stMetricValue"] {{
-        font-family: 'Poppins', sans-serif;
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        font-size: 1.55rem !important;
-    }}
-
-    div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea, select {{
-        background-color: rgba(4, 8, 23, 0.9) !important;
-        border: 1px solid rgba(0, 240, 255, 0.2) !important;
-        color: #ffffff !important;
-    }}
-
-    .stButton button {{
-        background: linear-gradient(135deg, #FF9933, #129E59) !important;
-        color: #030611 !important;
-        border: none !important;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700 !important;
-        border-radius: 6px !important;
-        width: 100%;
-    }}
-    .stButton button:hover {{
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-        color: #ffffff !important;
-    }}
-    </style>
-""", unsafe_allow_html=True)
+    # Validation Rules
+    MOBILE_LENGTH = 10
+    PINCODE_LENGTH = 6
+    
+    # Solar Calculator Constants
+    SOLAR_COST_PER_KW = 62000
+    SOLAR_AREA_PER_KW = 100  # sq ft
+    BILL_TO_KW_RATIO = 1300
+    
+    # Farmer Calculator Constants
+    SUBSIDY_PERCENTAGE = 0.60
+    GRID_SELL_RATE = 4.50  # ₹ per unit
+    GRID_GENERATION_PER_KW = 4  # units per hour
+    
+    # Pump Configurations
+    PUMP_CONFIGS = {
+        "3 HP Pump": {"diesel_per_hour": 0.8, "solar_kw": 3.0, "setup_cost": 185000},
+        "5 HP Pump": {"diesel_per_hour": 1.2, "solar_kw": 5.0, "setup_cost": 260000},
+        "7.5 HP Pump": {"diesel_per_hour": 1.8, "solar_kw": 7.5, "setup_cost": 390000},
+        "10 HP Pump": {"diesel_per_hour": 2.4, "solar_kw": 10.0, "setup_cost": 510000}
+    }
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 📥 CITIZEN REGISTRATION ENTRY GATEWAY
+# ERROR HANDLING DECORATORS
 # ═══════════════════════════════════════════════════════════════════════════════
-if not st.session_state.user_registered:
+@contextmanager
+def error_handler(component: str, fallback_value: Any = None):
+    """Generic error handler context manager"""
+    try:
+        yield
+    except Exception as e:
+        logger.error(f"Error in {component}: {str(e)}")
+        if fallback_value is not None:
+            st.warning(f"⚠️ Unable to load {component}. Using default values.")
+        else:
+            st.error(f"❌ Error in {component}. Please refresh the page.")
+        return fallback_value
+
+def safe_execution(default_return=None):
+    """Decorator for safe function execution"""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                logger.error(f"Error in {func.__name__}: {str(e)}")
+                st.error(f"Operation failed: {str(e)}")
+                return default_return
+        return wrapper
+    return decorator
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GEMINI AI INTEGRATION WITH ERROR HANDLING
+# ═══════════════════════════════════════════════════════════════════════════════
+@safe_execution(default_return="AI service temporarily unavailable. Please try again later.")
+def get_gemini_response(prompt: str) -> str:
+    """Get response from Gemini AI with error handling"""
+    try:
+        import google.generativeai as genai
+        
+        # Configure API key from secrets or environment
+        api_key = None
+        if hasattr(st, 'secrets') and "GEMINI_API_KEY" in st.secrets:
+            api_key = st.secrets["GEMINI_API_KEY"]
+        elif os.getenv("GEMINI_API_KEY"):
+            api_key = os.getenv("GEMINI_API_KEY")
+        
+        if not api_key:
+            logger.warning("Gemini API key not configured")
+            return "AI service configuration incomplete. Please contact support."
+        
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel(model_name=Config.GEMINI_MODEL)
+        
+        system_prompt = """You are Green Sahayik, a helpful assistant for middle-class families and farmers in India. 
+        Respond in simple, friendly terms. Mix English and conversational Hindi naturally. 
+        Keep responses under 150 words. Be practical and solution-oriented."""
+        
+        full_prompt = f"{system_prompt}\n\nUser: {prompt}\n\nAssistant:"
+        response = model.generate_content(full_prompt)
+        
+        return response.text if response.text else "I couldn't generate a response. Please try rephrasing your question."
+    
+    except ImportError:
+        logger.error("Google GenerativeAI package not installed")
+        return "AI service package not installed. Please contact administrator."
+    except Exception as e:
+        logger.error(f"Gemini API error: {str(e)}")
+        return "AI service temporarily unavailable. Please try again later."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# BACKGROUND IMAGE HANDLER
+# ═══════════════════════════════════════════════════════════════════════════════
+@safe_execution(default_return="background-color: #030611 !important;")
+def get_background_style() -> str:
+    """Load and encode background image with error handling"""
+    image_path = "IMG_6477.png"
+    
+    if os.path.exists(image_path):
+        try:
+            with open(image_path, "rb") as img_file:
+                encoded = base64.b64encode(img_file.read()).decode()
+            return f"""
+                background-image: linear-gradient(to bottom, rgba(3, 6, 17, 0.88), rgba(4, 10, 31, 0.96)), 
+                url("data:image/png;base64,{encoded}") !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-attachment: fixed !important;
+            """
+        except Exception as e:
+            logger.error(f"Failed to load background image: {str(e)}")
+    
+    return "background: linear-gradient(135deg, #030611 0%, #0a0f2a 100%) !important;"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SESSION STATE INITIALIZATION
+# ═══════════════════════════════════════════════════════════════════════════════
+def init_session_state():
+    """Initialize session state variables"""
+    for key, default_value in Config.SESSION_KEYS.items():
+        if key not in st.session_state:
+            st.session_state[key] = default_value
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# VALIDATION FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+def validate_mobile(mobile: str) -> bool:
+    """Validate mobile number"""
+    return mobile and len(mobile) == Config.MOBILE_LENGTH and mobile.isdigit()
+
+def validate_pincode(pincode: str) -> bool:
+    """Validate pincode"""
+    return pincode and len(pincode) == Config.PINCODE_LENGTH and pincode.isdigit()
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CSS STYLES (Mobile Responsive)
+# ═══════════════════════════════════════════════════════════════════════════════
+def load_css():
+    """Load responsive CSS styles"""
+    bg_style = get_background_style()
+    
+    st.markdown(f"""
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+        
+        /* Base Styles */
+        .stApp {{
+            {bg_style}
+            color: #f1f5f9 !important;
+            font-family: 'Poppins', sans-serif;
+        }}
+        
+        /* Responsive Typography */
+        @media (max-width: 768px) {{
+            .stApp {{
+                font-size: 14px;
+            }}
+            h1 {{
+                font-size: 1.8rem !important;
+            }}
+            h2 {{
+                font-size: 1.4rem !important;
+            }}
+            h3 {{
+                font-size: 1.2rem !important;
+            }}
+        }}
+        
+        /* Neon Title */
+        .neon-title {{
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FF9933 10%, #FFFFFF 50%, #129E59 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 30px rgba(255, 153, 51, 0.1);
+            text-align: center;
+            margin: 10px 0;
+        }}
+        
+        /* Responsive Cards */
+        .cyber-card {{
+            background: linear-gradient(135deg, rgba(8, 14, 38, 0.88), rgba(3, 7, 18, 0.98));
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 240, 255, 0.12);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.6);
+        }}
+        
+        @media (max-width: 768px) {{
+            .cyber-card {{
+                padding: 15px;
+                margin-bottom: 15px;
+            }}
+        }}
+        
+        .farmer-card {{
+            background: linear-gradient(135deg, rgba(12, 158, 89, 0.18), rgba(3, 7, 18, 0.98));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(12, 158, 89, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }}
+        
+        @media (max-width: 768px) {{
+            .farmer-card {{
+                padding: 15px;
+            }}
+        }}
+        
+        .rec-card {{
+            background: linear-gradient(135deg, rgba(14, 116, 144, 0.18), rgba(3, 7, 18, 0.95));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(14, 116, 144, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }}
+        
+        .gov-report {{
+            background-color: #ffffff !important;
+            color: #1e293b !important;
+            border-left: 6px solid #FF9933;
+            border-right: 6px solid #129E59;
+            border-radius: 6px;
+            padding: 30px;
+            margin-top: 15px;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }}
+        
+        @media (max-width: 768px) {{
+            .gov-report {{
+                padding: 15px;
+                font-size: 0.9rem;
+            }}
+        }}
+        
+        .cyber-label {{
+            font-family: 'Poppins', sans-serif;
+            color: #00F0FF !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            padding-bottom: 6px;
+            margin-bottom: 15px;
+        }}
+        
+        /* Responsive Tabs */
+        .stTabs [data-baseweb="tab-list"] {{
+            gap: 8px;
+            background-color: rgba(7, 13, 33, 0.95);
+            padding: 6px;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }}
+        
+        @media (max-width: 768px) {{
+            .stTabs [data-baseweb="tab-list"] {{
+                gap: 4px;
+            }}
+            .stTabs [data-baseweb="tab"] {{
+                padding: 6px 12px !important;
+                font-size: 0.75rem !important;
+            }}
+        }}
+        
+        .stTabs [data-baseweb="tab"] {{
+            color: #94a3b8 !important;
+            font-family: 'Poppins', sans-serif;
+            background-color: transparent !important;
+            border-radius: 6px !important;
+            padding: 10px 20px !important;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }}
+        
+        .stTabs [aria-selected="true"] {{
+            color: #00F0FF !important;
+            background: rgba(0, 240, 255, 0.08) !important;
+            border: 1px solid rgba(0, 240, 255, 0.25) !important;
+        }}
+        
+        /* Metric Cards Responsive */
+        div[data-testid="stMetricValue"] {{
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 1.55rem !important;
+        }}
+        
+        @media (max-width: 768px) {{
+            div[data-testid="stMetricValue"] {{
+                font-size: 1.2rem !important;
+            }}
+            div[data-testid="stMetricLabel"] {{
+                font-size: 0.8rem !important;
+            }}
+        }}
+        
+        /* Form Inputs */
+        div[data-baseweb="input"] input, 
+        div[data-baseweb="textarea"] textarea, 
+        select {{
+            background-color: rgba(4, 8, 23, 0.9) !important;
+            border: 1px solid rgba(0, 240, 255, 0.2) !important;
+            color: #ffffff !important;
+        }}
+        
+        /* Buttons */
+        .stButton button {{
+            background: linear-gradient(135deg, #FF9933, #129E59) !important;
+            color: #030611 !important;
+            border: none !important;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700 !important;
+            border-radius: 6px !important;
+            width: 100%;
+            transition: all 0.3s ease;
+        }}
+        
+        .stButton button:hover {{
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }}
+        
+        /* Success/Error Messages */
+        .stAlert {{
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }}
+        
+        /* Responsive Grid */
+        @media (max-width: 768px) {{
+            .row-widget.stHorizontal {{
+                flex-wrap: wrap;
+            }}
+            .stColumns {{
+                flex-wrap: wrap;
+            }}
+        }}
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {{
+            width: 8px;
+            height: 8px;
+        }}
+        
+        ::-webkit-scrollbar-track {{
+            background: rgba(0, 0, 0, 0.3);
+        }}
+        
+        ::-webkit-scrollbar-thumb {{
+            background: #129E59;
+            border-radius: 4px;
+        }}
+        
+        ::-webkit-scrollbar-thumb:hover {{
+            background: #FF9933;
+        }}
+        </style>
+    """, unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REGISTRATION COMPONENT
+# ═══════════════════════════════════════════════════════════════════════════════
+def registration_screen():
+    """Display registration screen"""
     st.markdown("<br><br>", unsafe_allow_html=True)
     
     left_co, cent_co, last_co = st.columns([1, 2.2, 1])
@@ -194,299 +433,531 @@ if not st.session_state.user_registered:
                 padding: 40px;
                 text-align: center;
             ">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%; display: inline-block;"></span>
-                        <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">👋 CITIZEN ACCESS / नागरिक लॉगिन</span>
+                        <span style="height: 10px; width: 10px; background-color: #00F0FF; border-radius: 50%;"></span>
+                        <span style="font-size: 0.8rem; color: #00F0FF; font-weight: 600;">👋 CITIZEN ACCESS</span>
                     </div>
-                    <span style="font-size: 0.75rem; color: #64748b;">v6.6.0</span>
+                    <span style="font-size: 0.75rem; color: #64748b;">v{Config.APP_VERSION}</span>
                 </div>
-                <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px; background: linear-gradient(135deg, #FF9933, #FFFFFF, #129E59); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BHARAT HARIT KRANTI PORTAL</h2>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">अपना ग्रीन क्रांति डैशबोर्ड - APNA GREEN DASHBOARD</p>
+                <h2 style="font-weight: 800; color: #ffffff; margin-bottom: 5px;">
+                    BHARAT HARIT KRANTI PORTAL
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.95rem;">अपना ग्रीन क्रांति डैशबोर्ड</p>
             </div>
         """, unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        in_c1, in_c2 = st.columns(2)
-        with in_c1:
-            st.markdown("<p style='font-size:0.8rem; color:#00F0FF; font-weight:600; margin-bottom:8px;'>📱 MOBILE NUMBER / मोबाइल नंबर</p>", unsafe_allow_html=True)
-            mobile_in = st.text_input("Mobile", placeholder="10-Digit Mobile No.", max_chars=10, label_visibility="collapsed", key="gate_mobile")
+        with st.form("registration_form"):
+            col1, col2 = st.columns(2)
+            with col1:
+                mobile = st.text_input(
+                    "📱 Mobile Number", 
+                    placeholder="10-Digit Mobile No.",
+                    max_chars=10,
+                    help="Enter your 10-digit mobile number"
+                )
+            with col2:
+                pincode = st.text_input(
+                    "📍 Area Pin Code", 
+                    placeholder="6-Digit Pin Code",
+                    max_chars=6,
+                    help="Enter your 6-digit area pincode"
+                )
             
-        with in_c2:
-            st.markdown("<p style='font-size:0.8rem; color:#00F0FF; font-weight:600; margin-bottom:8px;'>📍 AREA PIN CODE / पिन कोड</p>", unsafe_allow_html=True)
-            pincode_in = st.text_input("Pincode", placeholder="6-Digit Pin Code", max_chars=6, label_visibility="collapsed", key="gate_pincode")
+            submitted = st.form_submit_button("🚀 Open Dashboard", use_container_width=True)
             
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        if st.button("OPEN DASHBOARD / आगे बढ़ें ➡️", use_container_width=True):
-            if len(mobile_in) == 10 and mobile_in.isdigit() and len(pincode_in) == 6 and pincode_in.isdigit():
-                st.session_state.user_registered = True
-                st.session_state.user_mobile = mobile_in
-                st.session_state.user_pincode = pincode_in
-                st.rerun()
-            else:
-                st.error("⚠️ Error: Please check that your Mobile Number is 10 digits and Pin Code is 6 digits.")
-                
+            if submitted:
+                if validate_mobile(mobile) and validate_pincode(pincode):
+                    st.session_state.user_registered = True
+                    st.session_state.user_mobile = mobile
+                    st.session_state.user_pincode = pincode
+                    st.rerun()
+                else:
+                    st.error("⚠️ Please check: Mobile (10 digits) and Pincode (6 digits) are required.")
+    
     st.stop()
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🏛️ MAIN DASHBOARD VIEW
+# VEHICLE CALCULATOR
 # ═══════════════════════════════════════════════════════════════════════════════
-st.markdown("<h1 class='neon-title' style='text-align: center; margin-top: 5px;'>BHARAT HARIT KRANTI PORTAL</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; font-size: 0.9rem; color: #129E59; margin-top:-10px; font-weight:600;'>🟢 ACTIVE NODE // PIN CODE: {st.session_state.user_pincode} // WELCOME CITIZEN</p>", unsafe_allow_html=True)
-
-# National Estimates Metrics
-m1, m2, m3, m4 = st.columns(4)
-m1.metric(label="☀️ Rooftop Solar Base", value="41 Lakh+ Homes", delta="Target: 75 Lakh")
-m2.metric(label="🌾 Solar Irrigation Pumps", value="7.5 Lakh+ Farmers", delta="Up to 60% Subsidy Available")
-m3.metric(label="🔋 Total Grid Storage", value="150 GW Capacity", delta="Local Factories Active")
-m4.metric(label="🍃 Renewable Power Share", value="45% Green Energy", delta="Goal: 50% by 2030")
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-tab_calc, tab_chat, tab_subsidy, tab_news, tab_connect = st.tabs([
-    "💰 SAVINGS & FARM CALCULATOR (बचत और किसान कैलकुलेटर)",
-    "🤖 GREEN SAHAYIK (योजना हेल्प AI)",
-    "🎯 SUBSIDY ELIGIBILITY CHECKER (सब्सिडी जांचें)",
-    "📡 REGIONAL ENERGY NEWS (समाचार)",
-    "🤝 COMMUNITY CONNECTOR (डीलर नेटवर्क)"
-])
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 1: SAVINGS & FARM CALCULATOR
-# ═══════════════════════════════════════════════════════════════════════════════
-with tab_calc:
-    sub_ev, sub_solar, sub_farmer = st.tabs([
-        "🚗 Petrol vs CNG vs EV Vehicle Dynamics", 
-        "☀️ Rooftop Solar Benefit Estimator",
-        "🌾 KISAN SOLAR HUB // सोलर किसान योजना 🚜"
-    ])
-    
-    # --- SUB-TAB 1: EV/CNG CALCULATOR ---
-    with sub_ev:
+def vehicle_calculator():
+    """Vehicle cost comparison calculator"""
+    with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label'>⚙️ STEP 1: CONFIGURING OPERATIONAL METRICS / वाहन मापदंड सेट करें</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>⚙️ Vehicle Cost Calculator</p>", unsafe_allow_html=True)
         
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            daily_km = st.slider("Average Daily Running Distance (KM per Day):", min_value=10, max_value=350, value=80, key="multi_slider")
-            fuel_price = st.number_input("Petrol Price (₹ per Liter):", min_value=80.0, value=104.0, key="p_rate")
-            petrol_mileage = st.number_input("Petrol Car Mileage (KM / Liter):", min_value=5.0, value=15.0, key="p_mil")
-        with c2:
-            cng_price = st.number_input("CNG Price (₹ per KG):", min_value=60.0, value=82.5, key="cng_rate")
-            cng_mileage = st.number_input("CNG Car Mileage (KM / KG):", min_value=10.0, value=22.0, key="cng_mil")
-        with c3:
-            grid_tariff = st.number_input("Electricity Rate (₹ per Unit):", min_value=3.0, value=8.5, key="ev_rate")
-            ev_efficiency = st.number_input("EV Car Mileage (KM / 1 Unit Charge):", min_value=1.0, value=6.5, key="ev_mil")
+        col1, col2, col3 = st.columns(3)
         
-        petrol_per_km = fuel_price / petrol_mileage
+        with col1:
+            daily_km = st.slider(
+                "Daily Distance (KM)", 
+                min_value=10, 
+                max_value=350, 
+                value=80,
+                help="Average kilometers driven per day"
+            )
+            petrol_price = st.number_input(
+                "Petrol Price (₹/L)", 
+                min_value=80.0, 
+                value=104.0,
+                format="%.2f"
+            )
+            petrol_mileage = st.number_input(
+                "Petrol Mileage (KM/L)", 
+                min_value=5.0, 
+                value=15.0,
+                format="%.1f"
+            )
+        
+        with col2:
+            cng_price = st.number_input(
+                "CNG Price (₹/KG)", 
+                min_value=60.0, 
+                value=82.5,
+                format="%.2f"
+            )
+            cng_mileage = st.number_input(
+                "CNG Mileage (KM/KG)", 
+                min_value=10.0, 
+                value=22.0,
+                format="%.1f"
+            )
+        
+        with col3:
+            ev_rate = st.number_input(
+                "Electricity Rate (₹/Unit)", 
+                min_value=3.0, 
+                value=8.5,
+                format="%.2f"
+            )
+            ev_mileage = st.number_input(
+                "EV Mileage (KM/Unit)", 
+                min_value=1.0, 
+                value=6.5,
+                format="%.1f"
+            )
+        
+        # Calculations
+        petrol_per_km = petrol_price / petrol_mileage
         cng_per_km = cng_price / cng_mileage
-        ev_per_km = grid_tariff / ev_efficiency
+        ev_per_km = ev_rate / ev_mileage
         
         cost_petrol_month = petrol_per_km * daily_km * 30
         cost_cng_month = cng_per_km * daily_km * 30
         cost_ev_month = ev_per_km * daily_km * 30
         
-        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 COST PER KM COMPARISON / प्रति किलोमीटर खर्चा</p>", unsafe_allow_html=True)
-        rc1, rc2, rc3 = st.columns(3)
-        rc1.metric("⛽ Petrol Cost per KM", f"₹{petrol_per_km:.2f} / KM")
-        rc2.metric("🟢 CNG Cost per KM", f"₹{cng_per_km:.2f} / KM")
-        rc3.metric("⚡ Electric Cost per KM", f"₹{ev_per_km:.2f} / KM")
+        st.markdown("<p class='cyber-label'>📊 Cost per KM</p>", unsafe_allow_html=True)
+        metric_cols = st.columns(3)
+        metric_cols[0].metric("Petrol", f"₹{petrol_per_km:.2f}/KM")
+        metric_cols[1].metric("CNG", f"₹{cng_per_km:.2f}/KM")
+        metric_cols[2].metric("EV", f"₹{ev_per_km:.2f}/KM")
         
-        st.markdown("<p class='cyber-label' style='margin-top:15px;'>📉 NET ESTIMATED MONTHLY RUNNING BILL / मासिक खर्च</p>", unsafe_allow_html=True)
-        rm1, rm2, rm3 = st.columns(3)
-        rm1.metric("Petrol Monthly Bill", f"₹{cost_petrol_month:,.2f}")
-        rm2.metric("CNG Monthly Bill", f"₹{cost_cng_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_cng_month:,.0f} vs Petrol", delta_color="inverse")
-        rm3.metric("EV Monthly Bill", f"₹{cost_ev_month:,.2f}", delta=f"Saves ₹{cost_petrol_month - cost_ev_month:,.0f} vs Petrol", delta_color="inverse")
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label'>📈 3-YEAR CUMULATIVE RUNNING COST PROJECTION</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>📈 Monthly Running Cost</p>", unsafe_allow_html=True)
+        metric_cols2 = st.columns(3)
+        metric_cols2[0].metric("Petrol", f"₹{cost_petrol_month:,.0f}")
+        metric_cols2[1].metric(
+            "CNG", 
+            f"₹{cost_cng_month:,.0f}",
+            delta=f"Save ₹{cost_petrol_month - cost_cng_month:,.0f}"
+        )
+        metric_cols2[2].metric(
+            "EV", 
+            f"₹{cost_ev_month:,.0f}",
+            delta=f"Save ₹{cost_petrol_month - cost_ev_month:,.0f}"
+        )
+        
+        # Chart
         months_axis = list(range(1, 37))
         chart_data = pd.DataFrame({
             'Month': months_axis,
-            'Petrol Expenses': [int((cost_petrol_month * m)) for m in months_axis],
-            'CNG Expenses': [int((cost_cng_month * m)) for m in months_axis],
-            'Electric Expenses': [int((cost_ev_month * m)) for m in months_axis]
+            'Petrol': [cost_petrol_month * m for m in months_axis],
+            'CNG': [cost_cng_month * m for m in months_axis],
+            'EV': [cost_ev_month * m for m in months_axis]
         }).set_index('Month')
-        st.line_chart(chart_data)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # Budget Recommendations
-        st.markdown("<div class='rec-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label' style='color: #0e7490 !important; border-bottom: 1px solid rgba(14, 116, 144, 0.3);'>🎯 VEHICLE RECOMMENDATION ENGINE BY INVESTMENT BUDGET</p>", unsafe_allow_html=True)
-        user_budget = st.selectbox("What is your target budget? (अपना बजट विकल्प चुनें):", ["Under ₹7 Lakh (Entry Segment)", "₹7 Lakh to ₹12 Lakh (Mid Segment)", "₹12 Lakh to ₹18 Lakh (Family Upgrades)", "Above ₹18 Lakh (Premium / Long Range Range)"])
         
-        if "Under ₹7 Lakh" in user_budget:
-            col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1: st.markdown("📦 **PETROL**\n* Maruti Alto K10\n* Maruti WagonR")
-            with col_b2: st.markdown("🟢 **CNG**\n* Maruti WagonR CNG\n* Tata Tiago iCNG")
-            with col_b3: st.markdown("⚡ **ELECTRIC**\n* MG Comet EV")
-        elif "₹7 Lakh to ₹12 Lakh" in user_budget:
-            col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1: st.markdown("📦 **PETROL**\n* Maruti Swift\n* Tata Punch")
-            with col_b2: st.markdown("🟢 **CNG**\n* Tata Punch iCNG\n* Maruti Brezza CNG")
-            with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Tiago EV\n* Tata Punch EV")
-        elif "₹12 Lakh to ₹18 Lakh" in user_budget:
-            col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1: st.markdown("📦 **PETROL**\n* Hyundai Creta\n* Kia Seltos")
-            with col_b2: st.markdown("🟢 **CNG**\n* Maruti Grand Vitara CNG\n* Maruti Ertiga CNG")
-            with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Nexon EV\n* Mahindra XUV400")
-        else:
-            col_b1, col_b2, col_b3 = st.columns(3)
-            with col_b1: st.markdown("📦 **PETROL**\n* Mahindra Scorpio-N\n* Toyota Innova")
-            with col_b2: st.markdown("🟢 **CNG**\n* (Limited Premium Configs)")
-            with col_b3: st.markdown("⚡ **ELECTRIC**\n* Tata Curvv EV\n* MG ZS EV")
+        st.line_chart(chart_data, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- SUB-TAB 2: ROOFTOP SOLAR ---
-    with sub_solar:
+# ═══════════════════════════════════════════════════════════════════════════════
+# SOLAR CALCULATOR
+# ═══════════════════════════════════════════════════════════════════════════════
+def solar_calculator():
+    """Rooftop solar calculator"""
+    with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label'>⚙️ STEP 1: ROOFTOP SPACE & LIGHT BILL DETAILS</p>", unsafe_allow_html=True)
-        bill_monthly = st.number_input("Average Monthly Light Bill Amount (₹):", min_value=500, value=7500, key="sol_bill")
-        roof_footprint = st.number_input("Available Open Roof Area (Square Feet):", min_value=100, value=500, key="sol_roof")
-        max_feasible_kw = min((roof_footprint / 100), (bill_monthly / 1300))
-        estimated_capex = max_feasible_kw * 62000
-        carbon_offset = max_feasible_kw * 1.3  
+        st.markdown("<p class='cyber-label'>☀️ Solar Rooftop Calculator</p>", unsafe_allow_html=True)
         
-        st.markdown("<p class='cyber-label' style='margin-top:20px;'>📊 RECOMMENDED SOLAR PLANT SETUP SPECS</p>", unsafe_allow_html=True)
-        v4, v5, v6 = st.columns(3)
-        v4.metric("☀️ Recommended Solar Size", f"{max_feasible_kw:.1f} kW Size")
-        v5.metric("💰 Approx Setup Price (लागत)", f"₹{estimated_capex:,.2f}")
-        v6.metric("🍃 Annual Carbon Saved", f"{carbon_offset:.2f} Tons CO2")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            monthly_bill = st.number_input(
+                "Average Monthly Bill (₹)",
+                min_value=500,
+                value=7500,
+                step=500,
+                help="Your average monthly electricity bill amount"
+            )
+        
+        with col2:
+            roof_area = st.number_input(
+                "Available Roof Area (sq ft)",
+                min_value=100,
+                value=500,
+                step=50,
+                help="Total open roof area available for solar panels"
+            )
+        
+        # Calculate recommendations
+        max_kw = min(roof_area / Config.SOLAR_AREA_PER_KW, monthly_bill / Config.BILL_TO_KW_RATIO)
+        estimated_cost = max_kw * Config.SOLAR_COST_PER_KW
+        carbon_saved = max_kw * 1.3
+        
+        st.markdown("<p class='cyber-label'>📊 Recommended Solar Setup</p>", unsafe_allow_html=True)
+        
+        res_cols = st.columns(3)
+        res_cols[0].metric("System Size", f"{max_kw:.1f} kW")
+        res_cols[1].metric("Estimated Cost", f"₹{estimated_cost:,.0f}")
+        res_cols[2].metric("Annual CO₂ Savings", f"{carbon_saved:.1f} Tons")
+        
+        if max_kw < 1:
+            st.info("💡 Based on your inputs, a smaller solar system might be sufficient. Consider optimizing your energy usage first.")
+        
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- SUB-TAB 3: KISAN SOLAR HUB ---
-    with sub_farmer:
+# ═══════════════════════════════════════════════════════════════════════════════
+# FARMER SOLAR CALCULATOR
+# ═══════════════════════════════════════════════════════════════════════════════
+def farmer_solar_calculator():
+    """Farmer solar pump calculator"""
+    with st.container():
         st.markdown("<div class='farmer-card'>", unsafe_allow_html=True)
-        st.markdown("<p class='cyber-label' style='color:#129E59 !important; border-bottom:1px solid rgba(12,158,89,0.3);'>🚜 SOLAR PUMP & URJA KHETI INCOME ESTIMATOR // किसान सोलर पंप गणना</p>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>🚜 Kisan Solar Hub</p>", unsafe_allow_html=True)
         
-        fc1, fc2 = st.columns(2)
-        with fc1:
-            pump_hp = st.selectbox("Select Diesel/Electric Pump Horsepower (पंप की क्षमता चुनें):", ["3 HP Pump", "5 HP Pump", "7.5 HP Pump", "10 HP Pump"])
-            diesel_hours_month = st.slider("How many hours do you run your pump per month? (महीने में पंप कितने घंटे चलता है?):", min_value=10, max_value=200, value=60)
-        with fc2:
-            crop_target = st.selectbox("Select Primary Crop for Cost Impact (अपनी मुख्य फसल चुनें):", ["Paddy (धान)", "Wheat (गेहूं)", "Sugarcane (गन्ना)", "Vegetables/Cash Crops (सब्जियां)"])
-            diesel_cost_liter = st.number_input("Local Diesel Price (₹ per Liter / डीजल का दाम):", min_value=85.0, value=92.5)
-
-        # Farmer Core Economics Logic Engine
-        if "3 HP" in pump_hp:
-            diesel_per_hour, solar_kw_required, total_setup_cost = 0.8, 3.0, 185000
-        elif "5 HP" in pump_hp:
-            diesel_per_hour, solar_kw_required, total_setup_cost = 1.2, 5.0, 260000
-        elif "7.5 HP" in pump_hp:
-            diesel_per_hour, solar_kw_required, total_setup_cost = 1.8, 7.5, 390000
-        else:
-            diesel_per_hour, solar_kw_required, total_setup_cost = 2.4, 10.0, 510000
-
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            pump_hp = st.selectbox(
+                "Pump Horsepower",
+                options=list(Config.PUMP_CONFIGS.keys()),
+                help="Select your pump's horsepower rating"
+            )
+            hours_per_month = st.slider(
+                "Monthly Operating Hours",
+                min_value=10,
+                max_value=200,
+                value=60,
+                help="How many hours does your pump run per month?"
+            )
+        
+        with col2:
+            crop_type = st.selectbox(
+                "Primary Crop",
+                options=["Paddy (धान)", "Wheat (गेहूं)", "Sugarcane (गन्ना)", "Vegetables (सब्जियां)"],
+                help="Select your main crop type"
+            )
+            diesel_price = st.number_input(
+                "Diesel Price (₹/L)",
+                min_value=85.0,
+                value=92.5,
+                format="%.2f",
+                help="Current local diesel price"
+            )
+        
+        # Get pump configuration
+        pump_config = Config.PUMP_CONFIGS[pump_hp]
+        
         # Calculations
-        monthly_diesel_expense = diesel_hours_month * diesel_per_hour * diesel_cost_liter
-        yearly_diesel_expense = monthly_diesel_expense * 12
-        govt_subsidy_share = total_setup_cost * 0.60
-        farmer_net_payable = total_setup_cost - govt_subsidy_share
+        monthly_diesel_cost = hours_per_month * pump_config["diesel_per_hour"] * diesel_price
+        yearly_diesel_cost = monthly_diesel_cost * 12
         
-        # Grid Revenue Matrix
-        earned_grid_income_annual = 5 * 30 * (solar_kw_required * 4) * 4.50
-
-        st.markdown("<p class='cyber-label' style='color:#FF9933 !important; border-bottom:1px solid rgba(255,153,51,0.3); margin-top:20px;'>💰 COST SAVINGS & SUBSIDY SUMMARY // आपकी बचत और संभावित कमाई</p>", unsafe_allow_html=True)
+        subsidy_amount = pump_config["setup_cost"] * Config.SUBSIDY_PERCENTAGE
+        farmer_payable = pump_config["setup_cost"] - subsidy_amount
         
-        f_metric1, f_metric2, f_metric3 = st.columns(3)
-        f_metric1.metric("Current Diesel Cost (Yearly)", f"₹{yearly_diesel_expense:,.0f}", "Can drop to ₹0 with Solar", delta_color="inverse")
-        f_metric2.metric("Estimated Subsidy Share (60%)", f"₹{govt_subsidy_share:,.0f}", "Common Welfare Standard")
-        f_metric3.metric("Your Net Share (संभावित लागत)", f"₹{farmer_net_payable:,.0f}", f"Pays back in {max(1, round(farmer_net_payable/max(1, yearly_diesel_expense)))} Years!")
-
-        st.markdown(f"""
-        <div style="background-color: rgba(12, 158, 89, 0.08); border-left: 5px solid #129E59; padding: 15px; border-radius: 6px; margin-top: 15px;">
-            <h5 style="color:#ffffff; margin-top:0;">🌾 Crop Profitability Impact Matrix ({crop_target})</h5>
-            <p style="font-size:0.9rem; margin-bottom:5px; color:#e2e8f0;">By eliminating diesel fuel costs, your net production cost for <b>{crop_target}</b> will drop by roughly <b>22% to 35%</b>.</p>
-            <p style="font-size:0.9rem; margin-bottom:0; color:#00F0FF;"><b>💰 Side-Income Opportunity (ऊर्जा खेती):</b> Earn up to <b>₹{earned_grid_income_annual:,.0f} per year</b> by selling extra power back during off-seasons.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        yearly_grid_income = (
+            hours_per_month * 
+            (pump_config["solar_kw"] * Config.GRID_GENERATION_PER_KW) * 
+            Config.GRID_SELL_RATE * 
+            30
+        ) / 1000
+        
+        st.markdown("<p class='cyber-label'>💰 Financial Analysis</p>", unsafe_allow_html=True)
+        
+        metric_cols = st.columns(3)
+        metric_cols[0].metric("Yearly Diesel Cost", f"₹{yearly_diesel_cost:,.0f}")
+        metric_cols[1].metric("Subsidy Amount (60%)", f"₹{subsidy_amount:,.0f}")
+        metric_cols[2].metric("Your Contribution", f"₹{farmer_payable:,.0f}")
+        
+        payback_years = farmer_payable / yearly_diesel_cost if yearly_diesel_cost > 0 else 0
+        
+        st.info(f"""
+        💡 **Key Insights:**
+        - Payback period: ~{payback_years:.1f} years
+        - Potential annual grid income: ₹{yearly_grid_income:,.0f}
+        - Diesel cost savings: 100% after solar installation
+        - Recommended for {crop_type}: 22-35% reduction in production costs
+        """)
+        
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 2: POLICY AI ASSISTANT
+# AI CHATBOT
 # ═══════════════════════════════════════════════════════════════════════════════
-with tab_chat:
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🤖 GREEN SAHAYIK AI HELP DESK // योजना हेल्प डेस्क</p>", unsafe_allow_html=True)
+def ai_chatbot():
+    """AI chatbot interface"""
+    with st.container():
+        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>🤖 Green Sahayik AI Assistant</p>", unsafe_allow_html=True)
+        
+        # Display chat history
+        for message in st.session_state.chat_history:
+            if message["role"] == "user":
+                st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #1d4ed8, #0284c7); 
+                                padding: 12px 16px; 
+                                border-radius: 16px 16px 4px 16px; 
+                                color: white; 
+                                margin-bottom: 12px; 
+                                max-width: 80%; 
+                                margin-left: auto;">
+                        <b>You:</b><br>{message["content"]}
+                    </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                    <div style="background: rgba(13, 22, 54, 0.95); 
+                                border-left: 4px solid #129E59; 
+                                padding: 12px 16px; 
+                                border-radius: 4px 16px 16px 16px; 
+                                color: #e2e8f0; 
+                                margin-bottom: 12px; 
+                                max-width: 85%;">
+                        <b>🤖 Sahayik:</b><br>{message["content"]}
+                    </div>
+                """, unsafe_allow_html=True)
+        
+        # Chat input
+        user_query = st.chat_input("Ask me about solar panels, subsidies, EV cars, or farming...")
+        
+        if user_query:
+            st.session_state.chat_history.append({"role": "user", "content": user_query})
+            
+            with st.spinner("🤔 Thinking..."):
+                response = get_gemini_response(user_query)
+                st.session_state.chat_history.append({"role": "bot", "content": response})
+            
+            st.rerun()
+        
+        # Clear chat button
+        if st.button("🗑️ Clear Chat", use_container_width=True):
+            st.session_state.chat_history = [
+                {"role": "bot", "content": "नमस्ते! Welcome to Green Sahayik. How can I help you today?"}
+            ]
+            st.rerun()
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SUBSIDY CHECKER
+# ═══════════════════════════════════════════════════════════════════════════════
+def subsidy_checker():
+    """Subsidy eligibility checker"""
+    with st.container():
+        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>🎯 Subsidy Eligibility Checker</p>", unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            state = st.selectbox(
+                "Select State",
+                options=["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"],
+                help="Choose your state for state-specific subsidies"
+            )
+        
+        with col2:
+            project_type = st.radio(
+                "Project Type",
+                options=["Residential Rooftop", "Agricultural Solar Pump", "Commercial Solar"],
+                help="Select your solar project category"
+            )
+        
+        if st.button("🔍 Check Eligibility", use_container_width=True):
+            timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            verification_id = hashlib.sha256(f"{state}{project_type}{timestamp}".encode()).hexdigest()[:8].upper()
+            
+            st.markdown(f"""
+                <div class="gov-report">
+                    <h3 style="color:#0f172a; margin-top:0;">📋 Eligibility Report</h3>
+                    <p style="font-size:0.85rem; color:#475569;">
+                        <b>Generated:</b> {timestamp} IST | 
+                        <b>Reference ID:</b> <span style="font-family:monospace;">HRT-{verification_id}</span>
+                    </p>
+                    <hr>
+                    <p><b>State:</b> {state}</p>
+                    <p><b>Project Type:</b> {project_type}</p>
+                    <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">
+                        ✅ STATUS: ELIGIBLE for subsidies
+                    </p>
+                    <p style="font-size:0.9rem; color:#475569; margin-top:15px;">
+                        <b>Next Steps:</b> Contact your local DISCOM office with this report for detailed subsidy calculation.
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEWS SECTION
+# ═══════════════════════════════════════════════════════════════════════════════
+def news_section():
+    """Energy news section"""
+    st.markdown("### 📡 Energy Updates")
     
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = [
-            {"role": "bot", "content": "नमस्ते! Welcome to the Green Sahayik Help Node. Ask me any question about rooftop solar setups, community schemes, or EV/CNG car guidelines."}
+    news_items = [
+        {
+            "title": "🔋 Local Battery Manufacturing",
+            "content": "New battery cell factories coming online in 2025, reducing EV costs by 15-20%."
+        },
+        {
+            "title": "🚜 Solar Pump Expansion",
+            "content": "Government allocates ₹10,000 crore for solar agricultural pumps in next fiscal year."
+        },
+        {
+            "title": "☀️ High-Efficiency Panels",
+            "content": "New solar panels with 22% efficiency now available at competitive prices."
+        }
+    ]
+    
+    cols = st.columns(3)
+    for idx, news in enumerate(news_items):
+        with cols[idx]:
+            st.markdown(f"""
+                <div class='cyber-card'>
+                    <h5>{news['title']}</h5>
+                    <p style='font-size:0.85rem; color:#94a3b8;'>{news['content']}</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COMMUNITY CONNECTOR
+# ═══════════════════════════════════════════════════════════════════════════════
+def community_connector():
+    """Vendor matching component"""
+    with st.container():
+        st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+        st.markdown("<p class='cyber-label'>🤝 Community Connector</p>", unsafe_allow_html=True)
+        
+        with st.form("vendor_connection_form"):
+            name = st.text_input("Full Name", placeholder="Enter your full name")
+            contact = st.text_input("Mobile Number", placeholder="10-digit mobile number", max_chars=10)
+            
+            submitted = st.form_submit_button("📤 Connect with Local Vendors", use_container_width=True)
+            
+            if submitted:
+                if name and validate_mobile(contact):
+                    st.success(f"""
+                        ✅ Registration successful!
+                        - Local vendors in pincode {st.session_state.user_pincode} will contact you within 48 hours.
+                        - Reference ID: {hashlib.md5(f"{name}{contact}".encode()).hexdigest()[:8].upper()}
+                    """)
+                elif not name:
+                    st.warning("Please enter your full name.")
+                elif not validate_mobile(contact):
+                    st.warning("Please enter a valid 10-digit mobile number.")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MAIN APPLICATION
+# ═══════════════════════════════════════════════════════════════════════════════
+def main():
+    """Main application entry point"""
+    
+    # Page configuration
+    st.set_page_config(
+        page_title=f"{Config.APP_NAME} | {Config.COMPANY}",
+        page_icon="🌾",
+        layout="wide",
+        initial_sidebar_state="collapsed"
+    )
+    
+    # Initialize
+    init_session_state()
+    load_css()
+    
+    # Show registration or dashboard
+    if not st.session_state.user_registered:
+        registration_screen()
+    
+    # Main Dashboard
+    st.markdown(f"<h1 class='neon-title'>{Config.APP_NAME}</h1>", unsafe_allow_html=True)
+    st.markdown(
+        f"<p style='text-align: center; font-size: 0.9rem; color: #129E59;'>"
+        f"🟢 Active | Pincode: {st.session_state.user_pincode} | Welcome Citizen</p>",
+        unsafe_allow_html=True
+    )
+    
+    # National metrics
+    try:
+        metric_cols = st.columns(4)
+        metrics_data = [
+            ("☀️ Rooftop Solar", "41 Lakh+", "Target: 75 Lakh"),
+            ("🌾 Solar Pumps", "7.5 Lakh+", "60% Subsidy"),
+            ("🔋 Grid Storage", "150 GW", "Local Manufacturing"),
+            ("🍃 Renewable Share", "45%", "Goal: 50% by 2030")
         ]
         
-    for text_block in st.session_state.chat_history:
-        if text_block["role"] == "user":
-            st.markdown(f"""<div style="background: linear-gradient(135deg, #1d4ed8, #0284c7); padding: 14px 18px; border-radius: 16px 16px 4px 16px; color: white; margin-bottom: 14px; max-width: 80%; margin-left: auto;"><b>Your Question:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
-        else:
-            st.markdown(f"""<div style="background: rgba(13, 22, 54, 0.95); border-left: 4px solid #129E59; padding: 14px 18px; border-radius: 4px 16px 16px 16px; color: #e2e8f0; margin-bottom: 14px; max-width: 85%;"><b>Sahayik AI Assistant:</b><br>{text_block["content"]}</div>""", unsafe_allow_html=True)
-
-    user_raw = st.chat_input("Ask a question here (जैसे: सोलर पंप पर कितनी बचत मिलेगी?)...")
-    if user_raw:
-        st.session_state.chat_history.append({"role": "user", "content": user_raw})
-        try:
-            model = genai.GenerativeModel(model_name="gemini-2.5-flash")
-            system_injection = "You are Green Sahayik, a helpful assistant for middle class families and farmers in India. Answer in simple, friendly terms. Mix English and conversational Hindi keywords naturally. Limit responses to 120 words max."
-            response_container = model.generate_content(f"{system_injection}\n\nUser Question: {user_raw}")
-            st.session_state.chat_history.append({"role": "bot", "content": response_container.text})
-            st.rerun()
-        except Exception as e:
-            st.error("🔒 Security Key Connection Interrupted. Check backend secrets.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 3: SUBSIDY ELIGIBILITY CHECKER
-# ═══════════════════════════════════════════════════════════════════════════════
-with tab_subsidy:
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🎯 REGIONAL GREEN SUBSIDY AUDITOR</p>", unsafe_allow_html=True)
+        for col, (label, value, delta) in zip(metric_cols, metrics_data):
+            col.metric(label=label, value=value, delta=delta)
+    except Exception as e:
+        logger.error(f"Error displaying metrics: {str(e)}")
+        st.warning("Unable to load national metrics.")
     
-    state_domain = st.selectbox("Select State Jurisdiction (अपना राज्य चुनें):", ["Gujarat", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "West Bengal"], key="sub_state")
-    class_profile = st.radio("Where are you installing solar? (सोलर कहाँ लगा रहे हैं):", ["Residential Rooftop Array (घर की छत पर)", "Agricultural Solar Pump (खेत में सोलर पंप)", "Commercial Plant System (दुकान/कारखाने की छत पर)"], key="sub_profile")
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    if st.button("RUN ESTIMATE REPORT / पात्रता जांचें 🔍"):
-        timestamp_str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        verification_hash = hashlib.sha256(f"{state_domain}-{class_profile}-{timestamp_str}".encode()).hexdigest()[:12].upper()
+    # Main tabs
+    try:
+        tabs = st.tabs([
+            "💰 Savings Calculator",
+            "🤖 AI Assistant", 
+            "🎯 Subsidy Checker",
+            "📡 Energy News",
+            "🤝 Community Connect"
+        ])
         
-        st.markdown(f"""
-        <div class="gov-report">
-            <h3 style="color:#0f172a; margin-top:0; font-family:'Poppins'; font-weight:700;">📋 REGIONAL ESTIMATE AUDIT SLIP</h3>
-            <p style="font-size:0.85rem; color:#475569; margin-bottom:20px;"><b>Generated Date:</b> {timestamp_str} IST // <b>System Reference ID:</b> <span style="font-family:monospace; background:#cbd5e1; padding:2px 6px; color:#0f172a;">HRT-{verification_hash}</span></p>
-            <hr style="border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
-            <p><b>State Node Allocation:</b> {state_domain} State Energy Zone</p>
-            <p><b>Project Type Category:</b> {class_profile}</p>
-            <p style="color:#15803d; font-weight:bold; font-size:1.1rem;">🥇 STATUS: ELIGIBILITY APPROVED / सामान्य श्रेणी मापदंड अनुसार स्वीकृत</p>
-        </div>
-        """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+        with tabs[0]:
+            sub_tabs = st.tabs(["🚗 Vehicle Calculator", "☀️ Solar Calculator", "🌾 Farmer Calculator"])
+            with sub_tabs[0]:
+                vehicle_calculator()
+            with sub_tabs[1]:
+                solar_calculator()
+            with sub_tabs[2]:
+                farmer_solar_calculator()
+        
+        with tabs[1]:
+            ai_chatbot()
+        
+        with tabs[2]:
+            subsidy_checker()
+        
+        with tabs[3]:
+            news_section()
+        
+        with tabs[4]:
+            community_connector()
+    
+    except Exception as e:
+        logger.error(f"Error loading tabs: {str(e)}")
+        st.error("Unable to load main application features. Please refresh the page.")
+    
+    # Footer
+    st.markdown("---")
+    st.caption(f"⚡ {Config.APP_NAME} | {Config.COMPANY} | Version {Config.APP_VERSION} | Digital Public Utility")
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 4: NATIONAL ENERGY RADAR
+# ENTRY POINT
 # ═══════════════════════════════════════════════════════════════════════════════
-with tab_news:
-    st.markdown("### 📡 Energy Updates & Local Frameworks")
-    n1, n2, n3 = st.columns(3)
-    with n1: st.markdown("<div class='cyber-card'><h5>🔋 Local Battery Making</h5><p style='font-size:0.85rem; color:#94a3b8;'>New local cell factories are coming online, which will help reduce electric vehicle costs over time.</p></div>", unsafe_allow_html=True)
-    with n2: st.markdown("<div class='cyber-card'><h5>🚜 Solar Pump Targets</h5><p style='font-size:0.85rem; color:#94a3b8;'>Regional departments expand allocations to connect rural tube-wells directly to dedicated clean feeders this quarter.</p></div>", unsafe_allow_html=True)
-    with n3: st.markdown("<div class='cyber-card'><h5>☀️ High-Yield Panels</h5><p style='font-size:0.85rem; color:#94a3b8;'>New multi-junction commercial panels are delivering better output rates even during heavy overcast conditions.</p></div>", unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 🛠️ TAB 5: PUBLIC DISPATCH BRIDGE
-# ═══════════════════════════════════════════════════════════════════════════════
-with tab_connect:
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🤝 VENDOR MATCHING NODE // स्थानीय डीलरों से संपर्क करें</p>", unsafe_allow_html=True)
-    with st.form("dispatch_capture_form"):
-        exec_name = st.text_input("Enter Full Name (अपना नाम लिखें):")
-        exec_contact = st.text_input("Enter Verified Mobile Number (अपना चालू मोबाइल नंबर):")
-        if st.form_submit_button("SUBMIT CONNECTION REQUEST / जानकारी दर्ज करें 📤") and exec_name and exec_contact:
-            st.success(f"Success! Registered local solution providers matching pin code {st.session_state.user_pincode} will contact you shortly.")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# HUD FOOTER 
-# ═══════════════════════════════════════════════════════════════════════════════
-st.markdown("---")
-st.caption("⚡ Bharat Harit Kranti Portal | Digital Public Utilities Core Platform v6.6.0 (2026 Open Build)")
+if __name__ == "__main__":
+    main()
