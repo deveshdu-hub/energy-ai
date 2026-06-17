@@ -1,5 +1,48 @@
+[13:21, 17/06/2026] God Book: import streamlit as st
+import pandas as pd
+import datetime
+import hashlib
+import os
+import logging
+from io import BytesIO
+
+# Optional AI
+try:
+    import google.generativeai as genai
+    GENAI_AVAILABLE = True
+except ImportError:
+    GENAI_AVAILABLE = False
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+# Logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(_name_)
+
+# ─── CONFIG ────────────────────────────────────────────────────────────────────
+class Config:
+    APP_NAME = "Bharat Harit Kranti Portal"
+    APP_VERSION = "7.5.0"
+    COMPANY = "FutureHQ.in"
+    SESSION_KEYS = {
+        'user_reg…
+[13:21, 17/06/2026] God Book: streamlit==1.32.2
+pandas==2.1.4
+google-generativeai==0.3.2
+python-dotenv==1.0.0
+openpyxl==3.1.2
+[13:27, 17/06/2026] carryme store: Script execution error
+File "/mount/src/energy-ai/app.py", line 96
+              background: linear-gradient(135deg, #030611 0%, #0a0f2a 100%) !important;
+                                            ^
+SyntaxError: invalid decimal literal
+[13:30, 17/06/2026] God Book: """
 BHARAT HARIT KRANTI PORTAL + EV CHARGING + TAX ENGINE
-FutureHQ.in | v7.5.0 | Python 3.11 Ready
+FutureHQ.in | v7.5.1 | Python 3.11 Ready
 """
 
 import streamlit as st
@@ -30,7 +73,7 @@ logger = logging.getLogger(_name_)
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 class Config:
     APP_NAME = "Bharat Harit Kranti Portal"
-    APP_VERSION = "7.5.0"
+    APP_VERSION = "7.5.1"
     COMPANY = "FutureHQ.in"
     SESSION_KEYS = {
         'user_registered': False,
@@ -87,7 +130,7 @@ def get_gemini_response(prompt: str) -> str:
         logger.error(f"Gemini error: {e}")
         return "🤖 AI service temporarily unavailable."
 
-# ─── CSS ─────────────────────────────────────────────────────────────────────
+# ─── CSS (FIXED) ────────────────────────────────────────────────────────────
 def load_css():
     st.markdown("""
         <style>
