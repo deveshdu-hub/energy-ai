@@ -21,59 +21,12 @@ except ImportError:
 
 # Logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(_name_)
+logger = logging.getLogger(__name__)
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 class Config:
     APP_NAME = "Bharat Harit Kranti Portal"
     APP_VERSION = "7.5.0"
-    COMPANY = "FutureHQ.in"
-    SESSION_KEYS = {
-        'user_reg…
-[13:21, 17/06/2026] God Book: streamlit==1.32.2
-pandas==2.1.4
-google-generativeai==0.3.2
-python-dotenv==1.0.0
-openpyxl==3.1.2
-[13:27, 17/06/2026] carryme store: Script execution error
-File "/mount/src/energy-ai/app.py", line 96
-              background: linear-gradient(135deg, #030611 0%, #0a0f2a 100%) !important;
-                                            ^
-SyntaxError: invalid decimal literal
-[13:30, 17/06/2026] God Book: """
-BHARAT HARIT KRANTI PORTAL + EV CHARGING + TAX ENGINE
-FutureHQ.in | v7.5.1 | Python 3.11 Ready
-"""
-
-import streamlit as st
-import pandas as pd
-import datetime
-import hashlib
-import os
-import logging
-from io import BytesIO
-
-# Optional AI
-try:
-    import google.generativeai as genai
-    GENAI_AVAILABLE = True
-except ImportError:
-    GENAI_AVAILABLE = False
-
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
-
-# Logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(_name_)
-
-# ─── CONFIG ────────────────────────────────────────────────────────────────────
-class Config:
-    APP_NAME = "Bharat Harit Kranti Portal"
-    APP_VERSION = "7.5.1"
     COMPANY = "FutureHQ.in"
     SESSION_KEYS = {
         'user_registered': False,
@@ -130,7 +83,7 @@ def get_gemini_response(prompt: str) -> str:
         logger.error(f"Gemini error: {e}")
         return "🤖 AI service temporarily unavailable."
 
-# ─── CSS (FIXED) ────────────────────────────────────────────────────────────
+# ─── CSS ─────────────────────────────────────────────────────────────────────
 def load_css():
     st.markdown("""
         <style>
@@ -292,9 +245,9 @@ def farmer_solar_calculator():
         f3.metric("Your Payment", f"₹{payable:,.0f}")
         payback = payable / yearly_diesel if yearly_diesel > 0 else 0
         st.success(f"""
-        ✅ *Payback Period:* ~{payback:.1f} years  
-        ✅ *Grid Sell Income:* ₹{yearly_grid_income:,.0f}/year  
-        ✅ *Zero diesel cost after installation*
+        ✅ **Payback Period:** ~{payback:.1f} years  
+        ✅ **Grid Sell Income:** ₹{yearly_grid_income:,.0f}/year  
+        ✅ **Zero diesel cost after installation**
         """)
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -552,12 +505,12 @@ def ev_charging_guide():
         if st.button("Estimate Total Cost"):
             base = {"Level 1 (3.3 kW)": 20000, "Level 2 (7 kW)": 50000, "Level 2 (22 kW)": 75000}
             total = base[charger_type] + cable_length * 200 + labour
-            st.success(f"Estimated Total: *₹{total:,.0f}*")
+            st.success(f"Estimated Total: **₹{total:,.0f}**")
     st.markdown("#### 🏛️ Government Subsidies")
     st.markdown("""
-        - *FAME-II* – up to 60% subsidy on public chargers.
-        - *State EV Policies* – additional incentives (Delhi, Maharashtra, Karnataka).
-        - *Net Metering* – offset with solar.
+        - **FAME-II** – up to 60% subsidy on public chargers.
+        - **State EV Policies** – additional incentives (Delhi, Maharashtra, Karnataka).
+        - **Net Metering** – offset with solar.
         - Official: [Ministry of Power](https://powermin.gov.in), [BEE](https://beeindia.gov.in)
     """)
     st.markdown("#### 🤝 Find an Installer")
@@ -599,5 +552,5 @@ def main():
     with tabs[6]: ev_charging_guide()
     st.caption(f"⚡ {Config.APP_NAME} v{Config.APP_VERSION} | FutureHQ.in")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
