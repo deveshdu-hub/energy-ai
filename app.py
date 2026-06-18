@@ -1,3 +1,12 @@
+"""
+BHARAT HARIT KRANTI PORTAL v8.0.0
+FutureHQ.in | Business & Revenue Focused
+- Removed Tax Engine
+- Enhanced EV Charging Guide (cost, subsidies, ROI, vendor leads)
+- New "Business Marketplace" tab (lead gen for solar & EV vendors)
+- All existing calculators, AI, news, and community connector retained
+"""
+
 import streamlit as st
 import pandas as pd
 import datetime
