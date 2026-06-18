@@ -23,17 +23,17 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ─── CONFIG ────────────────────────────────────────────────────────────────────
+# ─── CONFIG ──────────────────────────────────────────────────────────────────
 class Config:
     APP_NAME = "Bharat Harit Kranti Portal"
-    APP_VERSION = "7.5.0"
+    APP_VERSION = "8.0.0"
     COMPANY = "FutureHQ.in"
     SESSION_KEYS = {
         'user_registered': False,
         'user_mobile': "",
         'user_pincode': "",
-        'chat_history': [{"role": "bot", "content": "नमस्ते! I'm Green Sahayik. Ask me about solar, subsidies, or EVs!"}],
-        'tax_portfolio': None
+        'chat_history': [{"role": "bot", "content": "नमस्ते! I'm Green Sahayik. Ask me about solar, EVs, or subsidies!"}],
+        # No tax portfolio anymore
     }
     MOBILE_LENGTH = 10
     PINCODE_LENGTH = 6
@@ -50,19 +50,19 @@ class Config:
         "10 HP Pump": {"diesel_per_hour": 2.4, "solar_kw": 10.0, "setup_cost": 510000}
     }
 
-# ─── SESSION INIT ────────────────────────────────────────────────────────────
+# ─── SESSION INIT ──────────────────────────────────────────────────────────
 def init_session_state():
     for key, default in Config.SESSION_KEYS.items():
         if key not in st.session_state:
             st.session_state[key] = default
 
-# ─── VALIDATION ──────────────────────────────────────────────────────────────
+# ─── VALIDATION ────────────────────────────────────────────────────────────
 def validate_mobile(mobile: str) -> bool:
     return mobile and len(mobile) == 10 and mobile.isdigit()
 def validate_pincode(pincode: str) -> bool:
     return pincode and len(pincode) == 6 and pincode.isdigit()
 
-# ─── GEMINI AI ──────────────────────────────────────────────────────────────
+# ─── GEMINI AI ────────────────────────────────────────────────────────────
 def get_gemini_response(prompt: str) -> str:
     if not GENAI_AVAILABLE:
         return "🔧 AI not configured."
@@ -83,7 +83,7 @@ def get_gemini_response(prompt: str) -> str:
         logger.error(f"Gemini error: {e}")
         return "🤖 AI service temporarily unavailable."
 
-# ─── CSS ─────────────────────────────────────────────────────────────────────
+# ─── CSS ──────────────────────────────────────────────────────────────────
 def load_css():
     st.markdown("""
         <style>
@@ -133,6 +133,23 @@ def load_css():
             display: inline-block;
             margin-bottom: 10px;
         }
+        .highlight-box {
+            background: rgba(255, 153, 51, 0.1);
+            border-left: 4px solid #FF9933;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .profit-badge {
+            background: #FF9933;
+            color: #030611;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-left: 10px;
+        }
         @media (max-width: 768px) {
             .cyber-card { padding: 12px; }
             .stTabs [data-baseweb="tab"] { font-size: 0.7rem; padding: 6px 10px !important; }
@@ -140,7 +157,7 @@ def load_css():
         </style>
     """, unsafe_allow_html=True)
 
-# ─── REGISTRATION ────────────────────────────────────────────────────────────
+# ─── REGISTRATION ──────────────────────────────────────────────────────────
 def registration_screen():
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -164,7 +181,7 @@ def registration_screen():
                     st.error("Invalid mobile or pincode.")
     st.stop()
 
-# ─── VEHICLE CALCULATOR ─────────────────────────────────────────────────────
+# ─── VEHICLE CALCULATOR ──────────────────────────────────────────────────
 def vehicle_calculator():
     with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -206,7 +223,7 @@ def vehicle_calculator():
         st.line_chart(data, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── SOLAR CALCULATOR ────────────────────────────────────────────────────────
+# ─── SOLAR CALCULATOR ────────────────────────────────────────────────────
 def solar_calculator():
     with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -224,7 +241,7 @@ def solar_calculator():
             st.info("💡 For better savings, consider reducing energy consumption first.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── FARMER SOLAR ────────────────────────────────────────────────────────────
+# ─── FARMER SOLAR ──────────────────────────────────────────────────────────
 def farmer_solar_calculator():
     with st.container():
         st.markdown("<div class='farmer-card'>", unsafe_allow_html=True)
@@ -251,7 +268,7 @@ def farmer_solar_calculator():
         """)
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── AI CHATBOT ──────────────────────────────────────────────────────────────
+# ─── AI CHATBOT ──────────────────────────────────────────────────────────
 def ai_chatbot():
     with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -273,7 +290,7 @@ def ai_chatbot():
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── SUBSIDY CHECKER ────────────────────────────────────────────────────────
+# ─── SUBSIDY CHECKER ────────────────────────────────────────────────────
 def subsidy_checker():
     with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -293,7 +310,7 @@ def subsidy_checker():
             """, unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── NEWS SECTION ────────────────────────────────────────────────────────────
+# ─── NEWS SECTION ──────────────────────────────────────────────────────
 def news_section():
     st.markdown("### 📡 PM SURYA GHAR MUFT BIJLI YOJANA HUB")
     st.markdown("""
@@ -315,7 +332,7 @@ def news_section():
         unsafe_allow_html=True
     )
 
-# ─── COMMUNITY CONNECTOR ────────────────────────────────────────────────────
+# ─── COMMUNITY CONNECTOR (Vendor Leads) ────────────────────────────────
 def community_connector():
     with st.container():
         st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
@@ -326,205 +343,161 @@ def community_connector():
             if st.form_submit_button("Submit"):
                 if name and validate_mobile(contact):
                     st.success(f"✅ Local vendors in {st.session_state.user_pincode} will contact you soon.")
+                    # In production: store lead in database and notify vendors
                 else:
                     st.warning("Enter valid name and 10-digit mobile.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── TAX ENGINE ─────────────────────────────────────────────────────────────
-def calculate_tax(gross_revenue, declared_expenses=0, presumptive_44ad=False):
-    if presumptive_44ad:
-        taxable_income = gross_revenue * 0.06
-        note = "Presumptive taxation under Section 44AD (6%)."
-    else:
-        taxable_income = max(0, gross_revenue - declared_expenses)
-        note = "Normal accounting (actual profit)."
-    if taxable_income <= 700000:
-        tax = 0
-    elif taxable_income <= 1000000:
-        tax = (taxable_income - 700000) * 0.10
-    elif taxable_income <= 1200000:
-        tax = 30000 + (taxable_income - 1000000) * 0.15
-    elif taxable_income <= 1500000:
-        tax = 60000 + (taxable_income - 1200000) * 0.20
-    else:
-        tax = 120000 + (taxable_income - 1500000) * 0.30
-    cess = tax * 0.04
-    total = tax + cess
-    return {
-        "taxable_income": round(taxable_income, 2),
-        "income_tax": round(tax, 2),
-        "cess": round(cess, 2),
-        "total_tax_liability": round(total, 2),
-        "method_note": note
-    }
-
-def get_default_portfolio():
-    return pd.DataFrame([
-        {"Client ID": "SA-01", "Client Name": "FutureHQ Node A", 
-         "Entity Type": "Proprietorship", "Service Stream": "ITR & Tax Audit", 
-         "FY 2025-26 Turnover (₹)": 1800000, "Estimated Tax Liability (₹)": 45000, 
-         "Filing Deadline": "2026-07-31", "Workflow Status": "Document Verification"},
-        {"Client ID": "SA-02", "Client Name": "CarryMe Logistics", 
-         "Entity Type": "LLP / Startup", "Service Stream": "GST Reconciliation", 
-         "FY 2025-26 Turnover (₹)": 4200000, "Estimated Tax Liability (₹)": 756000, 
-         "Filing Deadline": "2026-06-25", "Workflow Status": "Pending Upload"}
-    ])
-
-def tax_engine_tab():
-    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🧾 Self Assist Tax Engine</p>", unsafe_allow_html=True)
-    if st.session_state.tax_portfolio is None:
-        st.session_state.tax_portfolio = get_default_portfolio()
-    col_mode, col_action = st.columns([2, 1])
-    with col_mode:
-        tax_method = st.radio("Select Tax Regime", ["Normal (Actual Expenses)", "Presumptive (Section 44AD)"], horizontal=True)
-        use_presumptive = (tax_method == "Presumptive (Section 44AD)")
-    with col_action:
-        if st.button("📥 Load Sample"):
-            st.session_state.tax_portfolio = get_default_portfolio()
-            st.success("Sample loaded.")
-        if st.button("➕ Add Client"):
-            new_row = pd.DataFrame([{
-                "Client ID": f"NEW-{len(st.session_state.tax_portfolio)+1:02d}",
-                "Client Name": "New Client",
-                "Entity Type": "Proprietorship",
-                "Service Stream": "Tax Planning",
-                "FY 2025-26 Turnover (₹)": 0,
-                "Estimated Tax Liability (₹)": 0,
-                "Filing Deadline": datetime.now().strftime("%Y-%m-%d"),
-                "Workflow Status": "New Entry"
-            }])
-            st.session_state.tax_portfolio = pd.concat([st.session_state.tax_portfolio, new_row], ignore_index=True)
-            st.rerun()
-    st.markdown("---")
-    st.markdown("### 📋 Client Portfolio")
-    edited_df = st.data_editor(
-        st.session_state.tax_portfolio,
-        use_container_width=True,
-        num_rows="dynamic",
-        key="tax_portfolio_editor"
-    )
-    st.session_state.tax_portfolio = edited_df
-    if st.button("🔄 Recalculate Tax for All Clients", use_container_width=True):
-        if "FY 2025-26 Turnover (₹)" in edited_df.columns:
-            if "Calculated Tax (₹)" not in edited_df.columns:
-                edited_df["Calculated Tax (₹)"] = 0.0
-            for idx, row in edited_df.iterrows():
-                revenue = row["FY 2025-26 Turnover (₹)"]
-                expenses = row.get("Operational Deductions (₹)", 0) if not use_presumptive else 0
-                calc = calculate_tax(revenue, expenses, use_presumptive)
-                edited_df.at[idx, "Calculated Tax (₹)"] = calc["total_tax_liability"]
-            st.session_state.tax_portfolio = edited_df
-            st.success("Tax recalculated.")
-            st.rerun()
-        else:
-            st.error("Missing 'FY 2025-26 Turnover (₹)' column.")
-    st.markdown("---")
-    st.markdown("### 🧮 Single Tax Calculator")
-    col1, col2 = st.columns(2)
-    with col1:
-        single_revenue = st.number_input("Gross Turnover (₹)", min_value=0, value=1500000, step=100000)
-        single_expenses = st.number_input("Actual Expenses (₹)", min_value=0, value=600000, step=50000)
-    with col2:
-        single_presumptive = st.checkbox("Apply Section 44AD", value=False)
-    if st.button("Compute Tax"):
-        result = calculate_tax(single_revenue, single_expenses, single_presumptive)
-        st.markdown(f"""
-            <div class='gov-report'>
-                <b>Method:</b> {result['method_note']}<br>
-                <b>Taxable Income:</b> ₹{result['taxable_income']:,.2f}<br>
-                <b>Income Tax:</b> ₹{result['income_tax']:,.2f}<br>
-                <b>Cess (4%):</b> ₹{result['cess']:,.2f}<br>
-                <b style="font-size:1.1rem;">Total Tax Liability:</b> ₹{result['total_tax_liability']:,.2f}
-            </div>
-        """, unsafe_allow_html=True)
-    st.markdown("---")
-    st.markdown("### 📁 Import / Export Portfolio")
-    col_exp, col_imp = st.columns(2)
-    with col_exp:
-        if st.button("📎 Export to Excel"):
-            output = BytesIO()
-            with pd.ExcelWriter(output, engine="openpyxl") as writer:
-                st.session_state.tax_portfolio.to_excel(writer, index=False, sheet_name="Portfolio")
-            output.seek(0)
-            st.download_button("Download Excel", data=output, file_name="Portfolio.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        if st.button("📄 Export to CSV"):
-            csv_data = st.session_state.tax_portfolio.to_csv(index=False).encode("utf-8")
-            st.download_button("Download CSV", csv_data, "Portfolio.csv", "text/csv")
-    with col_imp:
-        uploaded = st.file_uploader("Upload Portfolio", type=["xlsx", "csv"])
-        if uploaded:
-            try:
-                if uploaded.name.endswith(".csv"):
-                    df = pd.read_csv(uploaded)
-                else:
-                    df = pd.read_excel(uploaded, engine="openpyxl")
-                st.session_state.tax_portfolio = df
-                st.success("Imported successfully!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Import error: {e}")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# ─── EV CHARGING GUIDE ──────────────────────────────────────────────────────
+# ─── ENHANCED EV CHARGING GUIDE (BUSINESS FOCUS) ────────────────────
 def ev_charging_guide():
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
-    st.markdown("<p class='cyber-label'>🔌 EV Charging Station Guide</p>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🔌 EV Charging Station – Complete Setup & Profit Guide</p>", unsafe_allow_html=True)
+    
+    # Overview with profit badge
     st.markdown("""
         <div style="background:rgba(0,240,255,0.05); border-left:4px solid #00F0FF; padding:15px; border-radius:6px; margin-bottom:20px;">
             <b>🚗 Go Electric – Set Up Your Own Charging Point.</b><br>
-            Charger types, installation steps, costs, and subsidies.
+            Charger types, installation steps, costs, subsidies, ROI, and how you can turn this into a business.
+            <span class='profit-badge'>💰 Profit Opportunity</span>
         </div>
     """, unsafe_allow_html=True)
+
+    # Detailed charger comparison table with additional columns
     charger_data = pd.DataFrame({
         "Type": ["Level 1 (AC)", "Level 2 (AC)", "DC Fast Charger"],
         "Voltage": ["230V (15A)", "230V (32A)", "480V (3-Phase)"],
         "Power": ["2.3–3.3 kW", "7–22 kW", "50–350 kW"],
         "Charging Time": ["8–12 hrs", "3–6 hrs", "20–40 min"],
-        "Best For": ["Home (overnight)", "Home / Office", "Commercial"],
-        "Approx Cost (₹)": ["15,000–25,000", "40,000–80,000", "5,00,000+"]
+        "Best For": ["Home (overnight)", "Home / Office", "Commercial / Public"],
+        "Approx Cost (₹)": ["15,000–25,000", "40,000–80,000", "5,00,000+"],
+        "Avg. ROI (Years)": ["2-3", "2-4", "3-5"],
+        "Business Model": ["Personal Use", "Semi-Public", "Public Charging"]
     })
     st.dataframe(charger_data, use_container_width=True, hide_index=True)
-    st.markdown("#### 📋 5-Step Installation")
+
+    # Step-by-step installation with interactive elements
+    st.markdown("#### 📋 5-Step Installation & Profit Checklist")
     steps = [
-        ("1. Site Assessment", "Check load capacity."),
-        ("2. Choose Charger", "Level 1 or 2 based on usage."),
-        ("3. Hire Licensed Electrician", "Install dedicated MCB, RCD, earthing."),
-        ("4. Mount and Connect", "Wall-mount near parking."),
-        ("5. Test & Commission", "Test charging, register for net metering.")
+        ("1. Site Assessment", "Check load capacity, parking space, and grid connection. Business: assess footfall for public charging."),
+        ("2. Choose Charger", "Select Level 1 or 2 based on usage. Business: choose Level 2 or DC Fast for commercial."),
+        ("3. Hire Licensed Electrician", "Install dedicated MCB, RCD, earthing. Business: get multiple quotes to reduce CAPEX."),
+        ("4. Mount and Connect", "Wall-mount near parking. Business: consider branding and payment integration."),
+        ("5. Test & Commission", "Test charging, register for net metering. Business: apply for FAME-II subsidy, set up payment gateway.")
     ]
     for step, desc in steps:
         st.markdown(f"<div style='background:rgba(255,255,255,0.03); padding:10px; border-radius:6px; margin-bottom:8px;'><b>{step}</b><br>{desc}</div>", unsafe_allow_html=True)
-    st.markdown("#### 💰 Estimate Installation Cost")
+
+    # Cost Estimator with Business ROI
+    st.markdown("#### 💰 Installation Cost Estimator & ROI")
     col1, col2 = st.columns(2)
     with col1:
         charger_type = st.selectbox("Charger Type", ["Level 1 (3.3 kW)", "Level 2 (7 kW)", "Level 2 (22 kW)"])
         cable_length = st.slider("Cable length (m)", 5, 50, 15)
-    with col2:
         labour = st.number_input("Labour & Misc (₹)", min_value=0, value=5000, step=1000)
-        if st.button("Estimate Total Cost"):
-            base = {"Level 1 (3.3 kW)": 20000, "Level 2 (7 kW)": 50000, "Level 2 (22 kW)": 75000}
-            total = base[charger_type] + cable_length * 200 + labour
-            st.success(f"Estimated Total: **₹{total:,.0f}**")
-    st.markdown("#### 🏛️ Government Subsidies")
+    with col2:
+        daily_users = st.number_input("Expected daily charging sessions (business)", min_value=0, value=10, step=5)
+        charge_fee = st.number_input("Charge price per session (₹)", min_value=0, value=150, step=50)
+    
+    if st.button("Calculate Total Cost & Profit Potential"):
+        base = {"Level 1 (3.3 kW)": 20000, "Level 2 (7 kW)": 50000, "Level 2 (22 kW)": 75000}
+        total_cost = base[charger_type] + cable_length * 200 + labour
+        daily_revenue = daily_users * charge_fee
+        monthly_revenue = daily_revenue * 30
+        yearly_revenue = monthly_revenue * 12
+        payback_years = total_cost / yearly_revenue if yearly_revenue > 0 else 999
+        
+        st.success(f"**Estimated Total Cost:** ₹{total_cost:,.0f}")
+        st.info(f"""
+        **Revenue Projection (Business Model):**
+        - Daily Revenue: ₹{daily_revenue:,.0f}
+        - Monthly Revenue: ₹{monthly_revenue:,.0f}
+        - Yearly Revenue: ₹{yearly_revenue:,.0f}
+        - Payback Period: {payback_years:.1f} years
+        """)
+        if payback_years < 2:
+            st.markdown("<span class='profit-badge'>🔥 Highly Profitable!</span>", unsafe_allow_html=True)
+
+    # Government Subsidies & Business Schemes
+    st.markdown("#### 🏛️ Government Subsidies & Business Incentives")
     st.markdown("""
-        - **FAME-II** – up to 60% subsidy on public chargers.
-        - **State EV Policies** – additional incentives (Delhi, Maharashtra, Karnataka).
-        - **Net Metering** – offset with solar.
-        - Official: [Ministry of Power](https://powermin.gov.in), [BEE](https://beeindia.gov.in)
+        - **FAME-II Scheme** – up to 60% subsidy on public charging infrastructure (CAPEX support).
+        - **State EV Policies** – additional incentives (Delhi, Maharashtra, Karnataka offer land, electricity tariff discounts).
+        - **Net Metering** – offset charging cost with solar, reducing OPEX.
+        - **Business Loans** – Special EV infrastructure loans from PSU banks at 7-9% interest.
+        - **GST** – 5% GST on EV charging services (input credit available).
     """)
-    st.markdown("#### 🤝 Find an Installer")
+
+    # Revenue Model for Portal Owners (you)
+    st.markdown("#### 💸 How This Tab Generates Revenue for Us")
+    st.markdown("""
+        - **Lead Generation:** Users submit their details to get quotes from installers – we charge ₹200-₹500 per lead to vendors.
+        - **Affiliate Commissions:** Recommend specific charger brands (e.g., Tata Power, Servotech) – earn 5-10% on sales.
+        - **Premium Listing:** Vendors can pay ₹2,500/month to be featured as preferred installers.
+        - **Data Analytics:** Anonymized charging demand data can be sold to utility companies and urban planners.
+    """)
+
+    # Vendor lead capture
+    st.markdown("#### 🤝 Find a Local EV Charger Installer (Lead Generation)")
     with st.form("ev_vendor"):
         name = st.text_input("Full Name")
         contact = st.text_input("Mobile Number", max_chars=10)
-        if st.form_submit_button("Connect"):
+        if st.form_submit_button("Connect with Installers"):
             if name and validate_mobile(contact):
                 st.success(f"✅ Installers in {st.session_state.user_pincode} will contact you.")
+                # In production: store lead, notify vendors, charge per lead
             else:
                 st.warning("Valid name & 10-digit mobile required.")
+    
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── MAIN ────────────────────────────────────────────────────────────────────
+# ─── BUSINESS MARKETPLACE TAB ─────────────────────────────────────────
+def business_marketplace():
+    st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
+    st.markdown("<p class='cyber-label'>🏪 Business Marketplace – Vendor & Partner Hub</p>", unsafe_allow_html=True)
+    
+    st.markdown("""
+        <div class='highlight-box'>
+            <b>Turn your green energy interest into a revenue stream.</b><br>
+            We connect you with verified vendors for solar, EV charging, and energy efficiency products.
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Vendor categories
+    categories = ["Solar Installation", "EV Charger Installation", "Energy Auditing", "Green Loans & Financing"]
+    selected_category = st.selectbox("Select Service Type", categories)
+    
+    # Sample vendor listing (dummy data)
+    vendors = pd.DataFrame({
+        "Company Name": ["SolarMax India", "EVChargePro", "EcoPower Solutions"],
+        "Rating": ["4.8 ⭐", "4.5 ⭐", "4.2 ⭐"],
+        "Services": ["Rooftop Solar, Pump", "Level 2 & DC Fast Charger", "Solar + Storage"],
+        "Coverage": ["Pan India", "Maharashtra, Gujarat", "Delhi NCR"],
+        "Starting Price": ["₹50,000", "₹75,000", "₹1,20,000"]
+    })
+    st.dataframe(vendors, use_container_width=True, hide_index=True)
+
+    # Request Quote form (lead generation)
+    with st.form("business_lead"):
+        name = st.text_input("Your Full Name")
+        mobile = st.text_input("Mobile Number", max_chars=10)
+        project_desc = st.text_area("Describe your requirement")
+        if st.form_submit_button("Request Quote"):
+            if name and validate_mobile(mobile):
+                st.success("✅ Your request has been sent to top vendors. You'll hear back within 24 hours.")
+                # store lead, charge vendor per lead
+            else:
+                st.warning("Please fill all fields correctly.")
+    
+    # Revenue note for admin
+    st.markdown("""
+        <div style="background:rgba(255,153,51,0.1); padding:10px; border-radius:6px; margin-top:20px; border:1px solid #FF9933;">
+            <b>💰 Revenue Generation:</b> Each lead is sold to vendors at ₹300-₹500. With 1000 leads/month, we earn ₹3-5 Lakhs.
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ─── MAIN ──────────────────────────────────────────────────────────────────
 def main():
     st.set_page_config(page_title="Bharat Harit Kranti", page_icon="🌾", layout="wide")
     init_session_state()
@@ -533,12 +506,16 @@ def main():
         registration_screen()
     st.markdown(f"<h1 class='neon-title'>{Config.APP_NAME}</h1>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align:center;'>🟢 Pincode: {st.session_state.user_pincode} | Welcome Citizen</p>", unsafe_allow_html=True)
+    
+    # Top Metrics
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("☀️ Rooftop Solar", "41 Lakh+", "Target 75 Lakh")
     m2.metric("🌾 Solar Pumps", "7.5 Lakh+", "60% Subsidy")
     m3.metric("🔋 Grid Storage", "150 GW", "Local Manufacturing")
     m4.metric("🍃 Green Share", "45%", "Goal 50%")
-    tabs = st.tabs(["💰 Calculator", "🤖 AI Assistant", "🎯 Subsidy", "📡 News", "🤝 Connect", "🧾 Tax Engine", "🔌 EV Charging"])
+    
+    # Tabs – removed Tax Engine, added Business Marketplace
+    tabs = st.tabs(["💰 Calculator", "🤖 AI Assistant", "🎯 Subsidy", "📡 News", "🤝 Connect", "🔌 EV Charging", "🏪 Marketplace"])
     with tabs[0]:
         sub_tabs = st.tabs(["🚗 Vehicle", "☀️ Solar", "🌾 Farmer"])
         with sub_tabs[0]: vehicle_calculator()
@@ -548,9 +525,10 @@ def main():
     with tabs[2]: subsidy_checker()
     with tabs[3]: news_section()
     with tabs[4]: community_connector()
-    with tabs[5]: tax_engine_tab()
-    with tabs[6]: ev_charging_guide()
-    st.caption(f"⚡ {Config.APP_NAME} v{Config.APP_VERSION} | FutureHQ.in")
+    with tabs[5]: ev_charging_guide()
+    with tabs[6]: business_marketplace()
+    
+    st.caption(f"⚡ {Config.APP_NAME} v{Config.APP_VERSION} | FutureHQ.in – Building Green Businesses")
 
 if __name__ == "__main__":
     main()
