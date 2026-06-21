@@ -1,10 +1,10 @@
 """
-BHARAT HARIT KRANTI PORTAL v8.0.0
+BHARAT HARIT KRANTI PORTAL v8.0.1
 FutureHQ.in | Business & Revenue Focused
 - Removed Tax Engine
 - Enhanced EV Charging Guide (cost, subsidies, ROI, vendor leads)
 - New "Business Marketplace" tab (lead gen for solar & EV vendors)
-- All existing calculators, AI, news, and community connector retained
+- Auto-upgrade marker included (# AUTO-UPGRADE-AREA)
 """
 
 import streamlit as st
@@ -35,14 +35,13 @@ logger = logging.getLogger(__name__)
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 class Config:
     APP_NAME = "Bharat Harit Kranti Portal"
-    APP_VERSION = "8.0.0"
+    APP_VERSION = "8.0.1"
     COMPANY = "FutureHQ.in"
     SESSION_KEYS = {
         'user_registered': False,
         'user_mobile': "",
         'user_pincode': "",
         'chat_history': [{"role": "bot", "content": "नमस्ते! I'm Green Sahayik. Ask me about solar, EVs, or subsidies!"}],
-        # No tax portfolio anymore
     }
     MOBILE_LENGTH = 10
     PINCODE_LENGTH = 6
@@ -352,17 +351,15 @@ def community_connector():
             if st.form_submit_button("Submit"):
                 if name and validate_mobile(contact):
                     st.success(f"✅ Local vendors in {st.session_state.user_pincode} will contact you soon.")
-                    # In production: store lead in database and notify vendors
                 else:
                     st.warning("Enter valid name and 10-digit mobile.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ─── ENHANCED EV CHARGING GUIDE (BUSINESS FOCUS) ────────────────────
+# ─── ENHANCED EV CHARGING GUIDE ──────────────────────────────────────
 def ev_charging_guide():
     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
     st.markdown("<p class='cyber-label'>🔌 EV Charging Station – Complete Setup & Profit Guide</p>", unsafe_allow_html=True)
     
-    # Overview with profit badge
     st.markdown("""
         <div style="background:rgba(0,240,255,0.05); border-left:4px solid #00F0FF; padding:15px; border-radius:6px; margin-bottom:20px;">
             <b>🚗 Go Electric – Set Up Your Own Charging Point.</b><br>
@@ -371,7 +368,6 @@ def ev_charging_guide():
         </div>
     """, unsafe_allow_html=True)
 
-    # Detailed charger comparison table with additional columns
     charger_data = pd.DataFrame({
         "Type": ["Level 1 (AC)", "Level 2 (AC)", "DC Fast Charger"],
         "Voltage": ["230V (15A)", "230V (32A)", "480V (3-Phase)"],
@@ -384,7 +380,6 @@ def ev_charging_guide():
     })
     st.dataframe(charger_data, use_container_width=True, hide_index=True)
 
-    # Step-by-step installation with interactive elements
     st.markdown("#### 📋 5-Step Installation & Profit Checklist")
     steps = [
         ("1. Site Assessment", "Check load capacity, parking space, and grid connection. Business: assess footfall for public charging."),
@@ -396,7 +391,6 @@ def ev_charging_guide():
     for step, desc in steps:
         st.markdown(f"<div style='background:rgba(255,255,255,0.03); padding:10px; border-radius:6px; margin-bottom:8px;'><b>{step}</b><br>{desc}</div>", unsafe_allow_html=True)
 
-    # Cost Estimator with Business ROI
     st.markdown("#### 💰 Installation Cost Estimator & ROI")
     col1, col2 = st.columns(2)
     with col1:
@@ -426,7 +420,6 @@ def ev_charging_guide():
         if payback_years < 2:
             st.markdown("<span class='profit-badge'>🔥 Highly Profitable!</span>", unsafe_allow_html=True)
 
-    # Government Subsidies & Business Schemes
     st.markdown("#### 🏛️ Government Subsidies & Business Incentives")
     st.markdown("""
         - **FAME-II Scheme** – up to 60% subsidy on public charging infrastructure (CAPEX support).
@@ -436,7 +429,6 @@ def ev_charging_guide():
         - **GST** – 5% GST on EV charging services (input credit available).
     """)
 
-    # Revenue Model for Portal Owners (you)
     st.markdown("#### 💸 How This Tab Generates Revenue for Us")
     st.markdown("""
         - **Lead Generation:** Users submit their details to get quotes from installers – we charge ₹200-₹500 per lead to vendors.
@@ -445,7 +437,6 @@ def ev_charging_guide():
         - **Data Analytics:** Anonymized charging demand data can be sold to utility companies and urban planners.
     """)
 
-    # Vendor lead capture
     st.markdown("#### 🤝 Find a Local EV Charger Installer (Lead Generation)")
     with st.form("ev_vendor"):
         name = st.text_input("Full Name")
@@ -453,7 +444,6 @@ def ev_charging_guide():
         if st.form_submit_button("Connect with Installers"):
             if name and validate_mobile(contact):
                 st.success(f"✅ Installers in {st.session_state.user_pincode} will contact you.")
-                # In production: store lead, notify vendors, charge per lead
             else:
                 st.warning("Valid name & 10-digit mobile required.")
     
@@ -471,11 +461,9 @@ def business_marketplace():
         </div>
     """, unsafe_allow_html=True)
 
-    # Vendor categories
     categories = ["Solar Installation", "EV Charger Installation", "Energy Auditing", "Green Loans & Financing"]
     selected_category = st.selectbox("Select Service Type", categories)
     
-    # Sample vendor listing (dummy data)
     vendors = pd.DataFrame({
         "Company Name": ["SolarMax India", "EVChargePro", "EcoPower Solutions"],
         "Rating": ["4.8 ⭐", "4.5 ⭐", "4.2 ⭐"],
@@ -485,7 +473,6 @@ def business_marketplace():
     })
     st.dataframe(vendors, use_container_width=True, hide_index=True)
 
-    # Request Quote form (lead generation)
     with st.form("business_lead"):
         name = st.text_input("Your Full Name")
         mobile = st.text_input("Mobile Number", max_chars=10)
@@ -493,11 +480,9 @@ def business_marketplace():
         if st.form_submit_button("Request Quote"):
             if name and validate_mobile(mobile):
                 st.success("✅ Your request has been sent to top vendors. You'll hear back within 24 hours.")
-                # store lead, charge vendor per lead
             else:
                 st.warning("Please fill all fields correctly.")
     
-    # Revenue note for admin
     st.markdown("""
         <div style="background:rgba(255,153,51,0.1); padding:10px; border-radius:6px; margin-top:20px; border:1px solid #FF9933;">
             <b>💰 Revenue Generation:</b> Each lead is sold to vendors at ₹300-₹500. With 1000 leads/month, we earn ₹3-5 Lakhs.
@@ -505,6 +490,11 @@ def business_marketplace():
     """, unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🔁 AUTO-UPGRADE MARKER – daily_upgrade.py will inject new code here
+# ═══════════════════════════════════════════════════════════════════════════
+# AUTO-UPGRADE-AREA
 
 # ─── MAIN ──────────────────────────────────────────────────────────────────
 def main():
@@ -516,14 +506,12 @@ def main():
     st.markdown(f"<h1 class='neon-title'>{Config.APP_NAME}</h1>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align:center;'>🟢 Pincode: {st.session_state.user_pincode} | Welcome Citizen</p>", unsafe_allow_html=True)
     
-    # Top Metrics
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("☀️ Rooftop Solar", "41 Lakh+", "Target 75 Lakh")
     m2.metric("🌾 Solar Pumps", "7.5 Lakh+", "60% Subsidy")
     m3.metric("🔋 Grid Storage", "150 GW", "Local Manufacturing")
     m4.metric("🍃 Green Share", "45%", "Goal 50%")
     
-    # Tabs – removed Tax Engine, added Business Marketplace
     tabs = st.tabs(["💰 Calculator", "🤖 AI Assistant", "🎯 Subsidy", "📡 News", "🤝 Connect", "🔌 EV Charging", "🏪 Marketplace"])
     with tabs[0]:
         sub_tabs = st.tabs(["🚗 Vehicle", "☀️ Solar", "🌾 Farmer"])
@@ -541,3 +529,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
