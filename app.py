@@ -203,16 +203,61 @@ def get_gemini_response(prompt: str) -> str:
         logger.error(f"Gemini error: {e}")
         return "AI service unavailable."
 
-# ─── OTP (SIMULATED) ──────────────────────────────────────────────
+# ─── OTP (TWILIO VERIFY) ──────────────────────────────────────────────
 def send_otp(mobile: str) -> bool:
+    """Send OTP via Twilio Verify or local fallback."""
+    # Get credentials from environment or secrets
+    twilio_sid = os.getenv("TWILIO_ACCOUNT_SID") or (st.secrets.get("TWILIO_ACCOUNT_SID") if hasattr(st, 'secrets') else None)
+    twilio_auth = os.getenv("TWILIO_AUTH_TOKEN") or (st.secrets.get("TWILIO_AUTH_TOKEN") if hasattr(st, 'secrets') else None)
+    twilio_service = os.getenv("TWILIO_VERIFY_SERVICE_SID") or (st.secrets.get("TWILIO_VERIFY_SERVICE_SID") if hasattr(st, 'secrets') else None)
+
+    if twilio_sid and twilio_auth and twilio_service:
+        try:
+            from twilio.rest import Client
+            client = Client(twilio_sid, twilio_auth)
+            verification = client.verify.v2.services(twilio_service).verifications.create(
+                to=mobile, channel="sms"
+            )
+            if verification.status == "pending":
+                st.session_state.otp = "twilio_sent"
+                st.session_state.otp_expiry = time.time() + 300
+                return True
+            else:
+                return False
+        except Exception as e:
+            logger.error(f"Twilio OTP send error: {e}")
+            # Fall through to local fallback
+
+    # Local fallback (for testing only)
     otp = str(random.randint(1000, 9999))
     st.session_state.otp = otp
     st.session_state.otp_expiry = time.time() + 300
+    logger.info(f"Local OTP for {mobile}: {otp}")
+    # Show OTP in app for development – comment out in production
+    st.warning(f"⚠️ Local OTP (check console): {otp}")
     return True
 
 def verify_otp(mobile: str, user_otp: str) -> bool:
-    return st.session_state.otp == user_otp and time.time() < st.session_state.otp_expiry
+    """Verify OTP using Twilio Verify or local fallback."""
+    twilio_sid = os.getenv("TWILIO_ACCOUNT_SID") or (st.secrets.get("TWILIO_ACCOUNT_SID") if hasattr(st, 'secrets') else None)
+    twilio_auth = os.getenv("TWILIO_AUTH_TOKEN") or (st.secrets.get("TWILIO_AUTH_TOKEN") if hasattr(st, 'secrets') else None)
+    twilio_service = os.getenv("TWILIO_VERIFY_SERVICE_SID") or (st.secrets.get("TWILIO_VERIFY_SERVICE_SID") if hasattr(st, 'secrets') else None)
 
+    if twilio_sid and twilio_auth and twilio_service and st.session_state.otp == "twilio_sent":
+        try:
+            from twilio.rest import Client
+            client = Client(twilio_sid, twilio_auth)
+            verification_check = client.verify.v2.services(twilio_service).verification_checks.create(
+                to=mobile, code=user_otp
+            )
+            return verification_check.status == "approved"
+        except Exception as e:
+            logger.error(f"Twilio OTP verify error: {e}")
+            return False
+
+    # Local fallback
+    return st.session_state.otp == user_otp and time.time() < st.session_state.otp_expiry
+    
 # ─── CSS ────────────────────────────────────────────────────────────
 def load_css():
     st.markdown("""
