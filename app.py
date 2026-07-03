@@ -1,22 +1,3 @@
-
-
-Skip to content
-Using Gmail with screen readers
-1 of 191
-(no subject)
-Inbox
-
-Devesh Srivastava
-Attachments
-19:12 (0 minutes ago)
-to me
-
-
-
-
-Sent from my iPhone
- One attachment
-  •  Scanned by Gmail
 """
 BHARAT HARIT KRANTI PORTAL v11.0.1
 FutureHQ.in | Full Production with OTP Fix
@@ -850,5 +831,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-app.py
-Displaying app.
