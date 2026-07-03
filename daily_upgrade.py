@@ -49,7 +49,7 @@ Example improvements:
 def generate_upgrade():
     """Ask Gemini for a code upgrade."""
     genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-2.0-flash-exp")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     response = model.generate_content(get_upgrade_prompt())
     return response.text
 
@@ -88,9 +88,17 @@ def apply_upgrade(new_code_snippet):
         else:
             new_content = original + "\n\n" + new_code_snippet
     
+    # SAFETY: validate syntax BEFORE writing — never push broken code to production
+    try:
+        compile(new_content, APP_FILE, "exec")
+    except SyntaxError as e:
+        log(f"Upgrade REJECTED - syntax error in generated code: {e}")
+        return False
+
     with open(APP_FILE, "w") as f:
         f.write(new_content)
     log("Upgrade applied successfully.")
+    return True
 
 def git_commit_and_push():
     """Commit and push changes to GitHub (so Streamlit Cloud redeploys)."""
@@ -115,8 +123,10 @@ def main():
         return
     
     log("Received upgrade code. Applying...")
-    apply_upgrade(code)
-    git_commit_and_push()
+    if apply_upgrade(code):
+        git_commit_and_push()
+    else:
+        log("Upgrade skipped - validation failed. app.py untouched.")
     log("=== Daily upgrade finished ===")
 
 if __name__ == "__main__":
