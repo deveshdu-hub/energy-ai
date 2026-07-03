@@ -101,6 +101,10 @@ class Config:
     
     # Admin password
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+
+    # Vendor credentials (set in Streamlit secrets / env — never hardcode in public repo)
+    VENDOR_ID = os.getenv("VENDOR_ID", "vendor1")
+    VENDOR_PASSWORD = os.getenv("VENDOR_PASSWORD", "pass123")
     
     # Social Media API tokens (optional)
     INSTAGRAM_ACCESS_TOKEN = os.getenv("INSTAGRAM_ACCESS_TOKEN")
@@ -109,9 +113,10 @@ class Config:
 
 # ─── SESSION INIT ────────────────────────────────────────────────────
 def init_session_state():
+    import copy
     for key, default in Config.SESSION_KEYS.items():
         if key not in st.session_state:
-            st.session_state[key] = default
+            st.session_state[key] = copy.deepcopy(default)
 
 # ─── VALIDATION ──────────────────────────────────────────────────────
 def validate_mobile(mobile: str) -> bool:
@@ -195,7 +200,7 @@ def get_gemini_response(prompt: str) -> str:
         if not api_key:
             return "API key missing."
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-2.0-flash-exp")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(prompt)
         return response.text if response.text else "No response."
     except Exception as e:
@@ -243,6 +248,12 @@ def send_otp(mobile: str) -> bool:
 
 def verify_otp(mobile: str, user_otp: str) -> bool:
     """Verify OTP using Twilio Verify or local fallback."""
+    # Format number for India (E.164) — MUST match the format used in send_otp
+    if len(mobile) == 10 and mobile.isdigit():
+        formatted_mobile = f"+91{mobile}"
+    else:
+        formatted_mobile = mobile
+
     twilio_sid = os.getenv("TWILIO_ACCOUNT_SID") or (st.secrets.get("TWILIO_ACCOUNT_SID") if hasattr(st, 'secrets') else None)
     twilio_auth = os.getenv("TWILIO_AUTH_TOKEN") or (st.secrets.get("TWILIO_AUTH_TOKEN") if hasattr(st, 'secrets') else None)
     twilio_service = os.getenv("TWILIO_VERIFY_SERVICE_SID") or (st.secrets.get("TWILIO_VERIFY_SERVICE_SID") if hasattr(st, 'secrets') else None)
@@ -252,14 +263,16 @@ def verify_otp(mobile: str, user_otp: str) -> bool:
             from twilio.rest import Client
             client = Client(twilio_sid, twilio_auth)
             verification_check = client.verify.v2.services(twilio_service).verification_checks.create(
-                to=mobile, code=user_otp
+                to=formatted_mobile, code=user_otp
             )
             return verification_check.status == "approved"
         except Exception as e:
             logger.error(f"Twilio OTP verify error: {e}")
             return False
 
-    # Local fallback
+    # Local fallback (guard against missing/expired OTP state)
+    if not st.session_state.otp or not st.session_state.otp_expiry:
+        return False
     return st.session_state.otp == user_otp and time.time() < st.session_state.otp_expiry
 
 # ─── CSS ────────────────────────────────────────────────────────────
@@ -637,7 +650,9 @@ def vendor_dashboard():
             vendor_id = st.text_input("Vendor ID")
             vendor_pass = st.text_input("Password", type="password")
             if st.form_submit_button("Login"):
-                if vendor_id == "vendor1" and vendor_pass == "pass123":
+                valid_id = (st.secrets.get("VENDOR_ID") if hasattr(st, 'secrets') else None) or Config.VENDOR_ID
+                valid_pass = (st.secrets.get("VENDOR_PASSWORD") if hasattr(st, 'secrets') else None) or Config.VENDOR_PASSWORD
+                if vendor_id == valid_id and vendor_pass == valid_pass:
                     st.session_state.is_vendor = True
                     st.session_state.vendor_id = vendor_id
                     st.rerun()
@@ -675,7 +690,7 @@ def admin_analytics():
         with st.form("admin_login"):
             admin_pass = st.text_input("Admin Password", type="password")
             if st.form_submit_button("Login"):
-                if admin_pass == Config.ADMIN_PASSWORD:
+                if admin_pass == ((st.secrets.get("ADMIN_PASSWORD") if hasattr(st, "secrets") else None) or Config.ADMIN_PASSWORD):
                     st.session_state.is_admin = True
                     st.rerun()
                 else:
@@ -717,12 +732,13 @@ def content_studio():
         with st.form("admin_login_content"):
             admin_pass = st.text_input("Admin Password", type="password")
             if st.form_submit_button("Login"):
-                if admin_pass == Config.ADMIN_PASSWORD:
+                if admin_pass == ((st.secrets.get("ADMIN_PASSWORD") if hasattr(st, "secrets") else None) or Config.ADMIN_PASSWORD):
                     st.session_state.is_admin = True
                     st.rerun()
                 else:
                     st.error("Wrong password")
-        st.stop()
+        st.markdown("</div>", unsafe_allow_html=True)
+        return  # st.stop() here would kill rendering of the footer for everyone
     st.success("Admin access granted.")
     source = st.selectbox("Content Source", ["Real Lead Success Story", "Vendor Highlight", "Government Scheme Update", "Solar/EV Market Trend"])
     context = st.text_area("Additional context (optional)")
@@ -780,8 +796,10 @@ def main():
     st.markdown(f"<p style='text-align:center;'>🟢 Welcome {st.session_state.user_name} | Pincode: {st.session_state.user_pincode}</p>", unsafe_allow_html=True)
     
     if st.button("Logout"):
-        for key in Config.SESSION_KEYS.keys():
-            st.session_state[key] = Config.SESSION_KEYS[key]()  # reset to default
+        import copy
+        for key, default in Config.SESSION_KEYS.items():
+            st.session_state[key] = copy.deepcopy(default)  # reset to default
+        st.session_state.otp_sent = False
         st.rerun()
     
     # Top Metrics
