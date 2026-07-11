@@ -655,7 +655,7 @@ def vendor_dashboard():
                     st.error("Invalid credentials")
     else:
         st.success(f"Logged in as Vendor: {st.session_state.vendor_id}")
-        if st.button("Logout"):
+        if st.button("Logout", key="admin_logout"):
             st.session_state.is_vendor = False
             st.rerun()
         # Fetch leads (sample)
@@ -692,7 +692,7 @@ def admin_analytics():
                     st.error("Wrong password")
     else:
         st.success("Admin access granted")
-        if st.button("Logout"):
+        if st.button("Logout", key="admin_logout"):
             st.session_state.is_admin = False
             st.rerun()
         # Sample stats
